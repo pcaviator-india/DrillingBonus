@@ -240,6 +240,8 @@ export const workeraClient = {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          ...(API_USER ? { API_USER } : {}),
+          ...(API_KEY ? { API_KEY } : {}),
         },
         body,
         cache: "no-store",
