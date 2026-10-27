@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  assignDeviceToRigAction,
   assignDeviceToSiteAction,
   moveDeviceToSiteAction,
   toggleDeviceActiveAction,
@@ -25,8 +26,11 @@ export interface DeviceRow {
   isActive: boolean;
   siteId: string | null;
   siteName: string | null;
+  rigId: string | null;
+  rigName: string | null;
   lastUsed: Date | null;
   siteOptions: { id: string; name: string }[];
+  rigOptions: { id: string; name: string; siteId: string | null }[];
 }
 
 interface Props {
@@ -60,6 +64,7 @@ export function DevicesTable({ devices, canManage }: Props) {
           <TableHead className="w-[220px]">Device</TableHead>
           <TableHead>Type</TableHead>
           <TableHead>Site</TableHead>
+          <TableHead className="w-[130px]">Rig</TableHead>
           <TableHead>Active</TableHead>
           <TableHead className="w-[140px]">Last used</TableHead>
           <TableHead className="w-[120px]">Actions</TableHead>
@@ -75,6 +80,11 @@ export function DevicesTable({ devices, canManage }: Props) {
             <TableCell>
               <span className={dev.siteName ? "text-sm font-medium" : "text-sm text-muted-foreground"}>
                 {dev.siteName ?? <em className="text-xs">Unmapped</em>}
+              </span>
+            </TableCell>
+            <TableCell>
+              <span className={dev.rigName ? "text-sm font-medium" : "text-sm text-muted-foreground"}>
+                {dev.rigName ?? <em className="text-xs">Unmapped</em>}
               </span>
             </TableCell>
             <TableCell>
@@ -110,11 +120,16 @@ interface DeviceActionsProps {
 function DeviceActions({ device }: DeviceActionsProps) {
   const [assignSite, setAssignSite] = useState(device.siteId ?? "");
   const [moveSite, setMoveSite] = useState(device.siteId ?? "");
+  const [assignRig, setAssignRig] = useState(device.rigId ?? "");
+  const [moveRig, setMoveRig] = useState(device.rigId ?? "");
   const [assignPending, setAssignPending] = useState(false);
   const [movePending, setMovePending] = useState(false);
+  const [rigPending, setRigPending] = useState(false);
   const [deactivatePending, setDeactivatePending] = useState(false);
 
   const otherSites = device.siteOptions.filter((s) => s.id !== device.siteId);
+  const siteRigs = device.rigOptions.filter((r) => r.siteId === device.siteId);
+  const otherRigs = device.rigOptions.filter((r) => r.id !== device.rigId);
 
   const handleAssign = async () => {
     if (!assignSite) return;
@@ -141,6 +156,20 @@ function DeviceActions({ device }: DeviceActionsProps) {
       if (res?.error) { /* eslint-disable-next-line no-console */ console.error(res.error); }
     } finally {
       setMovePending(false);
+    }
+  };
+
+  const handleAssignRig = async () => {
+    if (!assignRig) return;
+    setRigPending(true);
+    try {
+      const formData = new FormData();
+      formData.append("deviceId", device.id);
+      formData.append("rigId", assignRig);
+      const res = await assignDeviceToRigAction({}, formData);
+      if (res?.error) { /* eslint-disable-next-line no-console */ console.error(res.error); }
+    } finally {
+      setRigPending(false);
     }
   };
 
@@ -206,6 +235,32 @@ function DeviceActions({ device }: DeviceActionsProps) {
           </Button>
         </>
       )}
+
+      {device.siteName ? (
+        <>
+          <label className="text-xs text-muted-foreground">Assign rig</label>
+          <select
+            value={assignRig}
+            onChange={(e) => setAssignRig(e.target.value)}
+            disabled={rigPending}
+            className="h-8 rounded-md border border-input bg-transparent px-2 text-xs"
+            aria-label="Assign device to rig"
+          >
+            <option value="">—</option>
+            {siteRigs.map((r) => (
+              <option key={r.id} value={r.id}>{r.name}</option>
+            ))}
+          </select>
+          <Button
+            size="sm"
+            className="h-7"
+            onClick={handleAssignRig}
+            disabled={rigPending || siteRigs.length === 0 || !assignRig}
+          >
+            Assign rig
+          </Button>
+        </>
+      ) : null}
 
       <Button
         size="sm"

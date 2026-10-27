@@ -33,6 +33,53 @@ async function getSiteNameById(siteId: string | null): Promise<string | null> {
   return site?.name ?? null;
 }
 
+const RIG_SCHEMA = z.object({
+  rigId: z.string().min(1),
+});
+
+const ASSIGN_RIG_SCHEMA = DEVICE_SCHEMA.and(RIG_SCHEMA);
+
+export async function assignDeviceToRigAction(
+  _prev: DeviceActionState,
+  formData: FormData,
+): Promise<DeviceActionState> {
+  const error = await requireAdmin();
+  if (error) return error;
+
+  const parsed = ASSIGN_RIG_SCHEMA.safeParse({
+    deviceId: formData.get("deviceId"),
+    rigId: formData.get("rigId"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input." };
+  }
+
+  try {
+    const rig = await db.rig.findUnique({
+      where: { id: parsed.data.rigId },
+      select: { id: true, siteId: true },
+    });
+    if (!rig) return { error: "The selected rig no longer exists." };
+
+    await db.device.update({
+      where: { id: parsed.data.deviceId },
+      data: {
+        rigId: parsed.data.rigId,
+        siteId: rig.siteId ?? null,
+      },
+    });
+  } catch (e) {
+    if (e instanceof Error && e.message.includes("foreign")) {
+      return { error: "The selected device or rig no longer exists." };
+    }
+    return { error: "Failed to assign device to rig." };
+  }
+
+  revalidatePath("/sites/clocks");
+  revalidatePath("/sites");
+  return { success: "Device assigned to rig." };
+}
+
 export async function assignDeviceToSiteAction(
   _prev: DeviceActionState,
   formData: FormData,

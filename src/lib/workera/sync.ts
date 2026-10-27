@@ -576,9 +576,9 @@ export async function syncAttendanceFromWorkera(
   // Load active devices for automatic site attribution during persist
   const devices = await db.device.findMany({
     where: { isActive: true },
-    select: { id: true, name: true, siteId: true },
+    select: { id: true, name: true, siteId: true, rigId: true },
   });
-  const deviceByName = new Map<string, { id: string; name: string; siteId: string | null }>(devices.map((d: { id: string; name: string; siteId: string | null }) => [d.name, { id: d.id, name: d.name, siteId: d.siteId }]));
+  const deviceByName = new Map<string, { id: string; name: string; siteId: string | null; rigId: string | null }>(devices.map((d: { id: string; name: string; siteId: string | null; rigId: string | null }) => [d.name, { id: d.id, name: d.name, siteId: d.siteId, rigId: d.rigId }]));
   const startDay = new Date(`${from}T00:00:00Z`);
   const endDay = new Date(`${to}T00:00:00Z`);
   const fmt = (d: Date) => d.toISOString().slice(0, 10);
@@ -771,6 +771,7 @@ export async function syncAttendanceFromWorkera(
         where: { id: r.id },
         data: {
           deviceId: dev.id,
+          rigId: dev.rigId ?? null,
           siteAttributionStatus: "approved",
           siteAttributionSiteId: dev.siteId,
           siteAttributionNote: `Auto-attributed from device "${r.inDevice}"`,
@@ -843,9 +844,9 @@ export async function retryAttendanceUnits(
   // Load active devices for automatic site attribution during persist
   const devices = await db.device.findMany({
     where: { isActive: true },
-    select: { id: true, name: true, siteId: true },
+    select: { id: true, name: true, siteId: true, rigId: true },
   });
-  const deviceByName = new Map<string, { id: string; name: string; siteId: string | null }>(devices.map((d: { id: string; name: string; siteId: string | null }) => [d.name, { id: d.id, name: d.name, siteId: d.siteId }]));
+  const deviceByName = new Map<string, { id: string; name: string; siteId: string | null; rigId: string | null }>(devices.map((d: { id: string; name: string; siteId: string | null; rigId: string | null }) => [d.name, { id: d.id, name: d.name, siteId: d.siteId, rigId: d.rigId }]));
 
   const persistWindow = async (
     marks: WorkeraAttendance[],
@@ -993,6 +994,7 @@ export async function retryAttendanceUnits(
         where: { id: r.id },
         data: {
           deviceId: dev.id,
+          rigId: dev.rigId ?? null,
           siteAttributionStatus: "approved",
           siteAttributionSiteId: dev.siteId,
           siteAttributionNote: `Auto-attributed from device "${r.inDevice}"`,

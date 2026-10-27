@@ -22,10 +22,14 @@ export type DeviceSyncReport = {
 /**
  * Sync devices from ADMS into the local DB.
  *
- * Mobile/web devices are left with siteId = null; the site is determined
- * dynamically at punch time from GPS coordinates.
+ * Mobile/web devices are left with siteId = null and rigId = null; the site
+ * is determined dynamically at punch time from GPS coordinates.
  *
- * SISTEMA devices keep siteId null until the admin maps them in the UI.
+ * Biometric (rig clock) devices are created with rigId = null; an admin must
+ * assign each one to a rig (1 clock per rig) in the Devices UI. Assigning a
+ * rig also sets siteId from the rig's deployed site.
+ *
+ * SISTEMA devices keep siteId/rigId null until the admin maps them in the UI.
  */
 export async function syncDevicesFromAdms(): Promise<DeviceSyncReport> {
   const [config, devices] = await Promise.all([

@@ -233,8 +233,10 @@ model EmployeeTurnSchedule {
 model Device {
   id          String   @id @default(cuid())
   name        String   @unique // e.g. "Reloj Biometrico Faena A", "iOS App"
-  siteId      String?   // null until mapped to a site
+  siteId      String?   // derived from assigned rig (site where the rig is deployed)
   site        Site?     @relation(fields: [siteId], references: [id])
+  rigId       String?   // null until mapped to a rig (1 clock per rig)
+  rig         Rig?      @relation(fields: [rigId], references: [id])
   isActive    Boolean  @default(true)
   deviceType  String   @default("biometric") // biometric | mobile | web | sistema (sistema = admin-marked, like new rig clocks)
   admsHost    String?   // ADMS API host for this device (blank = legacy/manual)
@@ -248,6 +250,7 @@ model Device {
   attendanceRecords AttendanceRecord[]
 
   @@index([siteId])
+  @@index([rigId])
   @@index([name])
   @@index([deviceType])
   @@index([admsHost])
@@ -330,6 +333,8 @@ model AttendanceRecord {
   // Device used for the IN punch (auto-linked to Device for site attribution)
   deviceId    String?   // clocking/biometric device used for the IN punch
   device      Device?   @relation(fields: [deviceId], references: [id])
+  rigId       String?   // rig the clock is assigned to (1 clock per rig) → which rig the employee worked
+  rig         Rig?      @relation(fields: [rigId], references: [id])
 
   corrected      Boolean   @default(false) // true when duplicate/mis-ordered marks were cleaned during sync
   rawData        Json? // original payload from Workera
@@ -399,6 +404,8 @@ model Rig {
   updatedAt DateTime @updatedAt
 
   site         Site?                 @relation(fields: [siteId], references: [id])
+  devices      Device[]              // clocks assigned to this rig (1 clock per rig)
+  attendanceRecords AttendanceRecord[]  // attendance marks punched on this rig
   performances RigShiftPerformance[]
   assignments  CrewAssignment[]
   rigAliases   RigAlias[]

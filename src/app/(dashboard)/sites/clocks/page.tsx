@@ -6,9 +6,12 @@ import { DevicesTable } from "./devices-table";
 import { DeviceSyncForm } from "./device-sync-form";
 
 async function getDeviceList() {
-  const sites = await db.site.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } });
+  const [sites, rigs] = await Promise.all([
+    db.site.findMany({ select: { id: true, name: true }, orderBy: { name: "asc" } }),
+    db.rig.findMany({ select: { id: true, name: true, siteId: true }, orderBy: { name: "asc" } }),
+  ]);
   const devices = await db.device.findMany({
-    include: { site: true },
+    include: { site: true, rig: true },
     orderBy: { name: "asc" },
   });
 
@@ -41,8 +44,11 @@ async function getDeviceList() {
       isActive: d.isActive,
       siteId: d.siteId,
       siteName: d.site?.name ?? null,
+      rigId: d.rigId ?? null,
+      rigName: d.rig?.name ?? null,
       lastUsed: lastUsedByDevice.get(d.name) ?? null,
       siteOptions: sites,
+      rigOptions: rigs.map((r) => ({ id: r.id, name: r.name, siteId: r.siteId ?? null })),
     };
   });
 
