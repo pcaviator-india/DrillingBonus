@@ -1,0 +1,480 @@
+﻿LINE ARIEL ANDRES SILVA RIQUELME (15.613.806-1) job=Supervisor de Operaciones
+roleUsed=Supervisor daysWorked=8 total=218804
+breakdown keys: shifts, components
+{
+ "shifts": [
+  {
+   "date": "",
+   "role": "Supervisor",
+   "turn": null,
+   "shift": "",
+   "meters": 358,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": "BEST_RIG",
+   "drillingLevel": null,
+   "componentBreakdown": [
+    {
+     "amount": 344170,
+     "details": {
+      "rate": 900,
+      "meters": 358
+     },
+     "bonusTypeCode": "production_meter",
+     "bonusTypeName": "Production Meter"
+    }
+   ]
+  },
+  {
+   "date": "",
+   "role": "Supervisor",
+   "turn": null,
+   "shift": "",
+   "meters": 358,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": "BEST_RIG",
+   "drillingLevel": null,
+   "componentBreakdown": [
+    {
+     "amount": 476345,
+     "details": {
+      "rate": 1200,
+      "meters": 358
+     },
+     "bonusTypeCode": "production_meter",
+     "bonusTypeName": "Production Meter"
+    }
+   ]
+  }
+ ],
+ "components": [
+  {
+   "amount": 91778.66666666667,
+   "details": {
+    "prorate": {
+     "rawTotal": 344170,
+     "daysWorked": 8,
+     "divisorDays": 30,
+     "divisorSource": "days_in_month"
+    },
+    "rawTotal": 344170,
+    "divisorDays": 30,
+    "divisorSource": "days_in_month",
+    "shiftBreakdown": [
+     {
+      "date": "",
+      "rate": 900,
+      "bonus": 344170,
+      "shift": "",
+      "meters": 358,
+      "rigName": "EDM-47K2",
+      "depthScale": null,
+      "bestRigType": "DIAMANTINA",
+      "drillingType": "BEST_RIG"
+     }
+    ]
+   },
+   "bonusTypeCode": "production_meter",
+   "bonusTypeName": "Production Meter"
+  },
+  {
+   "amount": 127025.3333333333,
+   "details": {
+    "prorate": {
+     "rawTotal": 476345,
+     "daysWorked": 8,
+     "divisorDays": 30,
+     "divisorSource": "days_in_month"
+    },
+    "rawTotal": 476345,
+    "divisorDays": 30,
+    "divisorSource": "days_in_month",
+    "shiftBreakdown": [
+     {
+      "date": "",
+      "rate": 1200,
+      "bonus": 476345,
+      "shift": "",
+      "meters": 358,
+      "rigName": "EDM-47K2",
+      "depthScale": null,
+      "bestRigType": "DIAMANTINA",
+      "drillingType": "BEST_RIG"
+     }
+    ]
+   },
+   "bonusTypeCode": "production_meter",
+   "bonusTypeName": "Production Meter"
+  }
+ ]
+}
+
+SNAPSHOT employee entry: {
+ "shifts": [
+  {
+   "date": "2026-08-05",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 18,
+   "rigName": "EDM-47K2",
+   "depthScale": "800-1000",
+   "drillingType": "PQ",
+   "drillingDepth": 1000,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-07",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 18,
+   "rigName": "EDM-47K2",
+   "depthScale": "800-1000",
+   "drillingType": "PQ",
+   "drillingDepth": 1000,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-06",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 15,
+   "rigName": "EDM-47K2",
+   "depthScale": "800-1000",
+   "drillingType": "PQ",
+   "drillingDepth": 1000,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-08",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 9.4,
+   "rigName": "EDM-47K2",
+   "depthScale": "800-1000",
+   "drillingType": "PQ",
+   "drillingDepth": 1000,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-12",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-11",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-09",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 4.9,
+   "rigName": "EDM-47K2",
+   "depthScale": "800-1000",
+   "drillingType": "PQ",
+   "drillingDepth": 1000,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-10",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 3.25,
+   "rigName": "EDM-47K2",
+   "depthScale": "800-1000",
+   "drillingType": "PQ",
+   "drillingDepth": 1000,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-13",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-15",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-20",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-16",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-17",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-18",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-19",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-21",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-26",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 6.1,
+   "rigName": "EDM-47K2",
+   "depthScale": "800-1000",
+   "drillingType": "PQ",
+   "drillingDepth": 1000,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-28",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-22",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-23",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-24",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-25",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 6.4,
+   "rigName": "EDM-47K2",
+   "depthScale": "800-1000",
+   "drillingType": "PQ",
+   "drillingDepth": 1000,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-27",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-29",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 15,
+   "rigName": "EDM-47K2",
+   "depthScale": "800-1000",
+   "drillingType": "HQ",
+   "drillingDepth": 1000,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-30",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 11.85,
+   "rigName": "EDM-47K2",
+   "depthScale": "1000-1200",
+   "drillingType": "HQ",
+   "drillingDepth": 1200,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-31",
+   "role": "Conductor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 13,
+   "rigName": "EDM-47K2",
+   "depthScale": "1000-1200",
+   "drillingType": "HQ",
+   "drillingDepth": 1200,
+   "drillingLevel": null
+  },
+  {
+   "date": "2026-08-14",
+   "role": "Supervisor",
+   "turn": null,
+   "hours": 12,
+   "shift": "night",
+   "meters": 0,
+   "rigName": "EDM-47K2",
+   "depthScale": null,
+   "drillingType": null,
+   "drillingDepth": null,
+   "drillingLevel": null
+  }
+ ],
+ "fullName": "ARIEL ANDRES SILVA RIQUELME",
+ "daysWorked": 8,
+ "employeeId": "cmthqifo10046n0b45kcf5k3x",
+ "roleTokens": [
+  "Supervisor",
+  "SUPERVISOR",
+  "group1",
+  "Conductor",
+  "CONDUCTOR",
+  "group2"
+ ],
+ "defaultRole": "Supervisor de Operaciones",
+ "attendanceHours": 71.41999999999999
+}

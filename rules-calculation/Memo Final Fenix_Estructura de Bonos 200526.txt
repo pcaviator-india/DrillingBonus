@@ -1,0 +1,314 @@
+FILE: Memo Final Fenix_Estructura de Bonos 200526.pdf
+================================================================================
+
+--- Page 1 ---
+ 
+ 
+ 
+ 
+ 
+ Recon Drilling Spa 
+ 
+MEMO 
+Para:  
+Todos los Trabajadores Proyecto Fenix 
+De: 
+ 
+Mark Scoles – Gerente General Chile 
+CC: 
+ 
+Todos los Líderes de Proyecto y Trabajadores en faena 
+Fecha: 
+La Serena, Mayo de 2026 
+Re: 
+ 
+Estructura Bono Producción y condiciones de pago 
+Asunto: Memorando Estructura Bono de Producción 
+Proyecto 
+ 
+A todo el equipo Proyecto Fenix Recon Drilling Chile, por medio de la presente comunicación, 
+queremos tomar la oportunidad, de compartir con ustedes en detalle, las condiciones y 
+características particulares de los bonos de producción considerados por nuestra empresa y que son 
+remunerados a todo el equipo de operaciones en terreno mensualmente. 
+En ese sentido, esperamos que el presente documento lleve claridad y transparencia a cada uno de 
+ustedes, considerando que hemos recepcionado en nuestras visitas a terreno, la inquietud planteada 
+respecto de contar con un documento que ayude a clarificar la composición de los bonos.  
+Por esta razón, a continuación, compartimos con ustedes los detalles de las estructuras de pagos, 
+tipos de bonos vigentes, y como en todo orden de cosas, junto a un derecho hay deberes que deben 
+cumplirse para que se genere el pago del bono mensualmente. 
+ 
+PRIMERO: Bono Metro Producción. 
+ 
+La Empresa otorgará al Trabajador un beneficio denominado “Bono Metro”, cuyo detalle se encuentra 
+en el siguiente cuadro: 
+ 
+ 
+PQ
+PQ
+H1/N1
+H2/N2
+H3/N3
+H4/N4
+H5/N5
+NAVI/Devico
+$1.000
+$1.400
+$750
+$900
+$1.200
+$1.600
+$1.900
+Según Tramo
+0-500
+500-1000
+0-500
+500-1000
+1000-1500
+1500-2000
+2000-2500
+Hrs Max 22/10,5 Mt/Turno
+PQ
+PQ
+H1/N1
+H2/N2
+H3/N3
+H4/N4
+H5/N5
+NAVI/Devico
+$1.000
+$1.000
+$500
+$700
+$900
+$1.200
+$1.500
+Según Tramo
+0-500
+500-1000
+0-500
+500-1000
+1000-1500
+1500-2000
+2000-2500
+Hrs Max 22/10,5 Mt/Turno
+PQ
+PQ
+H1/N1
+H2/N2
+H3/N3
+H4/N4
+H5/N5
+NAVI/Devico
+0-500
+500-1000
+0-500
+500-1000
+1000-1500
+1500-2000
+2000-2500
+Hrs Max 22/10,5 Mt/Turno
+0-600
+0-600
+DEPTH SCALE
+Supervisores 
+Perforistas
+Soporte
+$300
+$300
+$200
+0-600
+Drilling Type
+Meter Bonus Pesos
+Supervisores 
+Perforistas
+Soporte
+22 Metros por turno Máximo. Sobre base de Horas considerand 10,5 horas turno, factor de conversion 2,1 Metros Hora
+DEPTH SCALE* Valor según 
+Cargo
+Meter Bonus Pesos
+DEPTH SCALE
+Tabla 1  -  Calculo de Bonos y tarifas por tramo
+Tabla 2  -  Calculo de Bonos y tarifas por tramo
+Tabla 4  -  Perforación Drireccional Devico
+Tabla de Calculo Bono
+Tabla 3  -  Calculo de Bonos y tarifas por tramo Aire Reverso
+Tabla de Calculo Bonos Ayudantes
+Drilling Type
+Meter Bonus Pesos
+Tabla de Calculo Bonos Perforistas
+Drilling Type
+Meter Bonus Pesos
+DEPTH SCALE
+Tabla de Calculo Bonos Ayudantes
+Drilling Type
+
+
+--- Page 2 ---
+ 
+ 
+ 
+ 
+ 
+ Recon Drilling Spa 
+ 
+Este bono se regirá por las siguientes condiciones: 
+1. Perforistas y Ayudantes: 
+Percibirán el bono correspondiente a la máquina en la cual se desempeñaron durante su turno, según 
+las tablas 1 a 4 precedentes, y sobre la base de los diámetros y profundidades realizadas durante 
+las 24  horas de su turno. Adicionalmente a ello, el cálculo correspondiente a su pago se determinará 
+por los días efectivamente en plataforma y proyecto, con el fin de asegurar el registro de asistencia 
+adecuadamente en el turno. 
+ 
+2. Jefes de Faena, Supervisores, personal HSEC: 
+Percibirán el bono correspondiente a la máquina que mejor performance tenga durante el mes 
+completo (Metros perforados), dentro de la flota del proyecto Fenix y que cumpla los servicios durante 
+el mes, calculado por el total de días efectivamente trabajados durante su turno y tomando en 
+consideración las tarifas según la Tabla 1, a partir de las profundidades y diámetros desarrollados 
+por dicha maquina (Tarifa perforistas). 
+ 
+3. Otros cargos, administrativos y operativos de apoyo en faena: 
+Percibirán el bono correspondiente a la máquina que mejor performance tenga durante el mes 
+completo (Metros perforados), dentro de la flota del proyecto Fenix y que cumpla los servicios durante 
+el mes, calculado por el total de días efectivamente trabajados durante su turno y tomando en 
+consideración las tarifas según la Tabla 2, a partir de las profundidades y diámetros desarrollados 
+por dicha maquina (Tarifa Ayudantes). 
+ 
+4. Pago de Bono Direccional 
+En caso de corresponder, se pagará el tramo de perforación correspondiente al sistema 
+direccionado, se consideran además las horas de movimientos de herramientas durante el proceso 
+de perforación direccional, y se empleará un factor de conversión de 2.10 Metros/hora, tomando en 
+consideración el total de horas empleadas durante la perforación direccional y considerando las 
+profundidades y diámetros para cada tramo. El ciclo direccional (Navi/Devico), tiene un tope máximo 
+de horas por turno de 10.5 horas por turno lo cual se traduce en un máximo de 22 metros por turno; 
+es decir una equivalencia de 2.10 metros por hora.  
+ 
+SEGUNDO: Bono por Término de Temporada. 
+La Empresa otorgará un Bono Adicional a Perforistas y Ayudantes de Perforista por el periodo de 
+temporada de perforación en el proyecto. 
+ 
+Monto del Bono: 1 Sueldo Base, Imponibles. 
+Clausula Condiciones 1: Para el pago del 100% del bono al término de la temporada se evaluarán 
+solamente dos conceptos claves: 
+1. Asistencia; el cual tendrá un peso de 50%** 
+2. Excelencia Operacional y Seguridad; el cual tendrá un peso de 50% 
+ 
+Si ambos conceptos se cumplen al 100% de manera independiente y para cada persona, entonces 
+el monto del bono a pagar será del 100% de 1 Sueldos base.  
+En caso de que alguno de los %, no se cumpla el bono será ajustado (disminuido) en directa 
+proporción al % de incumplimiento. 
+Clausula Condiciones 2: 
+1. Asistencia:  
+
+
+--- Page 3 ---
+ 
+ 
+ 
+ 
+ 
+ Recon Drilling Spa 
+ 
+a. Inasistencias injustificadas 
+b. Licencias médicas repetitivas 
+c. Permisos sin Goce 
+d. Bajadas Anticipadas 
+2. Excelencia Operacional y Seguridad 
+a. No tener cartas de amonestación dentro del periodo 
+b. No contar con pérdidas de herramientas por condiciones de operación 
+c. No contar con pérdida de pozos por condiciones de operación 
+d. Haber estado o ser partícipe de una amonestación por seguridad o accidente 
+e. Encontrarse involucrado en un accidente 
+ 
+TERCERO: Bono por Tramo de Producción sobre 22 metros y 50 
+metros según tipo de perforación 
+ 
+La Empresa otorgará un Bono Adicional a Perforistas y Ayudantes de Perforista por superar tramos 
+mínimos de producción por turno efectivamente trabajado, el cual se calculará de la siguiente 
+manera: 
+1. Aire Reverso: 
+Se otorgará el bono por producción que exceda los 50 metros en turno. El pago se realizará 
+por máquina, separando turno día y turno noche. El valor por metro se calculará utilizando 
+la escala de perforación vigente. A dicho valor se aplicará un incremento del 50%, es decir, a 
+partir del metro 51 se pagará el valor del metro multiplicado por 1.5, por cada metro 
+que supere el tramo mínimo establecido. 
+2. Diamantina: 
+Se otorgará el bono por producción que exceda los 22 metros en turno. El pago se realizará 
+por máquina, separando turno día y turno noche. El valor por metro se calculará utilizando 
+la escala de perforación vigente. A dicho valor se aplicará un incremento del 50%, es decir, a 
+partir del metro 23 se pagará el valor del metro multiplicado por 1.5, por cada metro 
+que supere el tramo mínimo establecido. 
+Este bono es acumulativo, siempre que la productividad diaria registrada por turno cumpla los tramos 
+establecidos para la modalidad correspondiente. 
+ 
+CUARTO: Bono por superar meta Metros Mensuales 
+La Empresa entregará un Bono Especial a Perforistas y Ayudantes de Perforista por 
+superar los 1.500 metros en Diamantina y los 3.000 metros en Aire Reverso 
+perforados, en el mes, cuyo cálculo se realizará considerando la perforación total mensual 
+de cada máquina, sumando ambos turnos del ciclo 14x14, este bono no aplica para personal 
+de soporte, es solamente pensado para retribuir a perforistas y ayudantes. 
+ 
+Diamantina Bono por superar 1.500 metros mensuales 
+Cuando la máquina acumula más de 1.500 metros en el mes, los Perforistas y Ayudantes 
+que trabajaron en esa máquina durante ese mes y en los turnos efectivos recibirán: 
+ 
+ 
+Perforista: $250.000 (doscientos cincuenta mil pesos) Imponible 
+ 
+Ayudante de Perforista: $125.000 (ciento veinticinco mil pesos) Imponible 
+
+
+--- Page 4 ---
+ 
+ 
+ 
+ 
+ 
+ Recon Drilling Spa 
+ 
+  
+Aire Reverso Bono por superar 3.000 metros mensuales 
+Cuando la máquina acumula más de 3.000 metros en el mes, los Perforistas y Ayudantes 
+que trabajaron en esa máquina durante ese mes y en los turnos efectivos recibirán: 
+ 
+ 
+Perforista: $250.000 (doscientos cincuenta mil pesos) Imponible 
+ 
+Ayudante de Perforista: $125.000 (ciento veinticinco mil pesos) Imponible 
+ 
+QUINTO: Condiciones de Pago de los Bonos en Caso de Término 
+de Relación Laboral 
+El pago de los bonos quedará sujeto a las siguientes reglas en caso de renuncia, término de contrato 
+o desvinculación del trabajador, para el mes en que el cese del vínculo laboral se materialice: 
+ 
+1. Renuncia voluntaria sin aviso previo: 
+Si el trabajador presenta su renuncia sin cumplir el aviso previo de 30 días, no tendrá derecho 
+al pago de los bonos correspondiente al mes en que renuncia. 
+ 
+2. Renuncia voluntaria con aviso de 30 días: 
+Si el trabajador presenta su renuncia con un aviso previo mínimo de 30 días, tendrá derecho al 
+pago íntegro de los bonos, correspondientes al periodo trabajado. 
+3. Término por Necesidades de la Empresa (Art. 161): 
+En caso de término de contrato por necesidades de la empresa, el trabajador no recibirá el bono 
+del mes en que se produjo la desvinculación, salvo que la empresa determine expresamente lo 
+contrario. 
+4. Vencimiento de contrato sin renovación: 
+Si el contrato del trabajador llega a su término y no existe renovación, el trabajador tendrá 
+derecho al pago total del bono generado hasta dicho mes. 
+ 
+5. Desvinculación por causales del Artículo 160 del Código del Trabajo: 
+En caso de término por alguna de las causales del Artículo 160 (faltas graves, incumplimiento, 
+abandono, etc.), el trabajador no tendrá derecho al pago del bono, independiente del 
+periodo trabajado. 
+ 
+SEXTO: Correo Empresa 
+Para fines de comunicación formal, el correo institucional de la 
+Empresa es:chilerecursoshumanos@recondrilling.com 
+Atentamente, 
+Sin más que agradecer 
+Atte 
+ 
+MARK SCOLES 
+GERENTE GENERAL  
+CHILE 
+
+

@@ -1,0 +1,48 @@
+FILE: Projects Bonus structure for revision and approved_Jitu.xlsx
+================================================================================
+
+--- Sheet: Hoja1 ---
+Dimensions: B3:N40
+
+													
+													
+	Item	Type of Bonus	ATEX	MV	KINROSS	FENIX							
+	1	End of Season	Yes			Yes							
+	2	Production Meters	Yes	Yes	Yes	Yes							
+	3	High Altitude			Yes	Yes							
+	4	Production Above 22 and 50 meters	Yes	Yes		Yes							
+	5	Productión Above Month Goal	Yes	Yes		Yes							
+	6	Directional	Yes										
+													
+		ATEX											
+	Item	Type of Bonus	Explanation										
+	1	End of Season	3 Base salaries Example: CLP$1.000.000 Base Salary times 3 equals CLP$3.000.000 Atex program Extension, from 15/09-2026 to 31-05-2026; Total Day:258 days. CLP$ 3.000.000/258 Daily rate equals to CLP$11,628. That amount times the day of the number of days of the contract of the employee in the project. If  he started from the very begining up to 31-05-2026 he will  receive full 3 salaries if he he went down let say 28-02-2026 he will receive CLP$3,000,000/258*166=Total Payment CLP$1,930,232										
+	2	Production Meters Drillers and Helpers	Total production of the rig where the driller worked during the month (shifts onstite) times the effective days onsite										
+	3	Production Meters Support	Total production of the best rig of the month divided by 30 days times the effective days onsite										
+	4	Production Above 22 and 50 meters	Total production of the rig where the driller worked during the month times the days onsite, with the meters scales daily										
+	5	Productión Above Month Goal	If the rig exceeds the 1000  meters in DDH and 2500 in RC in the month, all the crew of the rig only (driller an Helper) receive 250.000 and 125.000 each										
+	6	Directional	Total hours spent during  directional drilling and general activities process, times (22/10,5) factor, times the rate of the depth and drilling diameter of  the hole										
+													
+		MV											
+	Item	Type of Bonus											
+	1	Production Meters Drillers and Helpers	Total production of the rig where the driller worked during the month (shifts onstite) times the effective days onsite										
+	2	Production Meters Support	Total production of the best rig of the month divided by 30 days times the effective days onsite										
+	3	Production Above 22 and 50 meters	Total production of the rig where the driller worked during the month times the days onsite, with the meters scales daily										
+	4	Productión Above Month Goal	If the rig exceeds the 1000  meters in DDH and 2500 in RC in the month, all the crew of the rig only (driller an Helper) receive 250.000 and 125.000 each										
+													
+		KINROSS											
+	Item	Type of Bonus											
+	1	Production Meters	Total production of the rig where the driller worked during the month (shifts onstite) times the effective days onsite										
+	2	Production Meters Support	Total production of the best rig of the month divided by 30 days times the effective days onsite										
+	3	High Altitude	They have a 250.000 flat every month, from now will be adjusted based on the days onsite										
+	4	Production Above 22 and 50 meters	Total production of the rig where the driller worked during the month times the days onsite, with the meters scales daily										
+													
+		FENIX											
+	Item	Type of Bonus											
+	1	Production Meters	Total production of the rig where the driller worked during the month (shifts onstite) times the effective days onsite										
+	2	Production Meters Support	Total production of the best rig of the month divided by 30 days times the effective days onsite										
+	3	End of Season	1 Base salarie  and calculation should maintain same ATEX logic										
+	4	Production Above 22 and 50 meters	Total production of the rig where the driller worked during the month times the days onsite, with the meters scales daily										
+	5	Productión Above Month Goal	If the rig exceeds the 1500  meters in DDH and 3000 in RC in the month, all the crew of the rig only (driller an Helper) receive 250.000 and 125.000 each										
+
+

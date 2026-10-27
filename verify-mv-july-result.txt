@@ -1,0 +1,7 @@
+A. Perforista fallback 298.3m DDH -> 223725 (expected 223725)
+A2. Bono Metro day+night -> 448725 (expected 448724.99999999994)
+    breakdown shifts=[{"date":"2026-07-05","shift":"day+night","meters":300},{"date":"2026-07-06","shift":"day+night","meters":298.3}]
+B. Above-threshold incrementOnly 40.1m -> 6787.5 (expected 6787.500000000001)
+C. Monthly goal July (466.5/698.9/1192) -> 0 (expected 0)
+D. best rig by meters = 1200-01 (1192m RC); raw=238400; sup1 -> 150986.67 (exp 146116.13), sup2(no shift, defaultRole) -> 79466.67 (exp 76903.23)  | skipped=no
+FAIL: D sup1 FAILED: 150986.67

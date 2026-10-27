@@ -1,0 +1,10 @@
+--- Pure engine unit test ---
+Driller A | role Driller | meters 150 | bonus 112500 [{"bonusTypeCode":"production_meter","bonusTypeName":"Production Meter","amount":112500,"details":{"shiftBreakdown":[{"date":"2026-08-03","shift":"day","rigName":"Rig 01","drillingType":"HQ","depthScale":"0-500","meters":100,"rate":750,"bonus":75000},{"date":"2026-08-04","shift":"day","rigName":"Rig 01","drillingType":"HQ","depthScale":"0-500","meters":50,"rate":750,"bonus":37500}]}}] 
+Helper B (below gate) | role Helper | meters 30 | bonus 0 [] 
+Driller C (above threshold) | role Driller | meters 100 | bonus 35100 [{"bonusTypeCode":"above_threshold","bonusTypeName":"Above Threshold","amount":35100,"details":{"shiftBreakdown":[{"date":"2026-08-05","shift":"night","rigName":"Rig 02","drillingType":"DDH","depthScale":"0-500","meters":100,"threshold":22,"metersAbove":78,"baseRate":300,"multiplier":1.5,"bonus":35100}]}}] 
+Total: 147600
+PASS: engine unit test
+
+--- End-to-end DB test ---
+CorePlan sync: {"source":"coreplan-mock","rigsUpserted":0,"plodsUpserted":80,"assignmentsUpserted":0,"unmatchedAssignments":97}
+FAIL: SITE-01 not found - run Workera sync first

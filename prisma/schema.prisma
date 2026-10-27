@@ -1,0 +1,923 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ======================
+// BACKGROUND JOBS (async parsing / sync)
+// ======================
+enum JobStatus {
+  PENDING
+  RUNNING
+  DONE
+  ERROR
+}
+
+// ======================
+// AUTH (basic)
+// ======================
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  passwordHash  String?
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("user") // admin | supervisor | finance
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  attributionReviews AttendanceRecord[] @relation("AttendanceSiteReviewer")
+  attendanceCorrections AttendanceRecord[] @relation("AttendanceCorrector")
+  attendanceReviews AttendanceRecord[] @relation("AttendanceReviewer")
+  projectAssignments EmployeeProjectAssignment[]
+  projectSuggestions EmployeeProjectSuggestion[]
+}
+
+// ======================
+// CORE DOMAIN
+// ======================
+
+model Site {
+  id             String   @id @default(cuid())
+  name           String
+  code           String?  @unique
+  isActive       Boolean  @default(true)
+  // Geofence data for GPS-based attendance attribution
+  address        String?
+  latitude       Float?
+  longitude      Float?
+  // Per-site GPS radius in km (sites often have low signal)
+  gpsRadiusKm    Float    @default(5)
+  // Auto-approve attendance marks whose GPS falls within the geofence radius
+  autoApproveGps Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  employees          Employee[]
+  rigs               Rig[]
+  siteRigs           SiteRig[]
+  crewAssignments    CrewAssignment[]
+  comparisons       CalculationComparison[]
+  bonusRuleSets      BonusRuleSet[]
+  calculations       BonusCalculation[]
+  excelUploads       ExcelUpload[]
+
+  shiftPerformances  RigShiftPerformance[]
+  attributionRecords AttendanceRecord[]
+  devices            Device[]
+  siteAliases        SiteAlias[]
+  workDays           EmployeeWorkDay[]
+  projectAssignments EmployeeProjectAssignment[]
+  projectSuggestions EmployeeProjectSuggestion[]
+}
+
+/**
+ * Branch offices (sucursales) discovered from Workera; selected = used as sync scope
+ */
+model BranchOffice {
+  id       String  @id @default(cuid())
+  code     String  @unique
+  name     String?
+  selected Boolean @default(false)
+}
+
+/**
+ * Departments discovered from Workera; selected = used as sync scope
+ */
+model Department {
+  id       String  @id @default(cuid())
+  code     String  @unique
+  name     String?
+  selected Boolean @default(false)
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique // Supervisor, Driller, Driver, Helper... or Workera cargo name
+  description String?
+  // When this role mirrors an external job title (cargo), keep the provider linkage
+  source      String? // "workera" | "excel" | "coreplan" | "manual"
+  sourceCode  String? // e.g. Workera jobPosition code ("51" = Perforista)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  employees Employee[]
+}
+
+model Employee {
+  id              String   @id @default(cuid())
+  fullName        String
+  rut             String?  @unique // Chilean RUT or employee code
+  workeraId       String?  @unique
+  zkPin           String?  @unique // ZKTeco device PIN (short numeric, e.g. "1", "101")
+  coreplanId      String?  @unique // for future
+  defaultRoleId   String?
+  siteId          String?
+  isActive        Boolean  @default(true)
+  // Cargo / job title + cost center from Workera
+  jobPositionCode String?
+  jobPositionName String?
+  costCenterCode  String?
+  costCenterName  String?
+  departmentCode  String?
+  departmentName  String?
+  nationality     String?
+  rawData         Json? // full Workera snapshot for audit
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  defaultRole        Role?                       @relation(fields: [defaultRoleId], references: [id])
+  site               Site?                       @relation(fields: [siteId], references: [id])
+  attendances        AttendanceRecord[]
+  attendanceMarks    AttendanceMark[]
+  crewAssignments    CrewAssignment[]
+  workDays           EmployeeWorkDay[]
+  bonusLines         BonusCalculationLine[]
+  comparisons        CalculationComparison[]
+  turnSchedules      EmployeeTurnSchedule[]
+  projectAssignments EmployeeProjectAssignment[]
+  projectSuggestions EmployeeProjectSuggestion[]
+}
+
+/**
+ * Time-bound employee/project assignment. Approved assignments are authoritative for calculations.
+ */
+model EmployeeProjectAssignment {
+  id           String    @id @default(cuid())
+  employeeId   String
+  siteId       String
+  startDate    DateTime  @db.Date
+  endDate      DateTime? @db.Date
+  source       String    @default("manual") // manual | excel | workera | coreplan
+  status       String    @default("proposed") // proposed | approved | rejected
+  note         String?
+  assignedById String?
+  reviewedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  site       Site     @relation(fields: [siteId], references: [id])
+  assignedBy User?    @relation(fields: [assignedById], references: [id])
+
+  @@index([employeeId, startDate, endDate])
+  @@index([siteId, status])
+}
+
+/**
+ * Automatic project proposal. It is reviewable and is not used by calculations until approved.
+ */
+model EmployeeProjectSuggestion {
+  id           String    @id @default(cuid())
+  employeeId   String
+  siteId       String
+  startDate    DateTime  @db.Date
+  endDate      DateTime? @db.Date
+  source       String
+  status       String    @default("proposed")
+  confidence   String    @default("medium")
+  evidence     Json?
+  note         String?
+  reviewedById String?
+  reviewedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  employee     Employee  @relation(fields: [employeeId], references: [id])
+  site         Site      @relation(fields: [siteId], references: [id])
+  reviewedBy   User?     @relation(fields: [reviewedById], references: [id])
+
+  @@index([employeeId, startDate, endDate])
+  @@index([siteId, status])
+  @@index([status, confidence])
+}
+
+/**
+ * Manual A/B turn assignment per employee per day.
+ * The A/B "turn" is a 14-day crew rotation (NOT day/night). These records are
+ * set by an admin on the /turns page and are consulted by the calculation
+ * engine when the uploaded planilla does not provide a real turn value.
+ * One row per (employee, day). Upsert is keyed on employeeId+date, with the
+ * last writer recorded for audit.
+ */
+model EmployeeTurnSchedule {
+  id         String   @id @default(cuid())
+  employeeId String
+  date       DateTime @db.Date
+  turn       String // "A" | "B"
+  siteId     String? // scope (usually the employee's site)
+  note       String?
+  setById    String?
+  source     String   @default("manual") // manual | excel (future auto)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@unique([employeeId, date])
+  @@index([date])
+  @@index([siteId])
+}
+
+// ======================
+// DATA FROM WORKERA
+// ======================
+
+// Clocking/biometric devices mapped to sites for automatic attendance
+// site attribution. When a site closes, its devices move to the new site.
+// The sync process uses this to auto-set siteAttributionSiteId on marks.
+model Device {
+  id          String   @id @default(cuid())
+  name        String   @unique // e.g. "Reloj Biometrico Faena A", "iOS App"
+  siteId      String?   // null until mapped to a site
+  site        Site?     @relation(fields: [siteId], references: [id])
+  isActive    Boolean  @default(true)
+  deviceType  String   @default("biometric") // biometric | mobile | web | sistema (sistema = admin-marked, like new rig clocks)
+  admsHost    String?   // ADMS API host for this device (blank = legacy/manual)
+  admsPort    Int?      // ADMS port (blank = service default)
+  admsProtocol String?  // http | https (blank = service default)
+  admsDeviceName String? // authoritative device name from ADMS if different from UI name
+  syncIntervalSec Int?  // auto-sync interval in seconds (blank = service default)
+  integrityChecksum String? // SHA-256 of the ADMS config; changed on every re-sync
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  attendanceRecords AttendanceRecord[]
+
+  @@index([siteId])
+  @@index([name])
+  @@index([deviceType])
+  @@index([admsHost])
+}
+
+/** One ADMS configuration endpoint (from the new rig) that publishes devices + sync settings. */
+model DeviceConfig {
+  id            String   @id @default(cuid())
+  admsHost      String   @unique // ADMS API host
+  admsPort      Int      @default(8080)
+  admsProtocol  String   @default("http") // http | https
+  admsTimeoutMs Int      @default(15000)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([admsHost])
+  @@index([admsProtocol])
+}
+
+/** One immutable raw punch received from Workera (entrada / salida / ...).
+
+/**
+ * One immutable raw punch received from Workera (entrada / salida / ...).
+ * Stored per punch so re-syncs are idempotent and never destroy manual
+ * corrections on AttendanceRecord. Keyed by employeeId + sourceRef.
+ */
+model AttendanceMark {
+  id          String   @id @default(cuid())
+  employeeId  String
+  // Workera punch timestamp (Chile local, stored as UTC)
+  punchDateTime DateTime @db.Timestamp
+  type        String // "IN" | "OUT" | "BREAK_START" | "BREAK_END" | other Workera attendanceType
+  shift       String? // "day" | "night" derived from punchDateTime hour
+  origin      String? // DISPOSITIVO_BIOMETRICO | DISPOSITIVO_MOVIL | PORTAL_WEB | ...
+  device      String? // biometric device name or "iOS"/"Android"
+  address     String? // GPS address for mobile marks
+  coordinates String? // GPS coordinates
+  isMobile    Boolean?
+  source      String   @default("workera") // workera | excel | coreplan | manual
+  // Workera-provided idempotency key (checksum / mark id). Upsert on this.
+  sourceRef   String?
+  rawData     Json? // full original Workera payload for audit
+  createdAt   DateTime @default(now())
+
+  employee           Employee @relation(fields: [employeeId], references: [id])
+  attendanceRecords  AttendanceRecord[]
+
+  @@unique([employeeId, sourceRef])
+  @@index([employeeId, punchDateTime])
+  @@index([punchDateTime])
+  @@index([sourceRef])
+}
+
+/**
+ * Aggregated per (employee, date, shift). Replaces the old one-row-per-day
+ * grain so Day and Night shifts on the same calendar date coexist.
+ */
+model AttendanceRecord {
+  id             String    @id @default(cuid())
+  employeeId     String
+  date           DateTime  @db.Date
+  timeIn         DateTime? @db.Timestamp
+  timeOut        DateTime? @db.Timestamp
+  shift          String? // "day" | "night" derived from the clock-in time
+  hoursWorked    Float?
+  status         String // present | absent | late | etc.
+  // Mark details of the clock-in / clock-out punches (device, origin, GPS)
+  inOrigin       String? // DISPOSITIVO_BIOMETRICO | DISPOSITIVO_MOVIL | PORTAL_WEB | ...
+  inDevice       String? // biometric device name or "iOS"/"Android"
+  inAddress      String? // GPS address for mobile marks, clock address for devices
+  inIsMobile     Boolean?
+  inCoordinates  String? // GPS coordinates (degrees-minutes-seconds) of clock-in
+  outOrigin      String?
+  outDevice      String?
+  outAddress     String?
+  outIsMobile    Boolean?
+  outCoordinates String?
+
+  // Device used for the IN punch (auto-linked to Device for site attribution)
+  deviceId    String?   // clocking/biometric device used for the IN punch
+  device      Device?   @relation(fields: [deviceId], references: [id])
+
+  corrected      Boolean   @default(false) // true when duplicate/mis-ordered marks were cleaned during sync
+  rawData        Json? // original payload from Workera
+  source         String    @default("workera")
+  createdAt      DateTime  @default(now())
+
+  // --- Manual correction audit (for forgotten/missing/double punches) ---
+  correctedById      String?   // user who last manually corrected this record
+  correctedAt        DateTime? // when the last manual correction was saved
+  correctionReason   String?   // free-text reason entered by the reviewer
+  originalTimeIn     DateTime? // timeIn before the last manual correction (audit)
+  originalTimeOut    DateTime? // timeOut before the last manual correction (audit)
+  originalShift      String?   // shift before the last manual correction (audit)
+  originalHoursWorked Float?  // hoursWorked before the last manual correction (audit)
+
+  // Needs-review flag: set by sync when a record has missing IN/OUT,
+  // duplicate marks removed, or a shift anomaly; cleared when reviewed.
+  needsReview     Boolean   @default(false)
+  reviewStatus    String    @default("pending") // pending | approved | rejected
+  reviewNote      String?   // reviewer note (e.g. "worker forgot exit, approved from timesheet")
+  reviewedById    String?   // user who reviewed/approved/rejected
+  reviewedAt      DateTime? // when the review decision was made
+
+  // Site-attribution review, set manually by a supervisor/admin.
+  // Status flow: pending -> approved | rejected (can flip back to approved/pending any time).
+  siteAttributionStatus       String    @default("pending") // pending | approved | rejected
+  siteAttributionSiteId       String? // site approved for this mark (set when approved)
+  siteAttributionNote         String? // reviewer note (e.g. proof reference)
+  siteAttributionReviewedAt   DateTime?
+  siteAttributionReviewedById String?
+
+  employee                Employee @relation(fields: [employeeId], references: [id])
+  siteAttributionSite     Site?    @relation(fields: [siteAttributionSiteId], references: [id])
+  siteAttributionReviewer User?    @relation(fields: [siteAttributionReviewedById], references: [id], name: "AttendanceSiteReviewer")
+  attendanceCorrector     User?    @relation(fields: [correctedById], references: [id], name: "AttendanceCorrector")
+  attendanceReviewer      User?    @relation(fields: [reviewedById], references: [id], name: "AttendanceReviewer")
+
+  // Link to the raw Workera punch that produced this aggregated record (audit traceability).
+  attendanceMarkId   String?   // raw punch used to build this day+shift record
+  attendanceMark     AttendanceMark? @relation(fields: [attendanceMarkId], references: [id])
+
+  @@unique([employeeId, date, shift])
+  @@index([date])
+  @@index([siteAttributionStatus])
+  @@index([needsReview])
+  @@index([reviewStatus])
+}
+
+enum RigType {
+  DIAMANTINA
+  AIRE_REVERSO
+  MULTIPROPOSITO
+}
+
+// ======================
+// DATA FROM EXCEL (current) / COREPLAN (future)
+// ======================
+
+model Rig {
+  id        String   @id @default(cuid())
+  name      String // e.g. "Rig 01", "Machine A"
+  code      String?  @unique
+  siteId    String?
+  rigType   RigType  @default(DIAMANTINA)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  site         Site?                 @relation(fields: [siteId], references: [id])
+  performances RigShiftPerformance[]
+  assignments  CrewAssignment[]
+  rigAliases   RigAlias[]
+  workDays     EmployeeWorkDay[]
+  siteRigs     SiteRig[]
+
+  @@index([siteId])
+}
+
+/**
+ * Per-site deployment of a rig. Holds the EFFECTIVE drilling type for
+ * multipurpose rigs (Rig.rigType = MULTIPROPOSITO): the admin declares
+ * whether it works as DIAMANTINA or AIRE_REVERSO on that site.
+ * rigId is unique: a rig is deployed to at most one site at a time
+ * (preserves the current Rig.siteId invariant).
+ */
+model SiteRig {
+  id            String   @id @default(cuid())
+  siteId        String
+  rigId         String   @unique
+  effectiveType RigType?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  site Site @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  rig  Rig  @relation(fields: [rigId], references: [id], onDelete: Cascade)
+
+  @@unique([siteId, rigId])
+  @@index([siteId])
+}
+
+model SiteAlias {
+  id         String   @id @default(cuid())
+  normalized String   @unique
+  siteId     String
+  source     String   @default("manual") // "excel" | "manual"
+  variants   String[] // raw proyecto names seen
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  site Site @relation(fields: [siteId], references: [id])
+}
+
+/**
+ * Maps the machine/rig names written in the planilla (e.g. "EDM 2000-7")
+ * to the canonical Rig used by the interval report (e.g. "740-7").
+ * Same pattern as PositionAlias for cargos.
+ */
+model RigAlias {
+  id          String   @id @default(cuid())
+  normalized  String   @unique
+  displayName String // first raw variant seen
+  rigId       String
+  source      String   @default("excel") // excel | manual
+  variants    Json?
+  createdAt   DateTime @default(now())
+
+  rig Rig @relation(fields: [rigId], references: [id])
+}
+
+model RigShiftPerformance {
+  id            String   @id @default(cuid())
+  rigId         String
+  uploadId      String?
+  date          DateTime @db.Date
+  shift         String // "day" | "night"
+  hole          String?
+  drillingLevel String?
+  metersDrilled Float    @default(0)
+  hoursSpent    Float?
+  intervals     Json? // meters per drilling interval band: [{band, escala, diameter, meters}]
+  rawData       Json? // original Excel row
+  source        String   @default("excel") // excel | coreplan
+  uploadedAt    DateTime @default(now())
+
+  // The site THIS rig was working at on THIS shift — a historical fact that
+  // never changes when the rig moves sites later. Calculations must scope by
+  // this (not Rig.siteId, which is only the rig's current/home site).
+  siteId       String?
+  // Where siteId came from (audit): "upload" (ExcelUpload.siteId at parse
+  // time), "rig-current" (fallback backfill), "planilla" (crew evidence),
+  // "manual" (admin fix). Never leave it unprovenanced when writing.
+  siteEvidence String?
+  // true when planilla crew evidence for this rig/date resolves to a DIFFERENT
+  // site than siteId. The row keeps the upload site; the conflict is for
+  // human review — it is never auto-overridden.
+  siteConflict Boolean @default(false)
+
+  rig    Rig          @relation(fields: [rigId], references: [id])
+  upload ExcelUpload? @relation(fields: [uploadId], references: [id], onDelete: SetNull)
+  site   Site?        @relation(fields: [siteId], references: [id], onDelete: SetNull)
+
+  @@unique([rigId, date, shift])
+  @@index([date])
+  @@index([siteId, date])
+}
+
+model CrewAssignment {
+  id          String   @id @default(cuid())
+  employeeId  String
+  rigId       String
+  date        DateTime @db.Date
+  shift       String? // "day" | "night" (optional but preferred)
+  roleOnShift String? // Driller, Helper, etc.
+  // Site where this employee worked this shift. Set from the upload's declared
+  // site (ExcelUpload.siteId) at parse time; falls back to
+  // RigShiftPerformance.siteId or Rig.siteId at calculation time.
+  siteId      String?
+  siteEvidence String? // provenance: "upload" | "performance" | "rig-current" | "planilla" | "manual"
+  rawData     Json?
+  source      String   @default("excel") // excel | coreplan | manual
+  createdAt   DateTime @default(now())
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+  rig      Rig      @relation(fields: [rigId], references: [id])
+  site     Site?     @relation(fields: [siteId], references: [id], onDelete: SetNull)
+
+  @@index([date])
+  @@index([employeeId, date])
+  @@index([siteId])
+}
+
+model ExcelUpload {
+  id                     String   @id @default(cuid())
+  fileName               String
+  kind                   String // "unknown" (pending) | "rig_intervals" | "planilla_diaria"
+  status                 String   @default("parsed") // pending | processing | parsed | error
+  rowCount               Int      @default(0)
+  sheetCount             Int      @default(0)
+  errorSummary           String?
+  positionAliasesPending Int      @default(0) // new cargo names awaiting main/alias classification
+  dataSnapshot           Json? // full parsed snapshot for audit (set when parsed)
+  source                 String   @default("excel")
+  rawFile                Bytes? // original uploaded file, kept for background processing / retries
+  siteId                 String?
+  uploadedAt             DateTime @default(now())
+
+  // Link to the background job that parses this file (null for legacy/pre-parsed rows)
+  jobId String?
+  job   Job?    @relation(fields: [jobId], references: [id])
+
+  entries      DailyCrewEntry[]
+  performances RigShiftPerformance[]
+  site         Site?                 @relation(fields: [siteId], references: [id])
+
+  @@index([kind])
+  @@index([status])
+  @@index([siteId])
+}
+
+/**
+ * A background task (Excel parsing, Workera sync) tracked so the UI can show a
+ * non-blocking bubble while the user keeps working. Source of truth for progress.
+ */
+model Job {
+  id         String    @id @default(cuid())
+  type       String // "excel_upload" | "sync_employees" | "sync_attendance" | "sync_org_units"
+  label      String // human-readable description for the bubble (e.g. file name)
+  status     JobStatus @default(PENDING)
+  source     String    @default("server") // "excel" | "workera" | "coreplan" | "server"
+  message    String? // completion summary on success
+  error      String? // error message on failure
+  progress   Int? // optional 0-100
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  finishedAt DateTime?
+
+  excelUploads ExcelUpload[]
+  syncUnits    SyncUnit[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+/**
+ * One unit of a background sync job, tracked at (site × date-window) granularity
+ * so the detailed progress modal can show exactly which site + date range is
+ * being processed, log per-unit errors, and retry only the failed units.
+ */
+model SyncUnit {
+  id         String     @id @default(cuid())
+  jobId      String
+  job        Job        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  siteCode   String? // branch office / site code
+  siteName   String? // human-readable site name
+  windowFrom String // yyyy-MM-dd (first day this unit fetches)
+  windowTo   String // yyyy-MM-dd (last day this unit fetches)
+  status     JobStatus  @default(PENDING)
+  marks      Int? // raw marks fetched
+  days       Int? // employee-days aggregated
+  upserted   Int? // attendance records saved
+  error      String? // per-unit error, logged properly
+  startedAt  DateTime?
+  finishedAt DateTime?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([jobId])
+  @@index([status])
+  @@unique([jobId, siteCode, windowFrom, windowTo])
+}
+
+/**
+ * One row of the "Planilla Diaria" (sheet per day per site).
+ * Maintains BOTH shift dimensions per employee per day:
+ * - shiftDayNight: "day" | "night" (TURNO A block vs TURNO NOCHE block)
+ * - turnoAB:       "A" | "B" (the crew rotation group, can change over time)
+ */
+model DailyCrewEntry {
+  id               String   @id @default(cuid())
+  uploadId         String
+  sheetName        String // e.g. "01-08-2026"
+  date             DateTime @db.Date
+  projectName      String? // e.g. "LA COIPA"
+  orderNumber      Int?
+  rut              String // as written in the sheet
+  rutNormalized    String // digits + verification char, no dots
+  fullName         String
+  cargoRaw         String // as written
+  cargoNormalized  String // uppercase, no accents, trimmed
+  machine          String? // MAQUINA e.g. EDM 2000-7
+  diameter         String? // DIAMETRO e.g. PQ
+  escala           String? // e.g. 500-1000
+  metros           Float?
+  horasExtras      Float?
+  workeraMarkedIn  Boolean? // "workera entrada" Sí/No
+  workeraMarkedOut Boolean? // "workera salida" Sí/No
+  motivoHorasExtra String?
+  asistencia       String? // "ASISTENCIA" normalized: PRESENTE | DESCANSO | AUSENTE | OBSERVACION
+  asistenciaRaw    String? // "ASISTENCIA" exactly as written in the sheet
+  shiftDayNight    String // "day" | "night"
+  turnoAB          String? // "A" | "B" when the sheet declares it
+  rawData          Json?
+  source           String   @default("excel")
+  createdAt        DateTime @default(now())
+
+  upload ExcelUpload @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+
+  // An employee may occupy several rows in one shift when they drill different
+  // ESCALA (depth bands); each row keeps its own meters, so ESCALA is part of
+  // the row identity. Identical copied rows still collapse via skipDuplicates.
+  @@unique([uploadId, sheetName, rutNormalized, shiftDayNight, escala])
+  @@index([date])
+  @@index([rutNormalized])
+  @@index([cargoNormalized])
+}
+
+/**
+ * Bonus calculation position groups (config-driven, not hard-coded in engine).
+ * e.g. group1 = supervision, group2 = drilling crew.
+ */
+model PositionGroup {
+  id          String  @id @default(cuid())
+  key         String  @unique // "group1", "group2", ...
+  name        String
+  description String?
+  order       Int     @default(0)
+
+  aliases  PositionAlias[]
+  workDays EmployeeWorkDay[]
+}
+
+/**
+ * A canonical (main) cargo/position name, e.g. "Administrador de Contrato".
+ * Aliases (like "ADC") link to it. `groupKey` optionally pre-fills the bonus
+ * group for aliases linked to this main position (configuration, not hard-coded).
+ */
+model MainPosition {
+  id         String   @id @default(cuid())
+  name       String // canonical display name
+  normalized String   @unique
+  groupKey   String? // default PositionGroup.key for bonus classification
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  aliases PositionAlias[]
+}
+
+/**
+ * A normalized cargo/position name mapped to a PositionGroup.
+ * `source` tracks where the alias came from (excel sheets or Workera).
+ * Used by the matching module to unify Workera positions with sheet cargos.
+ * `mainPositionId` links a name to its canonical Main Position (alias-of relation).
+ */
+model PositionAlias {
+  id             String   @id @default(cuid())
+  normalized     String   @unique
+  displayName    String // first raw variant seen
+  groupId        String?
+  mainPositionId String?
+  needsReview    Boolean  @default(false) // new/unclassified name from an upload
+  source         String   @default("excel") // excel | workera | manual
+  variants       Json? // raw variants observed
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  group        PositionGroup? @relation(fields: [groupId], references: [id])
+  mainPosition MainPosition?  @relation(fields: [mainPositionId], references: [id])
+}
+
+/**
+ * The normalized per-employee-per-day fact table built by lib/matching.
+ * Combines planilla (shift, machine, cargo) + Workera attendance + rig
+ * interval performance into one auditable row that the bonus engine consumes.
+ */
+model EmployeeWorkDay {
+  id               String   @id @default(cuid())
+  employeeId       String
+  date             DateTime @db.Date
+  shiftDayNight    String // "day" | "night" (planilla section)
+  turnoAB          String? // "A" | "B"
+  cargoNormalized  String?
+  positionGroupId  String?
+  siteId           String? // resolved from planilla PROYECTO via SiteAlias
+  // Workera attendance side
+  workeraStatus    String? // "marked" | "not-marked" | "no-record"
+  workeraHours     Float?
+  // Rig / machine side (resolved via RigAlias)
+  rigId            String?
+  machineRaw       String? // as written in the planilla
+  escala           String?
+  diameter         String?
+  hole             String?
+  // Rig interval performance for that rig + date + shift (same for all crew)
+  rigMeters        Float?
+  rigHours         Float?
+  rigDrillingHours Float?
+  rigIntervals     Json?
+  metersAttributed Float? // meters credited to this worker that day (= rigMeters)
+  // Audit + review
+  flags            Json? // e.g. ["no-rig-alias", "workera-not-marked"]
+  sources          Json? // which data contributed: planilla | workera | rig-intervals
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  employee      Employee       @relation(fields: [employeeId], references: [id])
+  rig           Rig?           @relation(fields: [rigId], references: [id])
+  positionGroup PositionGroup? @relation(fields: [positionGroupId], references: [id])
+  site          Site?          @relation(fields: [siteId], references: [id])
+
+  @@unique([employeeId, date])
+  @@index([date])
+  @@index([siteId])
+}
+
+// ======================
+// BONUS RULES (Configurable - Bonus Type System)
+// ======================
+
+/**
+ * BonusType defines a reusable calculation building block.
+ * Each type has a unique code, display name, description,
+ * and a parameterSchema (JSON Schema) for validation.
+ */
+model BonusType {
+  id                     String   @id @default(cuid())
+  code                   String   @unique // e.g. "production_meter", "above_threshold", "monthly_goal"
+  name                   String // e.g. "Production Meter Bonus"
+  description            String?
+  // JSON Schema for validating the `parameters` field on BonusRule
+  parameterSchema        Json?
+  // Whether this bonus type requires rig/shift production data
+  requiresProductionData Boolean  @default(true)
+  // Order for UI display
+  displayOrder           Int      @default(0)
+  isActive               Boolean  @default(true)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  rules BonusRule[]
+}
+
+model BonusRuleSet {
+  id            String    @id @default(cuid())
+  siteId        String
+  name          String
+  version       Int       @default(1)
+  effectiveFrom DateTime  @db.Date
+  effectiveTo   DateTime? @db.Date
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  site         Site               @relation(fields: [siteId], references: [id])
+  rules        BonusRule[]
+  calculations BonusCalculation[]
+}
+
+/**
+ * BonusRule links a BonusType to a RuleSet with specific configuration.
+ * The parameters field contains the rule-specific configuration validated
+ * against the BonusType's parameterSchema.
+ */
+model BonusRule {
+  id                 String   @id @default(cuid())
+  ruleSetId          String
+  bonusTypeId        String
+  // Which positions this rule applies to (matches Role.name or roleOnShift)
+  // Empty array = applies to all positions
+  positionFilter     String[] @default([])
+  // Role tokens that DISQUALIFY an employee from this rule (same token set as
+  // positionFilter: raw role, normalized, main position, bonus group key).
+  // Empty array = no exclusion.
+  positionExclude    String[] @default([])
+  // Which drilling types this rule applies to (PQ, H1, H2, ..., NAVI, RC, DDH)
+  // Empty array = applies to all drilling types
+  drillingTypeFilter String[] @default([])
+  // Calculation priority (lower = calculated first)
+  priority           Int      @default(0)
+  // Bonus-type-specific configuration parameters
+  parameters         Json
+  // Optional: minimum attendance days required for this rule to apply
+  minAttendanceDays  Int?
+  notes              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  ruleSet   BonusRuleSet @relation(fields: [ruleSetId], references: [id])
+  bonusType BonusType    @relation(fields: [bonusTypeId], references: [id])
+
+  @@index([ruleSetId])
+  @@index([bonusTypeId])
+}
+
+// ======================
+// CALCULATION RESULTS + AUDIT
+// ======================
+
+model AppSettings {
+  id                          String   @id @default("singleton")
+  // Auto-upload ZKTeco/biometric punches to Workera
+  autoUploadClocksToWorkera   Boolean  @default(false)
+  // Auto-sync Workera attendance into our DB
+  autoSyncWorkeraToDb         Boolean  @default(false)
+  autoSyncWorkeraFrequency     String   @default("daily") // daily | weekly | 10days
+  lastWorkeraSyncAt           DateTime?
+  lastClockUploadAt           DateTime?
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+model BonusCalculation {
+  id            String   @id @default(cuid())
+  siteId        String
+  ruleSetId     String
+  periodStart   DateTime @db.Date
+  periodEnd     DateTime @db.Date
+  /** official_workera remains the payroll authority; planilla_comparison is review-only. */
+  source        String   @default("workera")
+  status        String   @default("draft") // draft | final | approved | pending_review
+  totalBonus    Float    @default(0)
+  inputSnapshot Json? // full snapshot of all data used
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdById   String?
+
+  site    Site                   @relation(fields: [siteId], references: [id])
+  ruleSet BonusRuleSet           @relation(fields: [ruleSetId], references: [id])
+  lines   BonusCalculationLine[]
+  comparisons CalculationComparison[]
+}
+
+model BonusCalculationLine {
+  id              String   @id @default(cuid())
+  calculationId   String
+  employeeId      String
+  roleUsed        String
+  daysWorked      Int      @default(0)
+  totalMeters     Float    @default(0)
+  totalHours      Float?
+  basePercentage  Float
+  calculatedBonus Float
+  breakdown       Json?
+  createdAt       DateTime @default(now())
+
+  calculation BonusCalculation @relation(fields: [calculationId], references: [id])
+  employee    Employee         @relation(fields: [employeeId], references: [id])
+}
+
+/** One employee/site comparison row. Every difference remains pending until reviewed. */
+model CalculationComparison {
+  id            String   @id @default(cuid())
+  calculationId      String
+  /** Comparison counterpart; official Workera calculation remains the parent. */
+  planillaCalculationId String?
+  employeeId    String
+  siteId        String?
+  periodStart   DateTime @db.Date
+  periodEnd     DateTime @db.Date
+  workeraDays   Int      @default(0)
+  planillaDays  Int      @default(0)
+  workeraBonus  Float    @default(0)
+  planillaBonus Float    @default(0)
+  difference    Float    @default(0)
+  reviewStatus  String   @default("pending")
+  differenceFlags Json?
+  /** Bulk comparison audit: all source calculations/sites contributing to this row. */
+  sourceCalculationIds Json?
+  sourceSiteIds Json?
+  reviewNote    String?
+  reviewedById  String?
+  reviewedAt    DateTime?
+  /** Final resolution fields (populated after user adjustment) */
+  finalSource   String?   // "workera" | "planilla" | "auto" | null
+  finalDays     Int?      // final days to pay
+  finalBonus    Float?    // final bonus to pay
+  finalResolution String? // "used_planilla" | "used_workera" | "autocalc_best_rig" | "needs_meters" | "manual_override"
+  adjustmentNote String?   // user note for this adjustment
+  adjustedById  String?   // who adjusted
+  adjustedAt    DateTime? // when adjusted
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  calculation BonusCalculation @relation(fields: [calculationId], references: [id], onDelete: Cascade)
+  employee    Employee         @relation(fields: [employeeId], references: [id])
+  site        Site?            @relation(fields: [siteId], references: [id])
+
+  @@index([periodStart, periodEnd])
+  @@index([employeeId, periodStart, periodEnd])
+  @@index([reviewStatus])
+  @@index([finalResolution])
+}

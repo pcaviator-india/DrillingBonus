@@ -1,0 +1,65 @@
+# Drilling Bonus System – Cline Rules (v2 – Excel first)
+
+You are building a modular web app that calculates drilling employee bonuses.
+
+## Current Data Sources
+- Workera API → Attendance
+- Excel files (one per Rig) → Date, Hole, Shift (Day/Night), Drilling Level, Meters, Hours
+- Crew Assignment Excel → Which employees worked on which Rig/Machine
+
+## Future
+CorePlan will later replace the Excel files.  
+Design must stay modular so switching providers requires minimal changes.
+
+## Tech Stack (Mandatory)
+- Next.js 15 (App Router) + TypeScript
+- Tailwind + shadcn/ui
+- Prisma + PostgreSQL
+- Zod + date-fns
+- Excel parsing: exceljs or xlsx
+- Auth: NextAuth.js or Clerk
+
+## Architecture Rules
+- Treat data sources as interchangeable providers
+- All calculation logic works only on normalized internal models
+- Calculation engine must be pure functions (no DB or API calls)
+- Excel parsing stays isolated in `lib/excel/`
+- Future CorePlan code will live in `lib/coreplan/`
+- Never hard-code percentages or formulas
+
+## Folder Structure
+src/
+├── app/(dashboard)/
+│   ├── sites/
+│   ├── employees/
+│   ├── uploads/
+│   ├── rules/
+│   ├── calculations/
+│   └── sync/
+├── lib/
+│   ├── workera/
+│   ├── excel/
+│   ├── coreplan/          ← future
+│   ├── providers/
+│   ├── matching/
+│   ├── bonus-engine/
+│   └── db.ts
+├── prisma/
+└── types/
+
+## Coding Rules
+1. Never hard-code bonus rules
+2. Strict TypeScript – avoid `any`
+3. Always store data source ("workera" | "excel" | "coreplan")
+4. Store full input snapshot with every calculation (audit)
+5. Prefer configuration over new code
+6. Keep business logic out of React components
+
+## Current Priority (Phase 1 + 2)
+1. Prisma schema
+2. Workera client (employees + attendance)
+3. Excel upload + parsing (Rig files + Crew Assignment)
+4. Normalized models
+5. Basic matching
+
+If a request conflicts with this document → stop and ask.

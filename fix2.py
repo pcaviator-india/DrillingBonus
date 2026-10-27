@@ -1,0 +1,6 @@
+﻿f = open('src/lib/workera/sync.ts')
+c = f.read()
+c = c.replace('shift: rec.shift or "",', 'shift: rec.shift ?? "",')
+f = open('src/lib/workera/sync.ts', 'w')
+f.write(c)
+f.close()

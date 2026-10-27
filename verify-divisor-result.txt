@@ -1,0 +1,13 @@
+periodEnd=2026-07-31 => divisor=30 source=days_in_month (expected 30)
+periodEnd=2026-06-30 => divisor=30 source=days_in_month (expected 30)
+periodEnd=2026-02-28 => divisor=30 source=days_in_month (expected 30)
+periodEnd=2024-02-29 => divisor=30 source=days_in_month (expected 30)
+periodEnd=2026-12-31 => divisor=30 source=days_in_month (expected 30)
+TOTAL=522675 ASIST=17 /30 => 296183 (expected 296183)
+TOTAL=522675 ASIST=14 /30 => 243915 (expected 243915)
+TOTAL=353450 ASIST=19 /30 => 223852 (expected 223852)
+TOTAL=353450 ASIST=10 /30 => 117817 (expected 117817)
+TOTAL=353450 ASIST=13 /30 => 153162 (expected 153162)
+TOTAL=522675 ASIST=17 /25 => 355419 (expected 355419)
+engine e2e: bonus=198021.67 (expected 198021.6666666667), comps=1
+PASS: divisor = days_in_month => 30

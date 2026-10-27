@@ -1,0 +1,493 @@
+
+> dev
+> next dev
+
+   ▲ Next.js 15.5.24
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.56.1:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 1429ms
+ ✓ Compiled /api/auth/[...nextauth] in 484ms (523 modules)
+ GET /api/auth/csrf 200 in 1059ms
+ GET /api/auth/csrf 200 in 18ms
+ POST /api/auth/callback/credentials 302 in 1585ms
+ ○ Compiling /reports ...
+ ✓ Compiled /reports in 622ms (869 modules)
+ ✓ Compiled /login in 400ms (1196 modules)
+ GET /login 200 in 630ms
+ ✓ Compiled /sites in 248ms (1242 modules)
+ GET /login 200 in 55ms
+ GET /sites 307 in 805ms
+ GET /reports 307 in 2649ms
+ GET /api/auth/csrf 200 in 28ms
+ POST /api/auth/callback/credentials 302 in 331ms
+ GET /login 200 in 39ms
+ GET /login 200 in 39ms
+ GET /reports 307 in 979ms
+ GET /sites 307 in 894ms
+ GET /api/auth/csrf 200 in 18ms
+ POST /api/auth/callback/credentials 302 in 324ms
+ GET /login 200 in 38ms
+ GET /login 200 in 37ms
+ GET /sites 307 in 413ms
+ GET /reports 307 in 1279ms
+ GET /api/auth/csrf 200 in 23ms
+ POST /api/auth/callback/credentials 302 in 327ms
+ GET /api/auth/session 200 in 15ms
+ GET /login 200 in 48ms
+ GET /login 200 in 36ms
+ GET /sites 307 in 404ms
+ GET /reports 307 in 1280ms
+ GET /api/auth/csrf 200 in 17ms
+ POST /api/auth/callback/credentials 302 in 274ms
+ ✓ Compiled / in 446ms (1244 modules)
+ GET / 307 in 583ms
+ GET /sites 200 in 350ms
+ GET /reports 200 in 1131ms
+ GET /sites 200 in 202ms
+
+> dev
+> next dev
+
+   ▲ Next.js 15.5.25
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.56.1:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 2.1s
+ ○ Compiling /login ...
+ ✓ Compiled /login in 1379ms (858 modules)
+ GET /login 200 in 1856ms
+ ○ Compiling /api/jobs ...
+ ✓ Compiled /api/jobs in 691ms (1094 modules)
+ GET /api/jobs 200 in 1955ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: EPERM: operation not permitted, rename 'C:\Recon\DrillingBonus\.next\cache\webpack\client-development\3.pack.gz_' -> 'C:\Recon\DrillingBonus\.next\cache\webpack\client-development\3.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: EPERM: operation not permitted, rename 'C:\Recon\DrillingBonus\.next\cache\webpack\server-development\3.pack.gz_' -> 'C:\Recon\DrillingBonus\.next\cache\webpack\server-development\3.pack.gz'
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+ GET /api/jobs 200 in 2240ms
+ GET /api/jobs 200 in 308ms
+ GET /api/jobs 200 in 309ms
+ GET /api/jobs 200 in 307ms
+ GET /api/jobs 200 in 306ms
+ GET /api/jobs 200 in 314ms
+ GET /api/jobs 200 in 342ms
+ GET /api/jobs 200 in 379ms
+ GET /api/jobs 200 in 302ms
+ GET /api/jobs 200 in 306ms
+ GET /api/jobs 200 in 302ms
+ GET /api/jobs 200 in 307ms
+ GET /api/jobs 200 in 303ms
+ GET /api/jobs 200 in 408ms
+ GET /api/jobs 200 in 304ms
+ GET /api/jobs 200 in 304ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 306ms
+ GET /api/jobs 200 in 372ms
+ GET /api/jobs 200 in 342ms
+ GET /api/jobs 200 in 305ms
+ GET /api/jobs 200 in 305ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 380ms
+ GET /api/jobs 200 in 358ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 374ms
+ GET /api/jobs 200 in 302ms
+ GET /api/jobs 200 in 305ms
+ GET /api/jobs 200 in 303ms
+ GET /api/jobs 200 in 304ms
+ GET /api/jobs 200 in 304ms
+ GET /api/jobs 200 in 370ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 306ms
+ GET /api/jobs 200 in 311ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 383ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 308ms
+ GET /api/jobs 200 in 306ms
+ GET /api/jobs 200 in 305ms
+ GET /api/jobs 200 in 364ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 304ms
+ GET /api/jobs 200 in 305ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 455ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 381ms
+ GET /api/jobs 200 in 303ms
+ GET /api/jobs 200 in 305ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 304ms
+ GET /api/jobs 200 in 309ms
+ GET /api/jobs 200 in 366ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 306ms
+ GET /api/jobs 200 in 314ms
+ GET /api/jobs 200 in 302ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 382ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 320ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 302ms
+ GET /api/jobs 200 in 317ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 364ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 366ms
+ GET /api/jobs 200 in 321ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 316ms
+ GET /api/jobs 200 in 363ms
+ GET /api/jobs 200 in 372ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 307ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 509ms
+ GET /api/jobs 200 in 313ms
+ GET /api/jobs 200 in 380ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 308ms
+ GET /api/jobs 200 in 305ms
+ GET /api/jobs 200 in 301ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 325ms
+ GET /api/jobs 200 in 374ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 363ms
+ GET /api/jobs 200 in 309ms
+ GET /api/jobs 200 in 316ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 1072ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 305ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 322ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 357ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 301ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 358ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 360ms
+ GET /api/jobs 200 in 288ms
+ GET /api/jobs 200 in 288ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 364ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 301ms
+ GET /api/jobs 200 in 305ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 311ms
+ GET /api/jobs 200 in 292ms
+ GET /api/jobs 200 in 369ms
+ GET /api/jobs 200 in 359ms
+ GET /api/jobs 200 in 302ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 360ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 321ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 289ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 362ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 363ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 365ms
+ GET /api/jobs 200 in 292ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 292ms
+ GET /api/jobs 200 in 377ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 359ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 289ms
+ GET /api/jobs 200 in 364ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 289ms
+ GET /api/jobs 200 in 289ms
+ GET /api/jobs 200 in 311ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 313ms
+ GET /api/jobs 200 in 449ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 360ms
+ GET /api/jobs 200 in 292ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 362ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 361ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 364ms
+ GET /api/jobs 200 in 303ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 310ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 367ms
+ GET /api/jobs 200 in 304ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 996ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 300ms
+ ○ Compiling /employees ...
+ ✓ Compiled /employees in 1950ms (1229 modules)
+ GET /employees?name=franci 200 in 2737ms
+ GET /employees?name=franc 200 in 2906ms
+ GET /employees?name=fra 200 in 3225ms
+ GET /employees?name=fran 200 in 2995ms
+ GET /employees?name=fr 200 in 3536ms
+ GET /employees?name=f 200 in 3719ms
+ GET /employees?name=francisc 200 in 394ms
+ GET /employees?name=francis 200 in 432ms
+ GET /api/jobs 200 in 514ms
+ GET /employees?name=francisco+p 200 in 500ms
+ GET /employees?name=francisco 200 in 653ms
+ GET /employees?name=francisco+ 200 in 575ms
+ GET /employees?name=francisco+pe 200 in 453ms
+ GET /employees?name=francisco+ped 200 in 456ms
+ GET /employees?name=francisco+pedr 200 in 454ms
+ GET /employees?name=francisco+pedro 200 in 448ms
+ GET /api/jobs 200 in 436ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 308ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 369ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 302ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 364ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 292ms
+ GET /api/jobs 200 in 362ms
+ GET /api/jobs 200 in 288ms
+ GET /api/jobs 200 in 308ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 288ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 371ms
+ GET /api/jobs 200 in 302ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 290ms
+ GET /api/jobs 200 in 292ms
+ GET /api/jobs 200 in 289ms
+ GET /api/jobs 200 in 304ms
+ GET /api/jobs 200 in 366ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 296ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 408ms
+ GET /api/jobs 200 in 317ms
+ GET /api/jobs 200 in 864ms
+ GET /employees?name=anton 200 in 889ms
+ GET /employees?name=anto 200 in 1091ms
+ GET /employees?name=ant 200 in 1183ms
+ GET /employees?name=an 200 in 1576ms
+ GET /employees?name=a 200 in 1770ms
+ GET /employees?name=antoni 200 in 436ms
+ GET /employees?name=antonio 200 in 583ms
+ GET /api/jobs 200 in 310ms
+ GET /api/jobs 200 in 319ms
+ GET /api/jobs 200 in 365ms
+ GET /api/jobs 200 in 320ms
+ GET /api/jobs 200 in 320ms
+ GET /api/jobs 200 in 389ms
+ GET /api/jobs 200 in 353ms
+ GET /api/jobs 200 in 325ms
+ GET /api/jobs 200 in 318ms
+ GET /api/jobs 200 in 319ms
+ GET /api/jobs 200 in 304ms
+ GET /api/jobs 200 in 393ms
+ GET /api/jobs 200 in 309ms
+ GET /api/jobs 200 in 318ms
+ GET /api/jobs 200 in 320ms
+ GET /api/jobs 200 in 317ms
+ GET /api/jobs 200 in 323ms
+ GET /api/jobs 200 in 319ms
+ GET /api/jobs 200 in 399ms
+ GET /api/jobs 200 in 320ms
+ GET /api/jobs 200 in 316ms
+ GET /api/jobs 200 in 319ms
+ GET /api/jobs 200 in 319ms
+ GET /api/jobs 200 in 306ms
+ GET /api/jobs 200 in 391ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 371ms
+ GET /api/jobs 200 in 383ms
+ GET /api/jobs 200 in 1016ms
+ GET /api/jobs 200 in 391ms
+ GET /api/jobs 200 in 383ms
+ GET /api/jobs 200 in 370ms
+ GET /api/jobs 200 in 362ms
+ GET /api/jobs 200 in 370ms
+ GET /api/jobs 200 in 1126ms
+ GET /api/jobs 200 in 393ms
+ GET /api/jobs 200 in 396ms
+ GET /api/jobs 200 in 402ms
+ GET /api/jobs 200 in 397ms
+ GET /api/jobs 200 in 384ms
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+ GET /api/jobs 200 in 2137ms
+ GET /api/jobs 200 in 926ms
+ GET /api/jobs 200 in 299ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 292ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 307ms
+ GET /api/jobs 200 in 359ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 304ms
+ GET /api/jobs 200 in 291ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 362ms
+ GET /api/jobs 200 in 298ms
+ GET /api/jobs 200 in 294ms
+ GET /api/jobs 200 in 293ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 300ms
+ GET /api/jobs 200 in 316ms
+ GET /api/jobs 200 in 403ms
+ GET /api/jobs 200 in 322ms
+ GET /api/jobs 200 in 295ms
+ GET /api/jobs 200 in 297ms
+ GET /api/jobs 200 in 311ms
+ GET /api/jobs 200 in 373ms
+ GET /api/jobs 200 in 373ms
+ GET /api/jobs 200 in 388ms
+ GET /api/jobs 200 in 380ms
+ GET /api/jobs 200 in 1087ms
+ GET /api/jobs 200 in 401ms
+ GET /api/jobs 200 in 399ms
+ GET /api/jobs 200 in 407ms
+ GET /api/jobs 200 in 388ms
+ GET /api/jobs 200 in 385ms
+ GET /api/jobs 200 in 1020ms
+ GET /api/jobs 200 in 374ms
+ GET /api/jobs 200 in 383ms
+ GET /api/jobs 200 in 379ms
+prisma:error Error in PostgreSQL connection: Error { kind: Io, cause: Some(Os { code: 10054, kind: ConnectionReset, message: "An existing connection was forcibly closed by the remote host." }) }
+prisma:error Error in PostgreSQL connection: Error { kind: Io, cause: Some(Os { code: 10054, kind: ConnectionReset, message: "An existing connection was forcibly closed by the remote host." }) }
+ GET /api/jobs 200 in 1796ms
+ GET /api/jobs 200 in 337ms
+ GET /api/jobs 200 in 312ms
+ GET /api/jobs 200 in 347ms
+ GET /api/jobs 200 in 319ms
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+ ✓ Compiled in 586ms (280 modules)
+ ✓ Compiled in 191ms (280 modules)
+ ✓ Compiled in 142ms (280 modules)
+ ✓ Compiled in 141ms (280 modules)
+ ✓ Compiled in 146ms (280 modules)
+ ✓ Compiled in 53ms (266 modules)
+ ✓ Compiled in 132ms (280 modules)
+ ✓ Compiled in 118ms (280 modules)

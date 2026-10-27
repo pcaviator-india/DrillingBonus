@@ -1,0 +1,17 @@
+# Dependency build scripts that are allowed to run on install.
+# pnpm 11 reads `allowBuilds` and pnpm 9/10 read `onlyBuiltDependencies`
+# (both keys kept so local pnpm 11 and Vercel's pnpm 10 agree).
+# Prisma needs its postinstall to verify engines / generate the client.
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  esbuild: true
+  prisma: true
+  unrs-resolver: true
+
+onlyBuiltDependencies:
+  - '@prisma/client'
+  - '@prisma/engines'
+  - esbuild
+  - prisma
+  - unrs-resolver

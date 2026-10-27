@@ -1,0 +1,2 @@
+scripts/create-atex-rules.ts(60,35): error TS2345: Argument of type '{ production_meter: string; above_threshold: string; monthly_goal: string; end_of_season: string; directional: string; }' is not assignable to parameter of type '(code: string) => string'.
+  Type '{ production_meter: string; above_threshold: string; monthly_goal: string; end_of_season: string; directional: string; }' provides no match for the signature '(code: string): string'.

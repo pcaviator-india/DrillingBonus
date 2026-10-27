@@ -1,0 +1,186 @@
+﻿
+=== SHEET 01-08-2026 ΓÇö 5 CHOFER|CONDUCTOR row(s) ===
+  r14 rut=12814487-0   written="Walter del Carmen Pizarro Alvarez" | registry for rut="WALTER DEL CARMEN PIZARRO ALVAREZ (Chofer)" [OK] | written name belongs to RUT 12814487-0 (row r14, cargo CHOFER)
+  r16 rut=17805184-9   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="BENJAMIN JOSEFATT ESPINOZA URIBE (Chofer)" [MISMATCH]
+  r17 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r17, cargo CHOFER TRADUCTOR)
+  r26 rut=17643998-k   written="Benigno Eduardo Paez Meneses" | registry for rut="BENIGNO EDUARDO PAEZ MENESES (Chofer)" [OK] | written name belongs to RUT 17643998-k (row r26, cargo CHOFER)
+  r27 rut=15831074-0   written="Estefania Constanza Naeter Quiroz" | registry for rut="ESTEFANIA CONSTANZA NAETER QUIROZ (Chofer)" [OK] | written name belongs to RUT 15831074-0 (row r27, cargo CONDUCTOR TRADUCTOR)
+
+=== SHEET 02-08-2026 ΓÇö 5 CHOFER|CONDUCTOR row(s) ===
+  r14 rut=12814487-0   written="Walter del Carmen Pizarro Alvarez" | registry for rut="WALTER DEL CARMEN PIZARRO ALVAREZ (Chofer)" [OK] | written name belongs to RUT 12814487-0 (row r14, cargo CHOFER)
+  r16 rut=17805184-9   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="BENJAMIN JOSEFATT ESPINOZA URIBE (Chofer)" [MISMATCH]
+  r17 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r17, cargo CHOFER TRADUCTOR)
+  r26 rut=17643998-k   written="Benigno Eduardo Paez Meneses" | registry for rut="BENIGNO EDUARDO PAEZ MENESES (Chofer)" [OK] | written name belongs to RUT 17643998-k (row r26, cargo CHOFER)
+  r27 rut=15831074-0   written="Estefania Constanza Naeter Quiroz" | registry for rut="ESTEFANIA CONSTANZA NAETER QUIROZ (Chofer)" [OK] | written name belongs to RUT 15831074-0 (row r27, cargo CONDUCTOR TRADUCTOR)
+
+=== SHEET 03-08-2026 ΓÇö 5 CHOFER|CONDUCTOR row(s) ===
+  r15 rut=12814487-0   written="Walter del Carmen Pizarro Alvarez" | registry for rut="WALTER DEL CARMEN PIZARRO ALVAREZ (Chofer)" [OK] | written name belongs to RUT 12814487-0 (row r15, cargo CHOFER)
+  r17 rut=17805184-9   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="BENJAMIN JOSEFATT ESPINOZA URIBE (Chofer)" [MISMATCH]
+  r18 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r18, cargo CHOFER TRADUCTOR)
+  r27 rut=17643998-k   written="Benigno Eduardo Paez Meneses" | registry for rut="BENIGNO EDUARDO PAEZ MENESES (Chofer)" [OK] | written name belongs to RUT 17643998-k (row r27, cargo CHOFER)
+  r28 rut=15831074-0   written="Estefania Constanza Naeter Quiroz" | registry for rut="ESTEFANIA CONSTANZA NAETER QUIROZ (Chofer)" [OK] | written name belongs to RUT 15831074-0 (row r28, cargo CONDUCTOR TRADUCTOR)
+
+=== SHEET 04-08-2026 ΓÇö 5 CHOFER|CONDUCTOR row(s) ===
+  r15 rut=12814487-0   written="Walter del Carmen Pizarro Alvarez" | registry for rut="WALTER DEL CARMEN PIZARRO ALVAREZ (Chofer)" [OK] | written name belongs to RUT 12814487-0 (row r15, cargo CHOFER)
+  r17 rut=17805184-9   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="BENJAMIN JOSEFATT ESPINOZA URIBE (Chofer)" [MISMATCH]
+  r18 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r18, cargo CHOFER TRADUCTOR)
+  r27 rut=17643998-k   written="Benigno Eduardo Paez Meneses" | registry for rut="BENIGNO EDUARDO PAEZ MENESES (Chofer)" [OK] | written name belongs to RUT 17643998-k (row r27, cargo CHOFER)
+  r28 rut=15831074-0   written="Estefania Constanza Naeter Quiroz" | registry for rut="ESTEFANIA CONSTANZA NAETER QUIROZ (Chofer)" [OK] | written name belongs to RUT 15831074-0 (row r28, cargo CONDUCTOR TRADUCTOR)
+
+=== SHEET 05-08-2026 ΓÇö 5 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r19 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r19, cargo CHOFER TRADUCTOR)
+  r27 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15831074-0   written="Estefania Constanza Naeter Quiroz" | registry for rut="ESTEFANIA CONSTANZA NAETER QUIROZ (Chofer)" [OK] | written name belongs to RUT 15831074-0 (row r28, cargo CONDUCTOR TRADUCTOR)
+
+=== SHEET 06-08-2026 ΓÇö 5 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r19 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r19, cargo CHOFER TRADUCTOR)
+  r26 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r27 rut=15831074-0   written="Estefania Constanza Naeter Quiroz" | registry for rut="ESTEFANIA CONSTANZA NAETER QUIROZ (Chofer)" [OK] | written name belongs to RUT 15831074-0 (row r27, cargo CONDUCTOR TRADUCTOR)
+
+=== SHEET 07-08-2026 ΓÇö 5 CHOFER|CONDUCTOR row(s) ===
+  r15 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r15, cargo CHOFER)
+  r16 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r16, cargo CHOFER)
+  r18 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r18, cargo CHOFER TRADUCTOR)
+  r26 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r27 rut=15831074-0   written="Estefania Constanza Naeter Quiroz" | registry for rut="ESTEFANIA CONSTANZA NAETER QUIROZ (Chofer)" [OK] | written name belongs to RUT 15831074-0 (row r27, cargo CONDUCTOR TRADUCTOR)
+
+=== SHEET 08-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r19 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r19, cargo CHOFER TRADUCTOR)
+  r27 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 09-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r19 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r19, cargo CHOFER TRADUCTOR)
+  r26 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 10-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r19 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r19, cargo CHOFER TRADUCTOR)
+  r26 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 11-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r19 rut=23868099-9   written="Jorge Armando Tinoco Ospino" | registry for rut="JORGE ARMANDO TINOCO OSPINO (Chofer)" [OK] | written name belongs to RUT 23868099-9 (row r19, cargo CHOFER TRADUCTOR)
+  r26 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 12-08-2026 ΓÇö 3 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r25 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 13-08-2026 ΓÇö 3 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r25 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 14-08-2026 ΓÇö 3 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r25 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 15-08-2026 ΓÇö 3 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r25 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 16-08-2026 ΓÇö 3 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r25 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 17-08-2026 ΓÇö 3 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r25 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 18-08-2026 ΓÇö 3 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Jose Leandro Parra Saravia" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [OK] | written name belongs to RUT 13809180-5 (row r16, cargo CHOFER)
+  r17 rut=19460207-3   written="Pablo Lucas Poblete Kuhne" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [OK] | written name belongs to RUT 19460207-3 (row r17, cargo CHOFER)
+  r25 rut=8851221-9    written="Luis Humberto Pe├▒a Ahumada" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+
+=== SHEET 19-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 20-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 21-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 22-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 23-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 24-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 25-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 26-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 27-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 28-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r15 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r16 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r24 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r27 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 29-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r15 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r16 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r24 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r27 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 30-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]
+
+=== SHEET 31-08-2026 ΓÇö 4 CHOFER|CONDUCTOR row(s) ===
+  r16 rut=13809180-5   written="Walter del Carmen Pizarro Alvarez" | registry for rut="JOSE LEANDRO PARRA SARAVIA (Chofer)" [MISMATCH]
+  r17 rut=19460207-3   written="Benigno Eduardo Paez Meneses" | registry for rut="PABLO LUCAS POBLETE KUHNE (Chofer)" [MISMATCH]
+  r25 rut=8851221-9    written="Benjamin Josafatt Espinoza Uribe" | registry for rut="Luis Humberto Pe├▒a Ahumada (-)" [MISMATCH]
+  r28 rut=15613806-1   written="Benjamin Josafatt Espinoza Uribe" | registry for rut="ARIEL ANDRES SILVA RIQUELME (Supervisor de Operaciones)" [MISMATCH]

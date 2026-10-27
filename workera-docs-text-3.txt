@@ -1,0 +1,3219 @@
+﻿
+    
+    
+      
+        
+DocumentaciÃ³n de APIs
+      
+    
+    
+      
+    
+    
+    
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    
+    
+    
+&lt;img  height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=746191120442580&amp;ev=PageView&amp;noscript=1"&gt;
+  
+  
+  
+    
+      
+      
+      
+      
+        
+  
+  
+Saltar al contenido
+  
+      
+            
+  
+    
+      
+        
+      
+      
+        
+          
+        
+        
+EspaÃ±ol - MÃ©xico
+        
+          
+Traducciones de Mostrar submenÃº para
+          
+        
+      
+    
+  
+          
+            
+  
+    
+    
+    
+  
+          
+    
+    
+      
+        
+          
+  
+    
+  
+  
+    
+      
+      
+        
+        
+      
+      
+  
+        
+      
+      
+        
+  
+    
+      
+  
+  
+  
+  
+    
+      
+      
+        
+          
+        
+        
+Inicio
+      
+      
+      
+    
+  
+  
+  
+    
+      
+      
+        
+          
+        
+        
+ContÃ¡ctanos 
+      
+      
+      
+    
+  
+  
+    
+  
+        
+  
+    
+      
+Abrir navegaciÃ³n principal
+      
+    
+    
+      
+Cerrar navegaciÃ³n principal
+      
+    
+    
+      
+        
+  
+  
+  
+  
+    
+      
+      
+        
+          
+        
+        
+Inicio
+      
+      
+      
+    
+  
+  
+  
+    
+      
+      
+        
+          
+        
+        
+ContÃ¡ctanos 
+      
+      
+      
+    
+  
+  
+        
+          
+            
+  
+    
+      
+        
+      
+      
+        
+          
+        
+        
+EspaÃ±ol - MÃ©xico
+        
+          
+Traducciones de Mostrar submenÃº para
+          
+        
+      
+    
+  
+          
+        
+        
+  
+    
+    
+    
+  
+        
+          
+            
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+    
+    Inicia sesiÃ³n
+  
+          
+        
+      
+    
+  
+      
+      
+        
+          
+  
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+    
+    Inicia sesiÃ³n
+  
+        
+      
+    
+  
+  
+  
+  
+    
+      
+        
+          Bienvenido a la Base de Conocimientos de Workera
+        
+        
+        
+        
+        
+        
+          
+        
+        
+          
+        
+        
+          
+           
+        
+          
+            
+              
+No hay sugerencias porque el campo de bÃºsqueda estÃ¡ vacÃ­o.
+            
+          
+        
+      
+    
+    
+    
+      
+      
+      
+        
+  
+    
+      
+  
+  
+    
+      
+Centro de ayuda de Workera
+    
+  
+  
+    
+  
+    
+      
+          ConfiguraciÃ³n
+      
+    
+    
+      
+  
+    
+      
+          Integraciones API
+      
+    
+    
+  
+    
+  
+  
+    
+    
+      
+        
+          
+            
+  
+DocumentaciÃ³n de APIs
+  
+El objetivo de este artÃ­culo es que sepas quÃ© esperar de las APIs de Workera y cÃ³mo realizar las pruebas en Postman. 
+  
+Antes de empezar, queremos aclarar que esta documentaciÃ³n usarÃ¡ tÃ©rminos tÃ©cnicos para dejar instrucciones precisas, por lo que 
+se recomienda tener algÃºn tipo de experiencia en integraciones o programaciÃ³n para probar los servicios
+ que la API provee. Si su conocimiento es bÃ¡sico o nulo con respecto a este servicio, recomendamos leer el siguiente artÃ­culo donde explicamos todo con con detalle: 
+IntegraciÃ³n API
+Si ya tienes la plataforma para integrar con la nuestra y necesitas hacer unas pruebas, este artÃ­culo es para ti, ya que iremos con cada uno de las consultas, viendo quÃ© informaciÃ³n es la que se debe enviar y quÃ© pueden recibir.
+Para empezar, recordamos que 
+todas las consultas deben tener la siguiente URL:
+https://workera.com/apiClient/v1/{servicio},
+ donde el servicio se reemplaza con alguna de las opciones que vamos a describir
+Recomendaciones y limitaciones
+Es indispensable que uses los valores de API_USER y API_KEY para utilizar el servicio, ya que es lo que garantiza la seguridad en la transmisiÃ³n de la informaciÃ³n.
+â— La cuenta de Workera debe encontrarse activa y con una suscripciÃ³n vigente.
+â— Se recomienda fuertemente utiliza los valores de ParÃ¡metros y Cuerpo de acuerdo al manual.
+â— El formato utilizado para API Rest (en este ejemplo de Postman) es JSON.
+â— Los cÃ³digos indicados en ParÃ¡metros y Cuerpo deben ser ingresados de la misma forma que se encuentran registrados en el sistema, incluyendo la utilizaciÃ³n de mayÃºsculas y/o minÃºsculas. Estos cÃ³digos pueden ser: CÃ³digo ficha del trabajador, cÃ³digo de la sucursal y/o departamento, cÃ³digo del turno, cÃ³digo del tipo de salida especial, etc.
+Servicios relacionados a trabajadores
+/employee - 
+GET
+Este servicio permite extraer el listado de trabajadores completos (activos, inactivos) segÃºn los parÃ¡metros de bÃºsqueda. Es importante recalcar que siempre se debe ingresar un departamento y una sucursal para que la bÃºsqueda ofrezca resultado.
+ParÃ¡metros:
+Atributo
+Tipo/Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+branchOffice
+String
+CÃ³digo de la Sucursal
+SÃ­
+MATRIZ
+department
+String
+CÃ³digo del Departamento
+SÃ­
+INICIAL
+employees
+String
+CÃ³digo Ficha del trabajador. Pueden ser varios cÃ³digos separados por comas sin espacios
+No
+12345678,11111111
+page
+Integer
+PÃ¡gina actual de bÃºsqueda. Por defecto, es uno (1)
+No
+1
+ParÃ¡metros en Postman:
+URL de ejemplo con todos los datos ingresados:
+GET - https://workera.com/apiClient/v1/employee?page=1&branchOffice=ARI01&department=D001&employees=90000028,90000018
+Respuesta
+Atributo
+Formato
+DescripciÃ³n
+page
+Integer
+PÃ¡gina actual
+totalPages
+Integer
+Total de pÃ¡ginas
+pageResult
+Integer
+NÃºmero de resultados en la pÃ¡gina actual
+totalResult
+Integer
+NÃºmero total de resultados
+data
+Array &lt;EmployeeFullData&gt;
+Lista de elementos dentro del perfil de empleado
+{
+    "page": 1,
+    "totalPages": 2,
+    "pageResult": 10,
+    "totalResult": 18,
+    "data": [Array&lt;EmployeeFullData&gt; 
+    ]
+}
+El 
+EmployeeFullData
+ serÃ­a la informaciÃ³n que se saca del perfil del empleado. A continuaciÃ³n describiremos cada dato extraÃ­do
+Atributo
+Formato
+DescripciÃ³n
+Code
+String
+CÃ³digo ficha Ãºnico del trabajador. Se usa para identificarlo en los servicios API
+deviceCode
+Integer
+CÃ³digo en el reloj. Generalmente el RUT sin dÃ­gito verificador
+identification
+String
+RUT o Pasaporte
+name
+String
+Primer nombre
+secondName
+String
+Segundo nombre
+lastName
+String
+Apellido Paterno
+SecondLastName
+String
+Apellido Materno
+branchOfficeCode
+String
+CÃ³digo de la sucursal asociada
+branchOfficeName
+String
+Nombre de dicha sucursal
+departmentCode
+String
+CÃ³digo del departamento asociado
+departmentName
+String
+Nombre de dicho departamento
+employeeStatus
+String
+Estado del trabajador:
+ACTIVO
+INACTIVO
+genre
+String
+GÃ©nero del trabajador:
+FEMENINO
+MASCULINO
+NO_ESPECIFICA
+birthDate
+date
+Fecha de nacimiento en formato yyyy-MM-dd
+civilStatus
+String
+Estado Civil
+SOLTERO
+CASADO
+VIUDO
+SEPARADO
+NO_ESPECIFIVA
+adress
+String
+DirecciÃ³n personal registrada
+personalPhone
+Long
+TelÃ©fono personal
+personalMail
+String
+Correo electrÃ³nico personal
+corporatePhone
+Long
+TelÃ©fono corporativo si existe
+corporateMail
+String
+Correo electrÃ³nico corporativo si existe
+favorite
+Boolean
+Si es, o no, un empleado destacado en la plataforma
+comment
+String
+Comentario adicional en el perfil
+El resultado de cada trabajador que coincida con los parÃ¡metros de bÃºsqueda quedarÃ­a asÃ­:
+{
+    "code": "90000017",
+    "deviceCode": 90000017,
+    "identification": "90.000.017-0",
+    "name": "YOKASTA",
+    "secondName": "ROSARIO",
+    "lastName": "COLMENARES",
+    "secondLastName": "MOTA",
+    "branchOfficeCode": "IQ01",
+    "branchOfficeName": "Iquique",
+    "departmentCode": "INICIAL",
+    "departmentName": "Departamento Inicial",
+    "employeeStatus": "ACTIVO",
+    "genre": "NO_ESPECIFICA",
+    "birthDate": "1996-05-02",
+    "civilStatus": "SOLTERO",
+    "address": "CuricÃ³ NÂ° 232",
+    "personalPhone": 111111111,
+    "personalMail": "trabajador17@workera.com",
+    "corporateMail": "",
+    "corporatePhone": null,
+    "favorite": false,
+    "comment": ""
+}
+/employee - 
+PUT 
+Este servicio permite modificar informaciÃ³n de un perfil de trabajador en especÃ­fico. Hay datos que se pueden modificar, otros que no, y hay datos que son obligatorios agregar, incluso cuando son los que se quieren cambiar.
+A diferencia del GET, como buscamos cargar informaciÃ³n usando PUT, este comando no tiene parÃ¡metros, y tiene que ir con un cuerpo o BODY que contenga los cambios.
+URL de ejemplo para enviar los datos:
+ PUT - https://workera.com/apiClient/v1/employee
+Cuerpo del mensaje (BODY) en formato JSON:
+Hay atributos que solo se pueden llenar con alguno de las opciones desplegadas en el listado. Hay otros valores que si no se llenan, se dejan como "null," y por ende se borrarÃ¡n en Workera si se dejan vacÃ­os. La sucursal y departamento siempre van en los datos, y el cÃ³digo a usar debe existir en la plataforma antes de enviar el JSON.
+Si no se cumple con esto, es posible que le genere un error, bien sea antes de subir los datos o ya en la plataforma, por lo que se recomienda estar pendiente de la informaciÃ³n que se suben.
+Atributo
+Formato
+DescripciÃ³n
+InformaciÃ³n
+code
+String
+CÃ³digo de ficha 
+actual
+ del trabajador
+Requerido
+newCode
+String
+Nuevo cÃ³digo
+Opcional. MÃ¡x: 255
+branchOfficeCode
+String
+CÃ³digo sucursal
+Requerido
+departmentCode
+String
+CÃ³digo departamento
+Requerido
+genre
+String
+GÃ©nero:
+MÃSCULINO
+FEMENINO
+NO_ESPECIFICA
+Requerido. Valor igual a uno del listado
+birthDate
+date
+Fecha de nacimiento en el formato yyyy-MM-dd
+Opcional. Null si vacÃ­o
+civilStatus
+String
+Estado civil:
+- SOLTERO
+- CASADO
+- VIUDO
+- SEPARADO
+-NO_ESPECIFICA
+Requerido. Valor igual a uno del listado
+address
+String
+DirecciÃ³n personal
+Opcional. Null si vacÃ­o. MÃ¡x: 200
+personalPhone
+Long
+TelÃ©fono personal
+Opcional. Null si vacÃ­o. MÃ¡x: 9. Solo nÃºmeros
+corporateMail
+String
+Correo electrÃ³nico corporativo
+Opcional. Null si vacÃ­o. MÃ¡x: 100
+corporatePhone
+Long
+TelÃ©fono corporativo
+Opcional. Null si vacÃ­o. MÃ¡x: 9. Solo nÃºmeros
+favorite
+boolean
+Destacar en Workera
+true Ã³ false
+comment
+String
+Comentario adicional
+Opcional. Null si vacÃ­o. MÃ¡x: 255
+Entonces, tenemos que el body se ve de esta manera:
+{
+    "code": "90000017",
+    "newCode": "90000017",
+    "branchOfficeCode": "MATRIZ",
+    "departmentCode": "INICIAL",
+    "genre": "FEMENINO",
+    "birthDate": "1996-05-02",
+    "civilStatus": "SOLTERO",
+    "address": "CuricÃ³ NÂ° 232",
+    "personalPhone": 111111111,
+    "corporateMail": "",
+    "corporatePhone": null,
+    "favorite": false,
+    "comment": ""
+}
+Servicios referentes a Marcaciones
+/attendanceData - GET
+Este servicio permite la bÃºsqueda de la informaciÃ³n de los registros de asistencia de los trabajadores. Entre los parÃ¡metros que se pueden ingresar estÃ¡ el dÃ­a de inicio, el dÃ­a de tÃ©rmino, sucursal y departamento. Esta bÃºsqueda incluye marcaciones activas e inactivas. A diferencia de las otras bÃºsquedas, esta ofrece 20 resultados por pÃ¡gina.
+NOTA: Debido a la densidad de las marcas, es posible que tome varios minutos recolectar los datos, por lo que se recomienda hacer pruebas con periodos cortos de tiempo si su ambiente de pruebas considera sin respuesta despuÃ©s de 30 segundos de la solicitud.
+ParÃ¡metros:
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+start
+Date
+Fecha de inicio de bÃºsqueda en formato yyyy-MM-dd
+SÃ­
+2025-05-25
+end
+Date
+Fecha de tÃ©rmino de bÃºsqueda en yyyy-MM-dd
+SÃ­
+2025-06-25
+branchOffice
+String
+CÃ³digo de la sucursal
+No
+S1
+department
+String
+CÃ³digo del departamento
+No
+D1
+employees
+String
+CÃ³digo de ficha del empleado. Pueden ser varios separador por comas sin espacios
+No
+12345678,22222222
+page
+Integer
+PÃ¡gina actual de bÃºsqueda. Por defecto es 1
+SÃ­
+1
+ParÃ¡metros en Postman:
+URL de ejemplo:
+GET - https://workera.com/apiClient/v1/attendanceData?start=2025-08-10&end=2025-08-31&branchOffice=S1&department=D1&employees=12345678,22222222&page=1
+Respuesta:
+Atributo
+Formato
+DescripciÃ³n
+page
+Integer
+PÃ¡gina actual
+totalPages
+Integer
+Total de pÃ¡ginas
+pageResult
+Integer
+NÃºmero de resultados en la pÃ¡gina actual
+totalResult
+Integer
+NÃºmero total de resultados
+data
+Array &lt;AttendanceData&gt;
+Lista de elementos dentro del perfil de empleado
+{
+    "page": 1,
+    "totalPages": 1,
+    "pageResult": 12,
+    "totalResult": 12,
+    "data": [Array &lt;AttendanceData&gt;]
+}
+El AttendanceData es la informaciÃ³n de todas las marcaciones, y esta la podemos dividir en 2 partes, la informaciÃ³n especÃ­ficamente de la marca, y la informaciÃ³n especÃ­fica del trabajador asociado.
+Datos de la marcaciÃ³n (AttendanceData)
+Atributo
+Formato
+DescripciÃ³n
+employee
+EmployeeData
+InformaciÃ³n del trabajador
+attendanceDate
+Date
+Fecha y hora del registro en formato yyyy-MM-ddâ€™Tâ€™HH:mm:ss
+ attendanceType 
+Integer
+Tipo de registro
+Entrada: 0
+Salida: 1
+Salida extraordinaria: 2
+Entrada extraordinaria: 3
+Inicio descanso: 4
+TÃ©rmino descanso: 5
+attendanceStatus
+String
+Estado del registro:
+ACTIVO
+INACTIVO
+MODIFICADO
+origin
+String
+Origen del registro de asistencia:
+DISPOSITIVO_BIOMETRICO
+DISPOSITIVO_MOVIL
+SOLICITUD_WORKERA
+PORTAL_WEB
+SISTEMA
+address
+String
+DirecciÃ³n asociada a la marca: Para registros mÃ³viles, serÃ¡ la direcciÃ³n en la que se marcÃ³ usando el GPS. Para registros en el dispositivo, tendrÃ¡ la direcciÃ³n de la sucursal del reloj. Para registros en la pÃ¡gina web, tendrÃ¡ la IP pÃºblica correspondiente
+deviceName
+String
+Nombre del dispositivo biomÃ©trico o mÃ³vil
+checksum
+String
+CÃ³digo Hash asociado al dispositivo
+isMobile
+Boolean
+Indica si se hizo desde el dispositivo mÃ³vil o no
+ coordinatesMobile
+String
+Coordenadas de marcaciÃ³n en Grados, Minutos y Segundos
+ precisionMobile 
+Float
+ 16.980000 
+Datos del Trabajador (EmployeeData)
+Atributo
+Formato
+DescripciÃ³n
+code
+String
+CÃ³digo de ficha 
+actual
+ del trabajador
+deviceCode
+ 
+CÃ³digo del trabajador en reloj
+identification
+String
+IdentificaciÃ³n (RUT, pasaporte) del trabajador
+name
+String
+Primer y segundo nombre del trabajador
+lastName
+String
+Apellido paterno y materno del trabajador
+branchOffice
+String
+Nombre de la Sucursal
+department
+String
+Nombre del Departamento
+employeeStatus
+String
+Estado del trabajador:
+ACTIVO
+INACTIVO
+companyIdentification
+String
+RUT de la compaÃ±Ã­a asociada
+companyName
+String
+RazÃ³n social de la compaÃ±Ã­a asociada
+Ejemplo de la consulta
+{
+    "page": 1,
+    "totalPages": 1,
+    "pageResult": 12,
+    "totalResult": 12,
+    "data": [
+        {
+            "employee": {
+                "code": "90000028",
+                "deviceCode": 90000028,
+                "identification": "90.000.028-6",
+                "name": "ALEXANDER  FERNANDO",
+                "lastName": "CORRALES  RIVAS",
+                "branchOffice": "Arica",
+                "department": "RRHH",
+                "employeeStatus": "Activo",
+                "companyIdentification": "24.104.527-7",
+                "companyName": "DEMO WORKERA.COM"
+            },
+            "attendanceDate": "2025-08-26T08:26:00",
+            "attendanceType": 0,
+            "attendanceStatus": "Activo",
+            "origin": "Sistema",
+            "address": "",
+            "deviceName": "SISTEMA",
+            "checksum": "4AB62987"
+        },
+        {
+            "employee": {
+                "code": "12345678",
+                "deviceCode": 12345678,
+                "identification": "12.345.678-K",
+                "name": "ERICK  ALEXANDER",
+                "lastName": "RIVAS  CORRALES",
+                "branchOffice": "Arica",
+                "department": "Departamento Inicial",
+                "employeeStatus": "Activo",
+                "companyIdentification": "24.104.527-7",
+                "companyName": "DEMO WORKERA.COM"
+            },
+            "attendanceDate": "2025-08-26T09:39:56",
+            "attendanceType": 0,
+            "attendanceStatus": "Activo",
+            "origin": "Dispositivo mÃ³vil",
+            "address": "Calle FÃ©lix de Amesti 40, Las Condes, RegiÃ³n Metropolitana de Santiago",
+            "deviceName": "iOS",
+            "checksum": "FC761B4F"
+        },...
+    ]
+}
+Servicios relacionados a Salidas especiales (Permisos)
+/permission - GET
+Este servicio trae el listado de salidas que estÃ©n asignadas a uno o mÃ¡s trabajadores, segÃºn los parÃ¡metros de bÃºsqueda. Al igual que las marcaciones, el resultado se entrega en pÃ¡ginas de 20.
+NOTA: al igual que con las marcas, estas pueden tomar varios minutos en generarse. Se recomienda tomar periodos cortos en su entorno de pruebas si se considera fallido despuÃ©s de 30 segundos sin respuesta.
+ParÃ¡metros:
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+start
+Date
+Fecha de inicio de bÃºsqueda en formato yyyy-MM-dd
+SÃ­
+2025-05-25
+end
+Date
+Fecha de tÃ©rmino de bÃºsqueda en yyyy-MM-dd
+SÃ­
+2025-06-25
+branchOffice
+String
+CÃ³digo de la sucursal
+SÃ­
+S1
+department
+String
+CÃ³digo del departamento
+SÃ­
+D1
+employees
+String
+CÃ³digo de ficha del empleado. Pueden ser varios separador por comas sin espacios
+No
+12345678,22222222
+page
+Integer
+PÃ¡gina actual de bÃºsqueda. Por defecto es 1
+SÃ­
+1
+ParÃ¡metros en Postman:
+URL de ejemplo:
+https://workera.com/apiClient/v1/permission?start=2025-09-01&end=2025-09-08&branchOffice=S1&department=D1&employees=12345678,22222222&page=1
+Respuesta:
+Atributo
+Formato
+DescripciÃ³n
+page
+Integer
+PÃ¡gina actual
+totalPages
+Integer
+Total de pÃ¡ginas
+pageResult
+Integer
+NÃºmero de resultados en la pÃ¡gina actual
+totalResult
+Integer
+NÃºmero total de resultados
+data
+Array &lt;Permission&gt;
+Lista de elementos dentro del perfil de empleado
+{
+    "page": 1,
+    "totalPages": 1,
+    "pageResult": 1,
+    "totalResult": 1,
+    "data": [Array &lt;Permission&gt;]
+}
+El Permission es la informaciÃ³n sobre todos los permisos que apliquen a la bÃºsqueda. Este viene en 2 partes, una es la informaciÃ³n sobre el permiso como tal y el otro es sobre el permiso que esa persona tiene asignado
+Permisos (Permission)
+Atributo
+Formato
+DescripciÃ³n
+id
+Integer
+Identificador de la salida especial. Se usa para modificar y eliminar asignaciones
+employee
+EmployeeData
+InformaciÃ³n del trabajador
+start
+Date
+Fecha y hora de inicio del permiso en formato:
+yyyy-MM-ddâ€™Tâ€™HH:mm:ss
+end
+Date
+Fecha y hora de tÃ©rmino en formato:
+yyyy-MM-ddâ€™Tâ€™HH:mm:ss
+PermissionCode
+String
+CÃ³digo del Permiso
+PermissionName
+String
+Nombre del Permiso
+permissionType
+String
+Tipo de salida:
+TRABAJADO
+TRABAJADO_EN_HORARIO
+NO_TRABAJADOR
+LICENCIA_MEDICA
+VACACIONES
+PRENATAL
+POSTNATAL
+comment
+String
+DescripciÃ³n del permiso. Null si no hay informaciÃ³n
+Datos de empleado (EmployeeData)
+Atributo
+Formato
+DescripciÃ³n
+code
+String
+CÃ³digo de ficha 
+actual
+ del trabajador
+deviceCode
+ 
+CÃ³digo del trabajador en reloj
+identification
+String
+IdentificaciÃ³n (RUT, pasaporte) del trabajador
+name
+String
+Primer y segundo nombre del trabajador
+lastName
+String
+Apellido paterno y materno del trabajador
+branchOffice
+String
+Nombre de la Sucursal
+department
+String
+Nombre del Departamento
+employeeStatus
+String
+Estado del trabajador:
+ACTIVO
+INACTIVO
+companyIdentification
+String
+RUT de la compaÃ±Ã­a asociada
+companyName
+String
+RazÃ³n social de la compaÃ±Ã­a asociada
+Ejemplo de consulta:
+{
+            "id": 1607590,
+            "employee": {
+                "code": "90000028",
+                "deviceCode": 90000028,
+                "identification": "90.000.028-6",
+                "name": "ALEXANDER FERNANDO",
+                "lastName": "CORRALES RIVAS",
+                "branchOffice": "Arica",
+                "department": "RRHH",
+                "employeeStatus": "ACTIVO",
+                "companyIdentification": "24.104.527-7",
+                "companyName": "DEMO WORKERA.COM"
+            },
+            "start": "2025-09-04T00:00:00",
+            "end": "2025-09-04T23:59:59",
+            "permissionCode": "PV01",
+            "permissionName": "Permiso votacion",
+            "permissionType": "TRABAJADO_EN_HORARIO",
+            "comment": null
+        }
+/permission - POST
+Este servicio permite hacer la asignaciÃ³n de permisos especiales a un trabajador o a un grupo de trabajadores usando las APIs. Para que este post funcione correctamente, se deben cumplir ciertos requerimientos:
+Los permisos especiales a usar deben tener todos un cÃ³digo asignado, ya que es el dato que usaremos para identificarlos. Puedes revisar en este 
+artÃ­culo
+ dÃ³nde ver esos datos. Adicionalmente, puede usarte el API GET /permissionTypes para obtener la lista en tu plataforma.
+En el periodo que estÃ¡n haciendo la asignaciÃ³n, ninguno de los trabajadores afectados pueden tener un permiso asignado. En caso contrario, arrojarÃ¡ un error de cÃ³digo 400.
+Se debe asignar la fecha y la hora segÃºn el formato del inicio y tÃ©rmino del permiso. Para las licencias y las vacaciones, la hora inicial debe ser 00:00:00 y el tÃ©rmino 23:59:59.
+Como se suben datos a la plataforma, este servicio no necesita parÃ¡metros aparte de la URL, y debe tener un cuerpo (BODY) donde se almacenen los datos
+Sabiendo esto, empecemos a describir el servicio.
+Cuerpo del mensaje (BODY) en formato JSON:
+Atributo
+Formato
+DescripciÃ³n
+employeeCode
+String
+CÃ³digo de ficha Ãºnico del trabajador
+permissionCode
+String
+CÃ³digo del permiso especial a asignar
+start
+Date
+Inicio del permiso en formato:
+yyyy-MM-dd'T'HH:mm:ss
+end
+Date
+TÃ©rmino del permiso en formato:
+yyyy-MM-dd'T'HH:mm:ss
+comment
+String
+Comentario o descripciÃ³n del permiso
+URL de ejemplo:
+POST - https://workera.com/apiClient/v1/permission
+BODY en Postman
+{
+    "employeeCode": "12345678",
+    "permissionCode": "Festi",
+    "start": "2025-09-01T08:00:00",
+    "end": "2025-09-02T18:00:00",
+    "comment": null
+}
+Resultado:
+En el caso de que post tenga Ã©xito en crear el permiso especial, recibirÃ¡n el cÃ³digo 200, y entregarÃ¡ la informaciÃ³n de asignaciÃ³n:
+{
+    "id": 1629437,
+    "employee": {
+        "code": "12345678",
+        "deviceCode": 12345678,
+        "identification": "12.345.678-K",
+        "name": "ERICK ALEXANDER",
+        "lastName": "RIVAS CORRALES",
+        "branchOffice": "Arica",
+        "department": "Departamento Inicial",
+        "employeeStatus": "ACTIVO",
+        "companyIdentification": "24.104.527-7",
+        "companyName": "DEMO WORKERA.COM"
+    },
+    "start": "2025-09-01T08:00:00",
+    "end": "2025-09-02T18:00:00",
+    "permissionCode": "Festi",
+    "permissionName": "Festividades",
+    "permissionType": "TRABAJADO_EN_HORARIO",
+    "comment": null
+}
+Si el servicio no se completÃ³ por algÃºn motivo, emitirÃ¡ un error con el cÃ³digo 400 (si es un problema de validaciÃ³n o Bad Request), 500 (si es un error interno del servidor), o cualquiera de los siguientes:
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n de error. Puede existir 1  o mÃ¡s mensajes de error
+Ejemplos del resultado errÃ³neo
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Trabajador no encontrado"
+    ]
+}
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Tipo salida especial no encontrado"
+    ]
+}
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Salida especial registrada dentro del periodo: 1629437 - 2025-09-01T08:00:00 - 2025-09-02T18:00:00"
+    ]
+}
+/permission/${id} - DELETE
+Este servicio permite realizar la eliminaciÃ³n o desasignaciÃ³n de un permiso especial. Para esto, se deben cumplir algunas condiciones:
+Se tiene que conocer el ID Ãºnico del permiso especial. Se puede saber con el servicio de GET - /permission.
+Solo se pueden eliminar las asignaciones que no se hayan creado por justificaciones o solicitudes de parte del trabajador
+Variable de URL:
+Atributo
+Formato
+DescripciÃ³n
+id
+integer
+Identificador de la asignaciÃ³n de la salida especial
+URL de ejemplo:
+DELETE - https://workera.com/apiClient/v1/permission/1629437
+Resultado:
+En el caso de que se complete el comando correctamente, emitirÃ¡ un cÃ³digo 200 y se procederÃ¡ a quitar la asignaciÃ³n. En caso contrario, se puede emitir un error de cÃ³digo 400 (error de validaciÃ³n o Bad Request), 500 (error interno de sistema), o alguno de estos errores:
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Ejemplo de resultado correcto:
+{
+    "result": "CORRECTO",
+    "messages": [
+        "Salida especial eliminada correctamente"
+    ]
+}
+Ejemplo de resultado con errores:
+{
+    "result": "ERROR",
+    "messages": [
+        "Salida especial no encontrada"
+    ]
+}
+/permissionType - GET
+Este servicio permite sacar un listado completo de todos los Tipos de Permisos creados en el sistema. El Ãºnico parÃ¡metro necesario para este servicio es la pÃ¡gina.
+ParÃ¡metros:
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+page
+Integer
+NÃºmero de pÃ¡gina (Por defecto, es 1)
+SÃ­
+1
+ParÃ¡metro en Postman
+URL de ejemplo:
+GET https://workera.com/apiClient/v1/permissionTypes?page=1
+Resultado:
+Si todo se envÃ­a correctamente, entregarÃ¡ el listado de todos los tipos de turnos creados que se pueden asignar con su informaciÃ³n completa. El listado mostrarÃ¡ 20 resultados por pÃ¡gina.
+PaginaciÃ³n (Data)
+Atributo
+Formato
+DescripciÃ³n
+data
+Array&lt;PermissionType&gt;
+Listado de elementos
+page
+Integer
+PÃ¡gina actual
+pageResult
+Integer
+Cantidad de elementos de pÃ¡gina actual
+totalResult
+Integer
+Cantidad de elementos totales
+totalPages
+Integer
+NÃºmero de pÃ¡ginas totales
+Tipos de permiso (PermissionType)
+Atributo
+Formato
+DescripciÃ³n
+name
+String
+Nombre del tipo de permiso
+description
+String
+DescripciÃ³n del tipo de permiso
+type
+String
+Tipo del Permiso
+code
+String
+CÃ³digo Ãºnico del permiso
+Ejemplo de resultado:
+{
+    "data": [
+        {
+            "name": "Salida a terreno",
+            "description": "Salida especial para ser utilizada como salida a terreno (cuenta como trabajado)",
+            "type": "TRABAJADO",
+            "code": null
+        },
+        {
+            "name": "Trabajo en horario",
+            "description": "Salida especial para ser utilizada como trabajado en horario (cuenta como trabajado dentro del rango de horario",
+            "type": "TRABAJADO_EN_HORARIO",
+            "code": "TEH"
+        }
+    ],
+    "page": 1,
+    "pageResult": 20,
+    "totalResult": 27,
+    "totalPages": 2
+}
+Servicios relacionados a Turnos 
+/workshift/assign - GET
+Este servicio obtiene un listado de los turnos que tienen asignados uno o mÃ¡s trabajadores segÃºn los parÃ¡metros de bÃºsqueda. 
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+start
+Date
+Fecha de inicio de bÃºsqueda en formato yyyy-MM-dd
+SÃ­
+2025-05-25
+end
+Date
+Fecha de tÃ©rmino de bÃºsqueda en yyyy-MM-dd
+SÃ­
+2025-06-25
+branchOffice
+String
+CÃ³digo de la sucursal
+SÃ­
+S1
+department
+String
+CÃ³digo del departamento
+SÃ­
+D1
+employees
+String
+CÃ³digo de ficha del empleado. Pueden ser varios separador por comas sin espacios
+No
+12345678,22222222
+page
+Integer
+PÃ¡gina actual de bÃºsqueda. Por defecto es 1
+SÃ­
+1
+ParÃ¡metros en Postman:
+URL de ejemplo:
+https://workera.com/apiClient/v1/workshift/assign?start=2025-09-01&end=2025-09-08&branchOffice=S1&department=D1&employees=12345678,22222222&page=1
+Respuesta:
+El resultado contiene 3 secciones. La primera es la paginaciÃ³n, la segunda contiene la informaciÃ³n de la asignaciÃ³n del turno, mientras que la Ãºltima contiene la informaciÃ³n del trabajador que tiene esta asignaciÃ³n. Con esto, vamos a describir cada una de estas secciones:
+Resultado:
+Atributo
+Formato
+DescripciÃ³n
+page
+Integer
+PÃ¡gina actual
+totalPages
+Integer
+Total de pÃ¡ginas
+pageResult
+Integer
+NÃºmero de resultados en la pÃ¡gina actual
+totalResult
+Integer
+NÃºmero total de resultados
+data
+Array &lt;EmployeeWorkshiftAssign&gt;
+Lista de elementos dentro del perfil de empleado
+AsignaciÃ³n de Jornada a empleados (EmployeeWorkshiftAssign)
+Atributo
+Formato
+DescripciÃ³n
+id
+Integer
+Identificador Ãºnico de la asignaciÃ³n. Se usa para modificar o desasignar un turno
+employee
+EmployeeData
+SecciÃ³n de informaciÃ³n del trabajador
+start
+Date
+Inicio de la asignaciÃ³n del turno en formato
+yyyy-MM-dd
+end
+Date
+TÃ©rmino de la asignaciÃ³n del turno en formato
+yyyy-MM-dd
+workshiftCode
+String
+CÃ³digo Ãºnico del turno
+workshiftName
+String
+Nombre del turno
+flexible
+Boolean
+Indica si es flexible
+false si el turno es basado en horarios
+true si es basado en horas trabajadas
+period
+String
+Periodo o tipo del turno
+DIARIO
+SEMANAL
+MENSUAL
+extension
+Integer
+ExtensiÃ³n o repeticiones del periodo
+Datos de Empleados (EmployeeData)
+Atributo
+Formato
+DescripciÃ³n
+code
+String
+CÃ³digo de ficha 
+actual
+ del trabajador
+deviceCode
+ 
+CÃ³digo del trabajador en reloj
+identification
+String
+IdentificaciÃ³n (RUT, pasaporte) del trabajador
+name
+String
+Primer y segundo nombre del trabajador
+lastName
+String
+Apellido paterno y materno del trabajador
+branchOffice
+String
+Nombre de la Sucursal
+department
+String
+Nombre del Departamento
+employeeStatus
+String
+Estado del trabajador:
+ACTIVO
+INACTIVO
+companyIdentification
+String
+RUT de la compaÃ±Ã­a asociada
+companyName
+String
+RazÃ³n social de la compaÃ±Ã­a asociada
+Ejemplo del resultado:
+{
+    "page": 1,
+    "totalPages": 1,
+    "pageResult": 1,
+    "totalResult": 1,
+    "data": [
+        {
+            "id": 3603070,
+            "employee": {
+                "code": "12345678",
+                "deviceCode": 12345678,
+                "identification": "12.345.678-K",
+                "name": "ERICK ALEXANDER",
+                "lastName": "RIVAS CORRALES",
+                "branchOffice": "Arica",
+                "department": "Departamento Inicial",
+                "employeeStatus": "ACTIVO",
+                "companyIdentification": "24.104.527-7",
+                "companyName": "DEMO WORKERA.COM"
+            },
+            "start": "2025-09-01",
+            "end": "2025-09-07",
+            "workshiftCode": "TMC02",
+            "workshiftName": "Turno Masterclass",
+            "flexible": false,
+            "period": "SEMANAL",
+            "extension": 2
+        }
+    ]
+}
+/workshift/schedules - GET
+Obtiene listado por trabajador de los horarios que tienen asignados segÃºn el parÃ¡metro de bÃºsqueda ingresado. La paginaciÃ³n es de 10 resultados por pÃ¡gina. Solo entregarÃ¡ la informaciÃ³n de los dÃ­as que efectivamente tenga un horario asignado. Es decir, se omitirÃ¡ los dÃ­as libres. Es bueno recordar que el periodo buscado no puede superar los 60 dÃ­as, y que esta API no aplica para turnos inteligentes asignados.
+ParÃ¡metros:
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+start
+Date
+Fecha de inicio de bÃºsqueda en formato yyyy-MM-dd
+SÃ­
+2025-05-25
+end
+Date
+Fecha de tÃ©rmino de bÃºsqueda en yyyy-MM-dd
+SÃ­
+2025-06-25
+branchOffice
+String
+CÃ³digo de la sucursal
+SÃ­
+S1
+department
+String
+CÃ³digo del departamento
+SÃ­
+D1
+employees
+String
+CÃ³digo de ficha del empleado. Pueden ser varios separador por comas sin espacios
+No
+12345678,22222222
+page
+Integer
+PÃ¡gina actual de bÃºsqueda. Por defecto es 1
+SÃ­
+1
+ParÃ¡metros en Postman
+URL de Ejemplo:
+https://workera.com/apiClient/v1/workshift/schedules?start=2025-09-01&end=2025-09-07&branchOffice=S1&department=D1&employees=12345678,22222222&page=1
+Respuesta:
+La informaciÃ³n en la lista tendrÃ¡ 3 secciones: la primera, es la paginaciÃ³n de la bÃºsqueda, luego la informaciÃ³n del trabajador, y por Ãºltimo, los datos de los horarios asignados.
+Resultado:
+Atributo
+Formato
+DescripciÃ³n
+page
+Integer
+PÃ¡gina actual
+totalPages
+Integer
+Total de pÃ¡ginas
+pageResult
+Integer
+NÃºmero de resultados en la pÃ¡gina actual
+totalResult
+Integer
+NÃºmero total de resultados
+data
+Array &lt;EmployeeWorkShiftData&gt;
+Lista de elementos dentro del perfil de empleado
+Datos de Jornada de Empleados (EmployeeWorkShiftData)
+Atributo
+Formato
+DescripciÃ³n
+employee
+EmployeeData
+Contiene la informaciÃ³n del trabajador
+schedules
+Array&lt;WorkShiftSchedule&gt;
+Listado de los horarios
+EmployeeData
+Atributo
+Formato
+DescripciÃ³n
+code
+String
+CÃ³digo de ficha 
+actual
+ del trabajador
+deviceCode
+ 
+CÃ³digo del trabajador en reloj
+identification
+String
+IdentificaciÃ³n (RUT, pasaporte) del trabajador
+name
+String
+Primer y segundo nombre del trabajador
+lastName
+String
+Apellido paterno y materno del trabajador
+branchOffice
+String
+Nombre de la Sucursal
+department
+String
+Nombre del Departamento
+employeeStatus
+String
+Estado del trabajador:
+ACTIVO
+INACTIVO
+companyIdentification
+String
+RUT de la compaÃ±Ã­a asociada
+companyName
+String
+RazÃ³n social de la compaÃ±Ã­a asociada
+Horarios de Joranda (WorkShiftSchedule)
+Atributo
+Formato
+DescripciÃ³n
+workshiftCode
+String
+CÃ³digo del turno asignado
+date
+Date
+Fecha en que estÃ¡ el horario (Si es de 2 dÃ­as, fecha en que se contabiliza) en yyyy-MM-dd
+workshiftName
+String
+Nombre del turno asignado
+workshiftStart
+Date
+Inicio del turno asignado en formato yyyy-MM-dd
+workshiftEnd
+Date
+TÃ©rmino del turno asignado en formato yyyy-MM-dd
+scheduleName
+String
+Nombre del horario
+start
+Date
+Fecha y hora de entrada en el horario, este en formato yyyy-MM-dd'T'HH:mm:ss
+end
+Date
+Fecha y hora de salida en el horario, este en formato yyyy-MM-dd'T'HH:mm:ss
+Ejemplo de respuesta:
+{
+    "page": 1,
+    "totalPages": 1,
+    "pageResult": 1,
+    "totalResult": 1,
+    "data": [
+        {
+            "employee": {
+                "code": "12345678",
+                "deviceCode": 12345678,
+                "identification": "12.345.678-K",
+                "name": "ERICK ALEXANDER",
+                "lastName": "RIVAS CORRALES",
+                "branchOffice": "Arica",
+                "department": "Departamento Inicial",
+                "employeeStatus": "ACTIVO",
+                "companyIdentification": "24.104.527-7",
+                "companyName": "DEMO WORKERA.COM"
+            },
+            "schedules": [
+                {
+                    "workshiftCode": "TMC02",
+                    "date": "2025-09-01",
+                    "workshiftName": "Turno Masterclass",
+                    "workshiftStart": "2025-09-01",
+                    "workshiftEnd": "2025-09-07",
+                    "scheduleName": "Horario Masterclass",
+                    "start": "2025-09-01T08:30:00",
+                    "end": "2025-09-01T18:30:00"
+                },
+                {
+                    "workshiftCode": "TMC02",
+                    "date": "2025-09-02",
+                    "workshiftName": "Turno Masterclass",
+                    "workshiftStart": "2025-09-01",
+                    "workshiftEnd": "2025-09-07",
+                    "scheduleName": "Horario Masterclass",
+                    "start": "2025-09-02T08:30:00",
+                    "end": "2025-09-02T18:30:00"
+                },
+                {
+                    "workshiftCode": "TMC02",
+                    "date": "2025-09-03",
+                    "workshiftName": "Turno Masterclass",
+                    "workshiftStart": "2025-09-01",
+                    "workshiftEnd": "2025-09-07",
+                    "scheduleName": "Horario Masterclass",
+                    "start": "2025-09-03T08:30:00",
+                    "end": "2025-09-03T18:30:00"
+                },
+                {
+                    "workshiftCode": "TMC02",
+                    "date": "2025-09-04",
+                    "workshiftName": "Turno Masterclass",
+                    "workshiftStart": "2025-09-01",
+                    "workshiftEnd": "2025-09-07",
+                    "scheduleName": "Horario Masterclass",
+                    "start": "2025-09-04T08:30:00",
+                    "end": "2025-09-04T18:30:00"
+                },
+                {
+                    "workshiftCode": "TMC02",
+                    "date": "2025-09-05",
+                    "workshiftName": "Turno Masterclass",
+                    "workshiftStart": "2025-09-01",
+                    "workshiftEnd": "2025-09-07",
+                    "scheduleName": "Horario Masterclass",
+                    "start": "2025-09-05T08:30:00",
+                    "end": "2025-09-05T18:30:00"
+                }
+            ]
+        }
+    ]
+}
+/workshift/assign - POST
+Este servicio permite hacer la asignaciÃ³n de turnos a los trabajadores. Es importante que para este paso, tengamos los cÃ³digos de los turnos a usar. Para mÃ¡s informaciÃ³n, puedes ver el siguiente 
+artÃ­culo
+. Como estamos subiendo datos, este servicio no cuenta con parÃ¡metros, solo el cuerpo (BODY)
+Cuerpo del mensaje (BODY) en formato JSON:
+Atributo
+Formato
+DescripciÃ³n
+employeeCode
+String
+CÃ³digo ficha 
+Ãºnico
+ del trabajador
+workshiftCode
+String
+CÃ³digo del turno
+start
+Date
+Inicio del turno en formato yyyy-MM-dd
+end
+Date
+TÃ©rmino del turno en formato yyyy-MM-dd
+replace
+Boolean
+Determina si este tuno va a reemplazar alguno que estÃ© asignado
+URL de ejemplo:
+https://workera.com/apiClient/v1/workshift/assign
+Body de ejemplo en Postman:
+{
+    "employeeCode": "12345678",
+    "workshiftCode": "TWD2S",
+    "start": "2025-09-01",
+    "end": "2025-09-14",
+    "replace": true
+}
+Resultado:
+En el caso de que la informaciÃ³n se haya ejecutado correctamente, el servidor responderÃ¡ cÃ³digo 200, junto con los datos de la asignaciÃ³n registrada. En caso contraria, emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Resultado correcto:
+[
+    {
+        "id": 3651037,
+        "employee": {
+            "code": "12345678",
+            "deviceCode": 12345678,
+            "identification": "12.345.678-K",
+            "name": "ERICK ALEXANDER",
+            "lastName": "RIVAS CORRALES",
+            "branchOffice": "Arica",
+            "department": "Departamento Inicial",
+            "employeeStatus": "ACTIVO",
+            "companyIdentification": "24.104.527-7",
+            "companyName": "DEMO WORKERA.COM"
+        },
+        "start": "2025-09-01",
+        "end": "2025-09-14",
+        "workshiftCode": "TWD2S",
+        "workshiftName": "Turno Webinar de 2 Semanas",
+        "flexible": false,
+        "period": "SEMANAL",
+        "extension": 2
+    }
+]
+Resultado errÃ³neo:
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Turno ya registrado dentro del periodo: 3650889 - 2025-09-01 - 2025-09-14"
+    ]
+}
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Turno no encontrado"
+    ]
+}
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Trabajador no encontrado"
+    ]
+}
+/workshift/assign/{id} - DELETE
+Este servicio permite eliminar la asignaciÃ³n de un turno a un trabajador. Para esto, es necesario saber el ID de asignaciÃ³n, y este puede conocerse mediante el GET - /workshift/assign
+Variable de URL:
+Atributo
+Formato
+DescripciÃ³n
+id
+Integer
+Identificador 
+Ãºnico
+ de la asignaciÃ³n de turno
+URL de ejemplo:
+DELETE https://workera.com/apiClient/v1/workshift/assign/3651037
+Resultado:
+En el caso de que se envÃ­e bien la solicitud, el servidor responderÃ¡ el cÃ³digo 200 con un corto mensaje de confirmaciÃ³n. En el caso contrario, emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Ejemplo de resultado correcto:
+{
+    "result": "CORRECTO",
+    "messages": [
+        "AsignaciÃ³n de turno eliminada correctamente"
+    ]
+}
+Ejemplo de resultado errÃ³neo:
+{
+    "result": "ERROR",
+    "messages": [
+        "AsignaciÃ³n de turno no encontrada"
+    ]
+}
+Servicios relacionados con AutorizaciÃ³n de Horas Extras
+/overtimeAuthorization - GET
+Este servicio muestra un listado de las horas extras que han sido autorizadas segÃºn los parÃ¡metros de bÃºsqueda ingresados
+ParÃ¡metros:
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+start
+Date
+Fecha de inicio de bÃºsqueda en formato yyyy-MM-dd
+SÃ­
+2025-05-25
+end
+Date
+Fecha de tÃ©rmino de bÃºsqueda en yyyy-MM-dd
+SÃ­
+2025-06-25
+branchOffice
+String
+CÃ³digo de la sucursal
+SÃ­
+S1
+department
+String
+CÃ³digo del departamento
+SÃ­
+D1
+employees
+String
+CÃ³digo de ficha del empleado. Pueden ser varios separador por comas sin espacios
+No
+12345678,22222222
+page
+Integer
+PÃ¡gina actual de bÃºsqueda. Por defecto es 1
+SÃ­
+1
+ParÃ¡metros en Postman:
+URL de ejemplo:
+https://workera.com/apiClient/v1/overtimeAuthorization?start=2025-09-01&end=2025-09-07&branchOffice=S1&department=D1&employees=12345678&page=1
+Resultado:
+Este servicio emitirÃ¡ un listado de todos los empleados que tengan horas autorizadas en el periodo consultado. El resultado se puede dividir en 3 secciones: la paginaciÃ³n, los datos del trabajador y los datos de la autorizaciÃ³n como tal:
+Resultado:
+Atributo
+Formato
+DescripciÃ³n
+page
+Integer
+PÃ¡gina actual
+totalPages
+Integer
+Total de pÃ¡ginas
+pageResult
+Integer
+NÃºmero de resultados en la pÃ¡gina actual
+totalResult
+Integer
+NÃºmero total de resultados
+data
+Array &lt;OvertimeAuthData&gt;
+Lista de elementos dentro del perfil de empleado
+OvertimeAuthData
+Atributo
+Formato
+DescripciÃ³n
+employee
+EmployeeData
+InformaciÃ³n del trabajador
+authDate
+Date
+DÃ­a de AutorizaciÃ³n
+scheduleInAuthTime
+Integer
+Tiempo (en segundos) autorizado en la entrada. Se asigna al inicio de la jornada en base a horarios
+scheduleOutAuthTime
+Integer
+Tiempo (en segundos) autorizado en la salida. Se asigna al final de la jornada en base a horarios
+withoutScheduleAuthTime
+Integer
+Tiempo (en segundos) autorizado en dÃ­as sin jornada. Debe tener igual un turno en base a horarios para ejecutarse
+holidayExtraAuthTime
+Integer
+Tiempo (en segundos) para jornadas que cuentan tiempo extra en feriados
+comment
+String
+Comentario de asignaciÃ³n
+assigned
+Boolean
+Indica si la hora extra autorizada ya ha sido asignada en una jornada (la asignaciÃ³n a la jornada se efectÃºa al momento de realizar el cÃ¡lculo de asistencia)
+EmployeeData
+Atributo
+Formato
+DescripciÃ³n
+code
+String
+CÃ³digo de ficha 
+actual
+ del trabajador
+deviceCode
+ 
+CÃ³digo del trabajador en reloj
+identification
+String
+IdentificaciÃ³n (RUT, pasaporte) del trabajador
+name
+String
+Primer y segundo nombre del trabajador
+lastName
+String
+Apellido paterno y materno del trabajador
+branchOffice
+String
+Nombre de la Sucursal
+department
+String
+Nombre del Departamento
+employeeStatus
+String
+Estado del trabajador:
+ACTIVO
+INACTIVO
+companyIdentification
+String
+RUT de la compaÃ±Ã­a asociada
+companyName
+String
+RazÃ³n social de la compaÃ±Ã­a asociada
+ Ejemplo de resultado:
+{
+    "page": 1,
+    "totalPages": 1,
+    "pageResult": 7,
+    "totalResult": 7,
+    "data": [
+        {
+            "employee": {
+                "code": "12345678",
+                "deviceCode": 12345678,
+                "identification": "12.345.678-K",
+                "name": "ERICK ALEXANDER",
+                "lastName": "RIVAS CORRALES",
+                "branchOffice": "Arica",
+                "department": "Departamento Inicial",
+                "employeeStatus": "ACTIVO",
+                "companyIdentification": "24.104.527-7",
+                "companyName": "DEMO WORKERA.COM"
+            },
+            "authDate": "2025-09-01",
+            "scheduleInAuthTime": 1200,
+            "scheduleOutAuthTime": 6000,
+            "withoutScheduleAuthTime": 0,
+            "holidayExtraAuthTime": 0,
+            "comment": "",
+            "assigned": false
+        },
+        {
+            "employee": {
+                "code": "12345678",
+                "deviceCode": 12345678,
+                "identification": "12.345.678-K",
+                "name": "ERICK ALEXANDER",
+                "lastName": "RIVAS CORRALES",
+                "branchOffice": "Arica",
+                "department": "Departamento Inicial",
+                "employeeStatus": "ACTIVO",
+                "companyIdentification": "24.104.527-7",
+                "companyName": "DEMO WORKERA.COM"
+            },
+            "authDate": "2025-09-02",
+            "scheduleInAuthTime": 6000,
+            "scheduleOutAuthTime": 1200,
+            "withoutScheduleAuthTime": 0,
+            "holidayExtraAuthTime": 0,
+            "comment": "",
+            "assigned": false
+        },
+        {...}
+    ]
+}
+ /overtimeAutorization - POST
+Este servicio realiza autorizaciÃ³n de tiempo extra usando las APIs. Ya que estamos haciendo un POST, este servicio no tiene parÃ¡metros, pero se debe incluir un cuerpo (BODY) para que funcione. Para esto, se deben cumplir ciertas condiciones:
+Luego de realizar la asignaciÃ³n, es recomendable que realicen un cÃ¡lculo de asistencia para verificar si la autorizaciÃ³n fue asignada a una jornada. Por ejemplo, si en un dÃ­a no hay jornada (bien sea por dÃ­a libre o por falta de turno), no se considerarÃ¡ el tiempo extra autorizado.
+Si existen mÃ¡s de una jornada en un dÃ­a, la autorizaciÃ³n de tiempo extra se aplicarÃ¡ a todas las jornadas de ese dÃ­a.
+La autorizaciÃ³n de tiempo extra en general solo aplica para turnos en base a horarios (turno normal)
+Sabiendo esto, veremos lo relacionado a la solicitud:
+Cuerpo del mensaje (BODY) en formato JSON:
+Atributo
+Formato
+DescripciÃ³n
+employeeCode
+String
+CÃ³digo ficha 
+Ãºnico
+ del trabajador
+start
+Date
+Inicio del periodo de asignaciÃ³n de HHEE en formato yyyy-MM-dd
+end
+Date
+TÃ©rmino del periodo de asignaciÃ³n de HHEE en formato yyyy-MM-dd
+scheduleInAuthTime
+Integer
+Tiempo (en segundos) autorizado en la entrada. Se asigna al inicio de la jornada en base a horarios
+scheduleOutAuthTime
+Integer
+Tiempo (en segundos) autorizado en la salida. Se asigna al final de la jornada en base a horarios
+withoutScheduleAuthTime
+Integer
+Tiempo (en segundos) autorizado en dÃ­as sin jornada. Debe tener igual un turno en base a horarios para ejecutarse
+holidayExtraAuthTime
+Integer
+Tiempo (en segundos) para jornadas que cuentan tiempo extra en feriados
+replace
+Boolean
+Indica si la hora extra autorizada ya ha sido asignada en una jornada (la asignaciÃ³n a la jornada se efectÃºa al momento de realizar el cÃ¡lculo de asistencia)
+comment
+String
+Comentario de asignaciÃ³n
+URL de ejemplo:
+POST https://workera.com/apiClient/v1/overtimeAuthorization
+BODY de ejemplo en Postman
+{
+    "employeeCode": "12345678", 
+    "start": "2025-09-01", 
+    "end": "2025-09-14",
+    "scheduleInAuthTime": 600,
+    "scheduleOutAuthTime": 2400,
+    "withoutScheduleAuthTime": 32400,
+    "holidayExtraAuthTime": 32400,
+    "replace": true,
+    "comment": "AutorizaciÃ³n por Pacto",
+}
+Resultado:
+En el caso de que todo se envÃ­e correctamente, el servidor responde el cÃ³digo 200, y la informaciÃ³n que se subiÃ³. En el caso contrario, emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Ejemplo de resultado correcto:
+{
+    "employee": {
+        "code": "12345678",
+        "deviceCode": 12345678,
+        "identification": "12.345.678-K",
+        "name": "ERICK ALEXANDER",
+        "lastName": "RIVAS CORRALES",
+        "branchOffice": "Arica",
+        "department": "Departamento Inicial",
+        "employeeStatus": "ACTIVO",
+        "companyIdentification": "24.104.527-7",
+        "companyName": "DEMO WORKERA.COM"
+    },
+    "data": [
+        {
+            "authDate": "2025-09-01",
+            "scheduleInAuthTime": 3600,
+            "scheduleOutAuthTime": 3600,
+            "withoutScheduleAuthTime": 0,
+            "holidayExtraAuthTime": 0,
+            "comment": "Prueba",
+            "modified": true
+        },
+        {
+            "authDate": "2025-09-02",
+            "scheduleInAuthTime": 3600,
+            "scheduleOutAuthTime": 3600,
+            "withoutScheduleAuthTime": 0,
+            "holidayExtraAuthTime": 0,
+            "comment": "Prueba",
+            "modified": true
+        },
+        {
+            "authDate": "2025-09-03",
+            "scheduleInAuthTime": 3600,
+            "scheduleOutAuthTime": 3600,
+            "withoutScheduleAuthTime": 0,
+            "holidayExtraAuthTime": 0,
+            "comment": "Prueba",
+            "modified": true
+        },
+        {...}
+    ]
+}
+Ejemplo de resultado errÃ³neo:
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Trabajador no encontrado"
+    ]
+}
+Servicios relacionados con las sucursales
+/branchOffice - GET
+Este servicio permite consultar un listado de sucursales actualmente creados en la plataforma. Este listado incluye sucursales activas e inactivas.
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+page
+String
+NÃºmero de la pÃ¡gina a consultar
+No
+1
+Resultado:
+La lista se entregarÃ¡ con dos secciones: La primera es la informaciÃ³n de la paginaciÃ³n, mientras que la segunda parte tiene la informaciÃ³n de las sucursales que se pueden ver en la plataforma
+Atributo
+Formato
+DescripciÃ³n
+page
+Integer
+PÃ¡gina actual
+totalPages
+Integer
+Total de pÃ¡ginas
+pageResult
+Integer
+NÃºmero de resultados en la pÃ¡gina actual
+totalResult
+Integer
+NÃºmero total de resultados
+data
+Array &lt;BranchOffice&gt;
+Lista de elementos dentro del perfil de empleado
+BranchOffice
+Atributo
+Formato
+DescripciÃ³n
+id
+ Integer
+IdentificaciÃ³n Ãºnico de la sucursal
+name
+String
+Nombre de la sucursal
+code
+ Integer
+ CÃ³digo de la sucursal
+description
+String
+DescripciÃ³n
+address
+String
+DirecciÃ³n registrada en la Sucursal
+timezoneId
+Integer
+Zona Hora registrada
+timezoneName
+String
+Nombre de esa Zona Horaria
+status
+String
+Estado de la sucursal:
+ACTIVO
+INACTIVO
+defaultBranchoffice
+Boolean
+Indica si es la sucursal Matriz
+employeesCount
+Integer
+Cantidad de trabajadores asociados a dicha secciÃ³n
+Resultado:
+Lo que nos mostrarÃ¡ es un listado de todas las sucursales en dos secciones: la primera muestra la paginaciÃ³n, mientras que la segunda parte muestra las sucursales.
+Ejemplo de resultado correcto:
+{
+    "data": [
+        {
+            "id": 121,
+            "name": "Sucursal Matriz",
+            "code": "MATRIZ",
+            "description": null,
+            "address": "Av. Apoquindo 4501",
+            "timezoneId": 25,
+            "timezoneName": "(UTC-03:00) Santiago",
+            "status": "ACTIVO",
+            "defaultBranchOffice": true,
+            "employeesCount": 3
+        },
+        {
+            "id": 2081,
+            "name": "Arica",
+            "code": "ARI01",
+            "description": "",
+            "address": "Arica",
+            "timezoneId": 25,
+            "timezoneName": "(UTC-03:00) Santiago",
+            "status": "ACTIVO",
+            "defaultBranchOffice": false,
+            "employeesCount": 12
+        },...
+    ],
+    "page": 1,
+    "totalPages": 1,
+    "pageResult": 5,
+    "totalResult": 5
+}
+/branchOffice/{id}
+Este servicio permite llamar la informaciÃ³n de una sucursal en especÃ­fico. Para poder usar esto, se debe tener el id Ãºnico con anterioridad.
+ParÃ¡metros:
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+id
+Integer
+Identificador Ãºnico de la Sucursal
+SÃ­
+200
+URL de ejemplo:
+GET https://workera.com/apiClient/v1/branchOffice/200
+Resultado:
+En el caso de que se haya enviado la informaciÃ³n correctamente, recibirÃ¡n un cÃ³digo 200 del servidor y los datos de la Sucursal. En caso contrario, emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Ejemplo de resultado correcto:
+{
+    "id": 2081,
+    "name": "Arica",
+    "code": "ARI01",
+    "description": "",
+    "address": "Arica",
+    "timezoneId": 25,
+    "timezoneName": "(UTC-03:00) Santiago",
+    "status": "ACTIVO",
+    "defaultBranchOffice": false,
+    "employeesCount": 12
+}
+Ejemplo de resultado errÃ³neo:
+{
+    "result": "ERROR",
+    "messages": [
+        "Sucursal no encontrada"
+    ]
+}
+/branchOffice - POST
+Este servicio permite crear una nueva sucursal. Como estamos usando POST, no es necesario agregar parÃ¡metros, pero hay que agregar toda la informaciÃ³n dentro del cuerpo (BODY) de la solicitud.
+Cuerpo del mensaje (BODY) en formato JSON
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+name
+String
+Nombre de la Sucursal
+SÃ­
+Talca
+code
+String
+CÃ³digo Ãºnico de la sucursal
+SÃ­
+TA01
+description
+String
+DescripciÃ³n en la sucursal
+ 
+2da Oficina
+address
+String
+DirecciÃ³n en la sucursal
+SÃ­
+O'Higgins 123
+timezoneId
+Integer
+ID de Zona Horaria. Se puede buscar con API (25 es la de Santiago)
+SÃ­
+25
+URL de ejemplo:
+POST https://workera.com/apiClient/v1/branchOffice
+Body de ejemplo en Postman
+{
+    "name": "Talca",
+    "code": "TA01",
+    "description": "DescripciÃ³n de muestra",
+    "address": "DirecciÃ³n de la Sucursal",
+    "timezoneId": 25
+}
+Resultado:
+Si se enviÃ³ correctamente, se envÃ­a el cÃ³digo 200 desde el servidor. En caso contrario, se emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Resultado correcto:
+{
+    "result": "CORRECTO",
+    "messages": [
+        "Sucursal creada correctamente"
+    ]
+}
+Resultado errÃ³neo:
+{
+    "result": "ERROR",
+    "messages": [
+        "El cÃ³digo ya se encuentra registrado en otro departamento."
+    ]
+}
+/branchOffice - PUT
+Este servicio permite modificar informaciÃ³n de una sucursal ya existente en la plataforma. Para esto, vamos a necesitar el ID Ãºnico de dicha sucursal; esta se puede conseguir usando la API GET /branchOffice. Como estamos enviando informaciÃ³n, no hay parÃ¡metros, pero el cuerpo (BODY) debe contener los datos a actualizar.
+Cuerpo del mensaje (BODY) en formato JSON:
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+id
+Integer
+Identificador Ãºnico registrado para la sucursal
+SÃ­
+200
+name
+String
+Nombre de la Sucursal
+SÃ­
+Talca
+code
+String
+CÃ³digo Ãºnico de la sucursal (plataforma)
+SÃ­
+TA01
+description
+String
+DescripciÃ³n de la sucursal
+No
+2da Oficina
+address
+String
+DirecciÃ³n en sucursal
+SÃ­
+O'Higgins 123
+timezoneId
+Integer
+ID de la Zona horaria (Se obtiene con API. La de Santiago es 25)
+SÃ­
+25
+URL de ejemplo:
+POST https://workera.com/apiClient/v1/branchOffice
+Body de ejemplo en Postman:
+{
+    "id": 33635,
+    "name": "Talca",
+    "code": "TA02",
+    "description": "DescripciÃ³n modificada",
+    "address": "DirecciÃ³n modificada",
+    "timezoneId": 25
+}
+Resultado:
+Si la informaciÃ³n se enviÃ³ correctamente, recibirÃ¡n del servidor el cÃ³digo 200. En caso contrario, se emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Resultado correcto:
+{
+    "result": "CORRECTO",
+    "messages": [
+        "Sucursal actualizada correctamente"
+    ]
+}
+Resultado errÃ³neo:
+{
+    "result": "ERROR",
+    "messages": [
+        "El cÃ³digo ya se encuentra registrado en otra sucursal."
+    ]
+}
+/branchOffice/disable/{id} - PUT
+Este servicio permite desactivar una sucursal. Con esta API, solo es posible desactivar sucursales que 
+no
+ tenga trabajadores asignados.
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+id
+Integer
+Identificador Ãºnico de la Sucursal
+SÃ­
+200
+URL de ejemplo:
+PUT https://workera.com/apiClient/v1/branchOffice/disable/200
+Resultado:
+El sistema emitirÃ¡ un cÃ³digo 200 si todo estÃ¡ correcto. En caso contrario, 
+se emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Resultado correcto:
+{
+    "result": "CORRECTO",
+    "messages": [
+        "Sucursal desactivada correctamente"
+    ]
+}
+Resultado errÃ³neo:
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Sucursal ya se encuentra desactivada"
+    ]
+}
+{
+    "result": "ERROR",
+    "messages": [
+        "Sucursal no puede ser inactivada porque tiene empleados"
+    ]
+}
+/branchOffice/enable/{id} - PUT
+Este servicio permite reactivar una sucursal con las API.
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+id
+Integer
+Identificador Ãºnico de la Sucursal
+SÃ­
+200
+URL de ejemplo:
+PUT https://workera.com/apiClient/v1/branchOffice/enable/200
+Resultado:
+El sistema emitirÃ¡ un cÃ³digo 200 si todo estÃ¡ correcto. En caso contrario, 
+se emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Resultado correcto:
+{
+    "result": "CORRECTO",
+    "messages": [
+        "Sucursal activada correctamente"
+    ]
+}
+Resultado errÃ³neo:
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Sucursal ya se encuentra activada"
+    ]
+}
+Solicitudes relacionadas con la Zona Horaria
+/timezone - GET
+Obtiene el listado de las zonas horarias.
+URL a usar:
+GET https://workera.com/apiClient/v1/timezone
+Resultado:
+[
+    {
+        "id": 1,
+        "name": "(UTC-12:00) LÃ­nea internacional de cambio de fecha",
+        "zoneDiff": -12
+    },
+    {
+        "id": 2,
+        "name": "(UTC-11:00) Hora universal coordinada-11",
+        "zoneDiff": -11
+    },
+    {
+        "id": 3,
+        "name": "(UTC-10:00) Hawai",
+        "zoneDiff": -10
+    },
+    {
+        "id": 4,
+        "name": "(UTC-09:00) Alaska",
+        "zoneDiff": -9
+    },...
+]
+NOTA:
+ el id de la Zona Horaria de Santiago es 25, Magallanes es 101 e Isla de Pascua es 102.
+Solicitudes relacionadas con los Departamentos
+/department - GET
+Este servicio permite consultar un listado de departamentos actualmente creados en la plataforma. Este listado incluye departamentos activos e inactivos.
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+page
+String
+NÃºmero de la pÃ¡gina a consultar
+No
+1
+Resultado:
+La lista se entregarÃ¡ con dos secciones: La primera es la informaciÃ³n de la paginaciÃ³n, mientras que la segunda parte tiene la informaciÃ³n de los departamentos que se pueden ver en la plataforma
+Atributo
+Formato
+DescripciÃ³n
+page
+Integer
+PÃ¡gina actual
+totalPages
+Integer
+Total de pÃ¡ginas
+pageResult
+Integer
+NÃºmero de resultados en la pÃ¡gina actual
+totalResult
+Integer
+NÃºmero total de resultados
+data
+Array &lt;department&gt;
+Lista de elementos
+department
+Atributo
+Formato
+DescripciÃ³n
+id
+ Integer
+IdentificaciÃ³n Ãºnico del departamento
+name
+String
+Nombre del departamento
+code
+ Integer
+ CÃ³digo del departamento
+description
+String
+DescripciÃ³n
+status
+String
+Estado de la sucursal:
+ACTIVO
+INACTIVO
+defaultDepartment
+Boolean
+Indica si es la sucursal Matriz
+employeesCount
+Integer
+Cantidad de trabajadores asociados a dicha secciÃ³n
+Resultado:
+Lo que nos mostrarÃ¡ es un listado de todos los departamentos en dos secciones: la primera muestra la paginaciÃ³n, mientras que la segunda parte muestra los departamento.
+Ejemplo de resultado correcto:
+{
+    "data": [
+        {
+            "id": 184,
+            "name": "Departamento Inicial",
+            "code": "INICIAL",
+            "description": null,
+            "status": "ACTIVO",
+            "defaultDepartment": true,
+            "employeesCount": 25
+        },
+        {
+            "id": 187,
+            "name": "CoordinaciÃ³n",
+            "code": "COO01",
+            "description": "",
+            "status": "ACTIVO",
+            "defaultDepartment": false,
+            "employeesCount": 1
+        },...
+    ],
+    "page": 1,
+    "totalPages": 1,
+    "pageResult": 5,
+    "totalResult": 5
+}
+/department/{id}
+Este servicio permite llamar la informaciÃ³n de un departamento en especÃ­fico. Para poder usar esto, se debe tener el id Ãºnico con anterioridad.
+ParÃ¡metros:
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+id
+Integer
+Identificador Ãºnico de la departamento
+SÃ­
+200
+URL de ejemplo:
+GET https://workera.com/apiClient/v1/department/200
+Resultado:
+En el caso de que se haya enviado la informaciÃ³n correctamente, recibirÃ¡n un cÃ³digo 200 del servidor y los datos del Departamento. En caso contrario, emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Ejemplo de resultado correcto:
+{
+    "id": 189,
+    "name": "Servicio TÃ©cnico",
+    "code": "ST01",
+    "description": null,
+    "status": "ACTIVO",
+    "defaultDepartment": false,
+    "employeesCount": 0
+}
+Ejemplo de resultado errÃ³neo:
+{
+    "result": "ERROR",
+    "messages": [
+        "Departamento no encontrado"
+    ]
+}
+/department - POST
+Este servicio permite crear un nuevo departamento. Como estamos usando POST, no es necesario agregar parÃ¡metros, pero hay que agregar toda la informaciÃ³n dentro del cuerpo (BODY) de la solicitud.
+Cuerpo del mensaje (BODY) en formato JSON
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+name
+String
+Nombre del departamento
+SÃ­
+Ventas
+code
+String
+CÃ³digo Ãºnico del departamento
+SÃ­
+VE01
+description
+String
+DescripciÃ³n en el departamento
+ 
+2da Oficina
+URL de ejemplo:
+POST https://workera.com/apiClient/v1/department
+Body de ejemplo en Postman
+{
+    "name": "Ventas",
+    "code": "VE01",
+    "description": "Equipo de Ventas de la segunda oficina",
+}
+Resultado:
+Si se enviÃ³ correctamente, se envÃ­a el cÃ³digo 200 desde el servidor. En caso contrario, se emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Resultado correcto:
+{
+    "result": "CORRECTO",
+    "messages": [
+        "Departamento creado correctamente"
+    ]
+}
+Resultado errÃ³neo:
+{
+    "result": "ERROR",
+    "messages": [
+        "El cÃ³digo ya se encuentra registrado en otro departamento."
+    ]
+}
+/department - PUT
+Este servicio permite modificar informaciÃ³n de un departamento ya existente en la plataforma. Para esto, vamos a necesitar el ID Ãºnico de dicho departamento; esta se puede conseguir usando la API GET /department. Como estamos enviando informaciÃ³n, no hay parÃ¡metros, pero el cuerpo (BODY) debe contener los datos a actualizar.
+Cuerpo del mensaje (BODY) en formato JSON:
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+id
+Integer
+Identificador Ãºnico registrado para el departamento
+SÃ­
+200
+name
+String
+Nombre del departamento
+SÃ­
+Ventas
+code
+String
+CÃ³digo Ãºnico del departamento (plataforma)
+SÃ­
+VE01
+description
+String
+DescripciÃ³n del departamento
+No
+2da Oficina
+URL de ejemplo:
+POST https://workera.com/apiClient/v1/department
+Body de ejemplo en Postman:
+{
+    "id": 189,
+    "name": "Ventas 2",
+    "code": "VE02",
+    "description": "DescripciÃ³n modificada",
+}
+Resultado:
+Si la informaciÃ³n se enviÃ³ correctamente, recibirÃ¡n del servidor el cÃ³digo 200. En caso contrario, se emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Resultado correcto:
+{
+    "result": "CORRECTO",
+    "messages": [
+        "Departamento actualizado correctamente"
+    ]
+}
+Resultado errÃ³neo:
+{
+    "result": "ERROR",
+    "messages": [
+        "El cÃ³digo ya se encuentra registrado en otro departamento."
+    ]
+}
+/department/disable/{id} - PUT
+Este servicio permite desactivar un departamento. Con esta API, solo es posible desactivar departamentos que 
+no
+ tenga trabajadores asignados.
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+id
+Integer
+Identificador Ãºnico de la Sucursal
+SÃ­
+200
+URL de ejemplo:
+PUT https://workera.com/apiClient/v1/department/disable/200
+Resultado:
+El sistema emitirÃ¡ un cÃ³digo 200 si todo estÃ¡ correcto. En caso contrario, se emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Resultado correcto:
+{
+    "result": "CORRECTO",
+    "messages": [
+        "Departamento desactivado correctamente"
+    ]
+}
+Resultado errÃ³neo:
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Departamento ya se encuentra desactivado"
+    ]
+}
+{
+    "result": "ERROR",
+    "messages": [
+        "Departamento no puede ser inactivado porque tiene empleados"
+    ]
+}
+/department/enable/{id} - PUT
+Este servicio permite reactivar un departamento con las API.
+Atributo
+Formato
+DescripciÃ³n
+Requerido
+Ejemplo
+id
+Integer
+Identificador Ãºnico de la Sucursal
+SÃ­
+200
+URL de ejemplo:
+PUT https://workera.com/apiClient/v1/department/enable/200
+Resultado:
+El sistema emitirÃ¡ un cÃ³digo 200 si todo estÃ¡ correcto. En caso contrario, se emitirÃ¡ error 400 (error de validaciÃ³n o Bad Request), 500 (Error interno del Servidor) o un error comÃºn. En el Ãºltimo caso, indicarÃ­a un mensaje del por quÃ©.
+Atributo
+Formato
+DescripciÃ³n
+result
+String
+Tipo de resultado:
+CORRECTO
+ADVERTENCIA
+ERROR
+messages
+Array&lt;String&gt;
+InformaciÃ³n adicional del resultado
+Resultado correcto:
+{
+    "result": "CORRECTO",
+    "messages": [
+        "Departamento activado correctamente"
+    ]
+}
+Resultado errÃ³neo:
+{
+    "result": "ADVERTENCIA",
+    "messages": [
+        "Departamento ya se encuentra activado"
+    ]
+}
+ 
+          
+        
+        
+        
+          
+  
+    
+  
+  
+        
+        
+        
+          
+            
+  
+    
+      
+      
+      
+    
+  
+          
+        
+      
+      
+        
+          
+            
+  
+  
+  
+    
+      
+      
+      
+      
+        
+          
+GuÃ­a Inicial de Uso de Workera
+        
+      
+    
+  
+    
+      
+      
+      
+      
+        
+          
+          
+          
+            
+            
+Ley 40 horas
+            
+          
+          
+            
+              
+                
+                
+                  
+ActualizaciÃ³n de la plataforma a la Normativa
+                
+              
+            
+          
+        
+      
+    
+  
+    
+      
+      
+      
+      
+        
+          
+Webinars Workera
+        
+      
+    
+  
+    
+      
+      
+      
+      
+        
+          
+          
+          
+            
+            
+ConfiguraciÃ³n
+            
+          
+          
+            
+              
+                
+                
+                  
+Comenzar con Workera
+                
+              
+            
+              
+                
+                
+                  
+CompaÃ±Ã­a
+                
+              
+            
+              
+                
+                
+                  
+ConfiguraciÃ³n Opciones Generales
+                
+              
+            
+              
+                
+                
+                  
+ConfiguraciÃ³n Control Asistencia
+                
+              
+            
+              
+                
+                
+                  
+Notificaciones Control de Asistencia
+                
+              
+            
+              
+                
+                
+                  
+Historial
+                
+              
+            
+              
+                
+                
+                  
+Integraciones API
+                
+              
+            
+          
+        
+      
+    
+  
+    
+      
+      
+      
+      
+        
+          
+          
+          
+            
+            
+Personas
+            
+          
+          
+            
+              
+                
+                
+                  
+Trabajador
+                
+              
+            
+          
+        
+      
+    
+  
+    
+      
+      
+      
+      
+        
+          
+GestiÃ³n de Cuenta
+        
+      
+    
+  
+    
+      
+      
+      
+      
+        
+          
+          
+          
+            
+            
+GestiÃ³n Documental
+            
+          
+          
+            
+              
+                
+                
+                  
+Documentos
+                
+              
+            
+          
+        
+      
+    
+  
+    
+      
+      
+      
+      
+        
+          
+          
+          
+            
+            
+Soy trabajador
+            
+          
+          
+            
+              
+                
+                
+                  
+App MÃ³vil
+                
+              
+            
+          
+        
+      
+    
+  
+    
+      
+      
+      
+      
+        
+          
+          
+          
+            
+            
+Control de Asistencia
+            
+          
+          
+            
+              
+                
+                
+                  
+Horarios
+                
+              
+            
+              
+                
+                
+                  
+Turnos
+                
+              
+            
+              
+                
+                
+                  
+AsignaciÃ³n de turnos a trabajadores
+                
+              
+            
+              
+                
+                
+                  
+Permisos
+                
+              
+            
+              
+                
+                
+                  
+GestiÃ³n MÃ³vil y Geocercas
+                
+              
+            
+              
+                
+                
+                  
+Manejo del Portal del Trabajador
+                
+              
+            
+              
+                
+                
+                  
+Justificaciones y Solicitudes
+                
+              
+            
+              
+                
+                
+                  
+Reportes
+                
+              
+            
+              
+                
+                
+                  
+Normativa
+                
+              
+            
+          
+        
+      
+    
+  
+    
+      
+      
+      
+      
+        
+          
+          
+          
+            
+            
+Dispositivo (Reloj fÃ­sico)
+            
+          
+          
+            
+              
+                
+                
+                  
+InstalaciÃ³n del dispositivo (Reloj fÃ­sico)
+                
+              
+            
+              
+                
+                
+                  
+Conectemos nuestro Reloj FÃ­sico
+                
+              
+            
+              
+                
+                
+                  
+Enrolemos a nuestros trabajadores
+                
+              
+            
+          
+        
+      
+    
+  
+    
+      
+      
+      
+      
+        
+          
+Casino
+        
+      
+    
+  
+          
+          
+          
+        
+      
+    
+  
+      
+      
+        
+  
+  
+    
+      
+  
+  
+  
+      
+https://www.workera.com
+    
+    
+      
+      
+Copyright Â© 2026, QWANTEC INC
+    
+  
+      
+    
+    
+    
+    
+    
+  
+
