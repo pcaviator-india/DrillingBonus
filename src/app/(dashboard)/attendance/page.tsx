@@ -49,7 +49,7 @@ export default async function AttendancePage({
   ] = await Promise.all([
       db.employee.findMany({
         where: { isActive: true },
-        select: { id: true, fullName: true },
+        select: { id: true, fullName: true, rut: true },
         orderBy: { fullName: "asc" },
         take: 1000,
       }),
@@ -160,6 +160,7 @@ export default async function AttendancePage({
     reviewNote: rec.reviewNote ?? null,
     inDevice: rec.inDevice ?? null,
     employeeWorkeraId: rec.employee.workeraId ?? null,
+    rut: rec.employee.rut ?? null,
     outDevice: rec.outDevice ?? null,
     inOrigin: rec.inOrigin ?? null,
     inAddress: rec.inAddress ?? null,
@@ -189,6 +190,9 @@ export default async function AttendancePage({
         </div>
         <Link href={`/api/attendance/export?${exportQuery.toString()}`} prefetch={false}>
           <Button variant="outline">Export CSV</Button>
+        </Link>
+        <Link href={`/api/attendance/export-workera?${exportQuery.toString()}`} prefetch={false}>
+          <Button variant="outline">Export for Workera import</Button>
         </Link>
       </div>
 

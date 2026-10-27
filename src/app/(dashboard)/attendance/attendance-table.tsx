@@ -57,6 +57,7 @@ export interface AttendanceRow {
   reviewNote: string | null;
   inDevice: string | null;
   employeeWorkeraId: string | null;
+  rut: string | null;
   outDevice: string | null;
   inOrigin: string | null;
   inAddress: string | null;
@@ -99,7 +100,6 @@ export function AttendanceTable({ rows }: { rows: AttendanceRow[] }) {
   const [pending, startTransition] = useTransition();
   const [correcting, setCorrecting] = useState<Set<string>>(new Set());
   const [reviewing, setReviewing] = useState<Set<string>>(new Set());
-  const [pushing, setPushing] = useState(false);
 
   // On mount, apply any saved preference (client-only, after hydration).
   useEffect(() => {
@@ -138,44 +138,7 @@ export function AttendanceTable({ rows }: { rows: AttendanceRow[] }) {
 
   return (
     <>
-      <div className="mb-3 flex justify-between">
-        <Button
-          variant="secondary"
-          disabled={pushing}
-          onClick={async () => {
-            setPushing(true);
-            for (const r of rows) {
-              if (!r.employeeWorkeraId) continue;
-              if (r.timeIn) {
-                await fetch("/api/workera/events", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    employeeCode: r.employeeWorkeraId,
-                    eventType: "IN",
-                    timestamp: r.timeIn,
-                    deviceName: r.inDevice ?? undefined,
-                  }),
-                });
-              }
-              if (r.timeOut) {
-                await fetch("/api/workera/events", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    employeeCode: r.employeeWorkeraId,
-                    eventType: "OUT",
-                    timestamp: r.timeOut,
-                    deviceName: r.outDevice ?? undefined,
-                  }),
-                });
-              }
-            }
-            setPushing(false);
-          }}
-        >
-          {pushing ? "Pushing…" : "Push all visible to Workera"}
-        </Button>
+      <div className="mb-3 flex justify-end">
         <ColumnPicker visible={visible} onChange={setVisible} />
       </div>
       <Table>
