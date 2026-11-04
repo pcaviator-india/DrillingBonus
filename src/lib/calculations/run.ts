@@ -155,9 +155,13 @@ export async function runCalculation(
   const performances = await db.rigShiftPerformance.findMany({
     where: {
       date: { gte: start, lte: end },
-      OR: [{ siteId: site.id }, { siteId: null, rig: { siteId: site.id } }],
+      OR: [
+        { siteId: site.id },
+        { upload: { siteId: site.id } },
+        { siteId: null, rig: { siteId: site.id } },
+      ],
     },
-    include: { rig: { include: { siteRigs: { where: { siteId: site.id } } } } },
+    include: { rig: { include: { siteRigs: { where: { siteId: site.id } } } }, upload: { select: { siteId: true } } },
   });
   // Union of rigs: anything drilled at this site during the period, plus the
   // current site roster (type configuration must warn even for idle rigs).
@@ -233,7 +237,7 @@ export async function runCalculation(
   // declares a site (the fix for zero-meter shifts on moved rigs).
   const perfSiteByKey = new Map<string, string | null>();
   for (const p of performances) {
-    perfSiteByKey.set(perfKey(p.rigId, p.date, p.shift), p.siteId ?? null);
+    perfSiteByKey.set(perfKey(p.rigId, p.date, p.shift), p.siteId ?? p.upload?.siteId ?? null);
   }
   const rigSiteById = new Map<string, string | null>();
   for (const p of performances) {

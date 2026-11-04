@@ -303,6 +303,17 @@ export async function processExcelUpload(uploadId: string): Promise<ProcessResul
       await db.excelUpload.update({ where: { id: uploadId }, data: { siteId: inferredSiteId } });
     }
 
+    // Backfill siteId on any existing performance rows for this upload that
+    // were created before the upload had a siteId (or with a different one).
+    // A rig may work at different sites on different dates, so the upload's
+    // declared site is the authoritative per-shift site — not Rig.siteId.
+    if (uploadSiteId) {
+      await db.rigShiftPerformance.updateMany({
+        where: { uploadId, siteId: null },
+        data: { siteId: uploadSiteId, siteEvidence: "upload" },
+      });
+    }
+
     for (const sheet of parsed.sheets) {
       for (const row of sheet.rows) {
         // find or create rig by name within the report
