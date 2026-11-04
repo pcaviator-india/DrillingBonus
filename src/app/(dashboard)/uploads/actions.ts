@@ -172,7 +172,16 @@ export async function deleteUploadAction(uploadId: string): Promise<void> {
   if (session?.user.role !== "admin") return;
 
   const upload = await db.excelUpload.findUnique({ where: { id: uploadId } });
-  if (upload?.jobId) {
+  if (!upload) return;
+
+  // Cascade-delete all data parsed from this upload so it no longer appears
+  // in calculations. Deleting the ExcelUpload alone only sets uploadId=null on
+  // rigShiftPerformance rows (onDelete: SetNull), leaving the meters and crew
+  // assignments silently feeding into calculations.
+  await db.rigShiftPerformance.deleteMany({ where: { uploadId } });
+  await db.dailyCrewEntry.deleteMany({ where: { uploadId } });
+
+  if (upload.jobId) {
     await db.job.delete({ where: { id: upload.jobId } }).catch(() => {});
   }
   await db.excelUpload.delete({ where: { id: uploadId } });

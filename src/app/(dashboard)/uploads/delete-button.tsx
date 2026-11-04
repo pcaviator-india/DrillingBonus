@@ -25,7 +25,7 @@ export function DeleteUploadButton({
       onClick={() => {
         if (
           !window.confirm(
-            `Delete upload "${fileName}"?\n\nPlanilla entries will be permanently removed. Rig shift records are kept but unlinked from this file.`,
+            `Delete upload "${fileName}"?\n\nAll parsed data will be permanently removed: planilla entries, rig shift records (meters, drilling type, depth scale), and crew assignments. This cannot be undone.`,
           )
         ) {
           return;
