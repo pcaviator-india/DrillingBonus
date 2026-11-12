@@ -140,12 +140,18 @@ export function calculateProductionMeterBonus(
 
   const optsWithData = opts ?? {};
 
+  // Force Best Rig: employees on the Best Rig eligibility list always receive
+  // best_rig_month treatment regardless of the rule's bestRigSelection.
+  const bestRigSelection = employee.forceBestRig
+    ? "best_rig_month"
+    : params.bestRigSelection;
+
   // MEJOR MÁQUINA (best_rig_month) support path — Memo MV PRIMERO §2-3.
   // Jefes/Supervisores/HSEC use Tabla 1 (Perforista rates), admin/apoyo use
   // Tabla 2 (Ayudante rates), on the rig with the BEST performance of the month
   // (Metros perforados), applied per-tramo, then prorated by days worked:
   //   TOTAL A PAGO = (bestRigRawPesos / divisorDays) * daysWorked
-  if (params.bestRigSelection === "best_rig_month") {
+  if (bestRigSelection === "best_rig_month") {
     // Select the best rig of the month.
     // - Default (no bestRigRule / no rigTypes): top rig by total monthly meters (DDH + RC).
     // - With bestRigRule + rigTypes: top AIRE_REVERSO rig (by rig monthly total)

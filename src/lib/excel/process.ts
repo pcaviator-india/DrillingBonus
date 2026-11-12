@@ -280,8 +280,9 @@ export async function processExcelUpload(uploadId: string): Promise<ProcessResul
 
     // Resolve the per-shift site BEFORE writing performances, this is a
     // historical fact per (rig, date, shift): the upload's site when chosen,
-    // otherwise the rigs' shared current site (legacy inference). A rig moving
-    // sites later must never rewrite these rows.
+    // otherwise cross-referenced from planilla crew entries, otherwise the
+    // rigs' shared current site (legacy inference). A rig moving sites later
+    // must never rewrite these rows.
     const uploadSiteId =
       (await db.excelUpload.findUnique({ where: { id: uploadId }, select: { siteId: true } }))
         ?.siteId ?? null;
@@ -297,22 +298,90 @@ export async function processExcelUpload(uploadId: string): Promise<ProcessResul
       inferredSiteIds.length === 1 && candidateRigs.length === rigNames.length
         ? inferredSiteIds[0]
         : null;
-    const resolvedSiteId = uploadSiteId ?? inferredSiteId;
-    const siteEvidence = uploadSiteId ? "upload" : resolvedSiteId ? "rig-current" : null;
-    if (!uploadSiteId && inferredSiteId) {
-      await db.excelUpload.update({ where: { id: uploadId }, data: { siteId: inferredSiteId } });
+
+    // Cross-reference: dailyCrewEntry rows (from planilla uploads) whose
+    // machine name matches one of this report's rigs carry a projectName whose
+    // SiteAlias resolves to a Site. If all such entries agree on one site,
+    // use it — this lets a rig_intervals upload resolve its site even when
+    // no admin has manually assigned one yet.
+    const crewEntries = await db.dailyCrewEntry.findMany({
+      where: {
+        machine: { not: null },
+        projectName: { not: null },
+        date: {
+          gte: new Date(
+            Math.min(
+              ...parsed.sheets.flatMap((sheet) =>
+                sheet.rows.map((row) => new Date(row.date).getTime())
+              )
+            )
+          ),
+          lte: new Date(
+            Math.max(
+              ...parsed.sheets.flatMap((sheet) =>
+                sheet.rows.map((row) => new Date(row.date).getTime())
+              )
+            )
+          ),
+        },
+      },
+      select: { machine: true, projectName: true, date: true },
+    });
+    const siteAliases = await db.siteAlias.findMany({
+      select: { normalized: true, siteId: true },
+    });
+    const siteByProject = new Map(siteAliases.map((a) => [a.normalized, a.siteId]));
+    const crewVotes = new Map<string, number>();
+    for (const e of crewEntries) {
+      if (!e.machine || !e.projectName) continue;
+      if (!rigNames.some((rn) => rigKeyOf(rn) === rigKeyOf(e.machine))) continue;
+      const siteId = siteByProject.get(normalizeText(e.projectName));
+      if (!siteId) continue;
+      crewVotes.set(siteId, (crewVotes.get(siteId) ?? 0) + 1);
+    }
+    const crewResolvedSiteId =
+      crewVotes.size === 1
+        ? [...crewVotes.entries()][0][0]
+        : crewVotes.size > 1
+          ? [...crewVotes.entries()].sort((a, b) => b[1] - a[1])[0][0]
+          : null;
+
+    const resolvedSiteId = uploadSiteId ?? crewResolvedSiteId ?? inferredSiteId;
+    const siteEvidence = uploadSiteId
+      ? "upload"
+      : crewResolvedSiteId
+        ? "planilla"
+        : resolvedSiteId
+          ? "rig-current"
+          : null;
+    if (!uploadSiteId && resolvedSiteId) {
+      await db.excelUpload.update({ where: { id: uploadId }, data: { siteId: resolvedSiteId } });
+    }
+
+    // No site could be resolved — refuse to write null-site rigs/performances.
+    // The admin must assign a site on /uploads first.
+    if (!resolvedSiteId) {
+      await db.excelUpload.update({
+        where: { id: uploadId },
+        data: {
+          status: "error",
+          errorSummary:
+            "No site could be resolved for this rig intervals upload. Assign a site on the Uploads page, then retry.",
+        },
+      });
+      throw new Error(
+        `No site resolved for upload ${uploadId}. Assign a site on the Uploads page first.`
+      );
     }
 
     // Backfill siteId on any existing performance rows for this upload that
     // were created before the upload had a siteId (or with a different one).
     // A rig may work at different sites on different dates, so the upload's
     // declared site is the authoritative per-shift site — not Rig.siteId.
-    if (uploadSiteId) {
-      await db.rigShiftPerformance.updateMany({
-        where: { uploadId, siteId: null },
-        data: { siteId: uploadSiteId, siteEvidence: "upload" },
-      });
-    }
+    await db.rigShiftPerformance.updateMany({
+      where: { uploadId, siteId: null },
+      data: { siteId: resolvedSiteId, siteEvidence },
+    });
 
     for (const sheet of parsed.sheets) {
       for (const row of sheet.rows) {

@@ -74,6 +74,8 @@ model Site {
   workDays           EmployeeWorkDay[]
   projectAssignments EmployeeProjectAssignment[]
   projectSuggestions EmployeeProjectSuggestion[]
+  bonusExclusions    BonusExclusion[]
+  bestRigEligible    BestRigEligibleEmployee[]
 }
 
 /**
@@ -142,6 +144,8 @@ model Employee {
   turnSchedules      EmployeeTurnSchedule[]
   projectAssignments EmployeeProjectAssignment[]
   projectSuggestions EmployeeProjectSuggestion[]
+  bonusExclusions    BonusExclusion[]
+  bestRigEligible    BestRigEligibleEmployee[]
 }
 
 /**
@@ -927,4 +931,52 @@ model CalculationComparison {
   @@index([employeeId, periodStart, periodEnd])
   @@index([reviewStatus])
   @@index([finalResolution])
+}
+
+// ======================
+// BONUS EXCLUSION LIST
+// Employees who never receive bonus for a site (or globally).
+// Excluded employees are removed before the calculation engine runs,
+// so no bonus line is ever created for them.
+// ======================
+model BonusExclusion {
+  id          String   @id @default(cuid())
+  employeeId  String
+  siteId      String?   // null = excluded from all sites
+  reason      String?
+  effectiveFrom DateTime @db.Date
+  effectiveTo   DateTime? @db.Date // null = ongoing
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+  site     Site?    @relation(fields: [siteId], references: [id])
+
+  @@index([employeeId])
+  @@index([siteId])
+  @@index([effectiveFrom, effectiveTo])
+}
+
+// ======================
+// BEST RIG ELIGIBILITY LIST
+// Employees who always receive Best Rig bonus even when they are driller
+// or driller helper. Overrides the rule-level bestRigSelection per employee.
+// ======================
+model BestRigEligibleEmployee {
+  id          String   @id @default(cuid())
+  employeeId  String
+  siteId      String?   // null = eligible at all sites
+  reason      String?
+  effectiveFrom DateTime @db.Date
+  effectiveTo   DateTime? @db.Date // null = ongoing
+  createdById String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  employee Employee @relation(fields: [employeeId], references: [id])
+  site     Site?    @relation(fields: [siteId], references: [id])
+
+  @@index([employeeId])
+  @@index([siteId])
 }

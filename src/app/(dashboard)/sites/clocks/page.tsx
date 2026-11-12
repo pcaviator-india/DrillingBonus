@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DevicesTable } from "./devices-table";
 import { DeviceSyncForm } from "./device-sync-form";
+import { DeviceCreateForm } from "./device-create-form";
 
 async function getDeviceList() {
   const [sites, rigs] = await Promise.all([
@@ -54,11 +55,11 @@ async function getDeviceList() {
 
   const session = await auth();
   const canManage = session?.user.role === "admin" || session?.user.role === "supervisor";
-  return { list, canManage };
+  return { list, canManage, sites };
 }
 
 export default async function ClocksPage() {
-  const { list, canManage } = await getDeviceList();
+  const { list, canManage, sites } = await getDeviceList();
 
   return (
     <div className="space-y-6">
@@ -71,6 +72,7 @@ export default async function ClocksPage() {
       </div>
 
       <DeviceSyncForm />
+      <DeviceCreateForm sites={sites} />
 
       <Card>
         <CardHeader>

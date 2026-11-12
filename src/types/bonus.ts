@@ -44,6 +44,9 @@ export interface EmployeeWork {
   siteDaysWorked?: Record<string, number>;
   /** Employee/date/site conflicts found while normalizing Planilla. */
   siteConflicts?: Array<{ date: string; siteIds: string[] }>;
+  /** When true, this employee always receives Best Rig bonus even if their
+   * role is Driller / Driller Helper. Overrides the rule-level bestRigSelection. */
+  forceBestRig?: boolean;
   /**
    * All tokens that should match a rule's positionFilter for this employee:
    * raw shift roles, their normalized forms, resolved main-position names and

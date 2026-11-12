@@ -19,6 +19,8 @@ const navItems = [
   { href: "/reports", label: "Reports" },
   { href: "/reconciliation", label: "Matching" },
   { href: "/rules", label: "Rules" },
+  { href: "/bonus-exclusions", label: "Bonus Exclusions" },
+  { href: "/best-rig-eligible", label: "Best Rig Eligible" },
   { href: "/calculations", label: "Calculations" },
   { href: "/comparisons", label: "Comparisons" },
   { href: "/sync", label: "Sync" },

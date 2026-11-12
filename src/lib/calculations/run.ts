@@ -146,7 +146,36 @@ export async function runCalculation(
           },
     include: { defaultRole: true },
   });
-  const employeeIds = new Set(employees.map((e) => e.id));
+
+  // --- Bonus Exclusion List: remove excluded employees before calculation ---
+  const activeExclusions = await db.bonusExclusion.findMany({
+    where: {
+      effectiveFrom: { lte: end },
+      AND: [
+        { OR: [{ effectiveTo: null }, { effectiveTo: { gte: start } }] },
+        { OR: [{ siteId: null }, { siteId }] },
+      ],
+    },
+    select: { employeeId: true },
+  });
+  const excludedEmployeeIds = new Set(activeExclusions.map((e) => e.employeeId));
+  const excludedEmployees = employees.filter((e) => excludedEmployeeIds.has(e.id));
+  const employeesToCalc = employees.filter((e) => !excludedEmployeeIds.has(e.id));
+
+  // --- Best Rig Eligibility List: employees who always get Best Rig bonus ---
+  const activeBestRig = await db.bestRigEligibleEmployee.findMany({
+    where: {
+      effectiveFrom: { lte: end },
+      AND: [
+        { OR: [{ effectiveTo: null }, { effectiveTo: { gte: start } }] },
+        { OR: [{ siteId: null }, { siteId }] },
+      ],
+    },
+    select: { employeeId: true },
+  });
+  const bestRigEligibleIds = new Set(activeBestRig.map((e) => e.employeeId));
+
+  const employeeIds = new Set(employeesToCalc.map((e) => e.id));
 
   // Site rigs: scoped by the PER-SHIFT site stamped on each performance row
   // (set at upload time), NOT by Rig.siteId — rigs move between sites and the
@@ -260,7 +289,7 @@ export async function runCalculation(
 
   // Planilla turn (A/B) lookup per employee per day, resolved by RUT.
   const employeeIdByRut = new Map(
-    employees.filter((e) => e.rut).map((e) => [normalizeRut(e.rut as string), e.id]),
+    employeesToCalc.filter((e) => e.rut).map((e) => [normalizeRut(e.rut as string), e.id]),
   );
   const planillaTurnMap = new Map<string, "A" | "B">();
   for (const p of planillaTurns) {
@@ -431,7 +460,7 @@ export async function runCalculation(
   // main roles / groups instead of exact cargo strings.
   const { buildRoleTokenResolver } = await import("@/lib/positions/registry");
   const roleTokensFor = await buildRoleTokenResolver();
-  for (const emp of employees) {
+  for (const emp of employeesToCalc) {
     // Token sources mirror the engine's roleUsed precedence: the roles ACTUALLY
     // worked on shifts decide which position rules apply; Workera's defaultRole
     // is only a FALLBACK for employees with no assignments (support staff that
@@ -466,6 +495,7 @@ export async function runCalculation(
       siteConflicts: source === "planilla" ? siteAllocation.get(emp.id)?.conflicts : undefined,
       defaultRole: emp.defaultRole?.name ?? null,
       roleTokens: [...new Set(roleTokens)],
+      forceBestRig: bestRigEligibleIds.has(emp.id),
       shifts: [],
     });
   }
