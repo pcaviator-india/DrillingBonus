@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { deleteBestRigEligibleAction } from "./actions";
-import { revalidatePath } from "next/cache";
 
 export function DeleteButton({ id }: { id: string }) {
   return (
@@ -11,7 +10,6 @@ export function DeleteButton({ id }: { id: string }) {
       variant="destructive"
       onClick={async () => {
         await deleteBestRigEligibleAction(id);
-        revalidatePath("/best-rig-eligible");
       }}
     >
       Delete
