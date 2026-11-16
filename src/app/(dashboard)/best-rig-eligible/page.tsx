@@ -1,6 +1,5 @@
 import { db } from "@/lib/db";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { BestRigForm } from "./best-rig-form";
-import { deleteBestRigEligibleAction } from "./actions";
+import { DeleteButton } from "./delete-button";
 import { formatDateUtc } from "@/lib/datetime";
 import type { BestRigEligibleEmployee, Employee, Site } from "@prisma/client";
 
@@ -125,15 +124,7 @@ export default async function BestRigEligiblePage() {
                           {ex.effectiveTo ? renderDate(ex.effectiveTo) : <em className="text-muted-foreground">Ongoing</em>}
                         </TableCell>
                         <TableCell>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => {
-                              void deleteBestRigEligibleAction(ex.id);
-                            }}
-                          >
-                            Delete
-                          </Button>
+                          <DeleteButton id={ex.id} />
                         </TableCell>
                       </TableRow>
                     );

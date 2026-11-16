@@ -1,5 +1,4 @@
 import { db } from "@/lib/db";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { DeleteButton } from "./delete-button";
 import {
   Table,
   TableBody,
@@ -96,15 +96,7 @@ export default async function BonusExclusionsPage() {
                           {ex.effectiveTo ? renderDate(ex.effectiveTo) : <em className="text-muted-foreground">Ongoing</em>}
                         </TableCell>
                         <TableCell>
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() => {
-                              void 0;
-                            }}
-                          >
-                            Delete
-                          </Button>
+                          <DeleteButton id={ex.id} />
                         </TableCell>
                       </TableRow>
                     );
