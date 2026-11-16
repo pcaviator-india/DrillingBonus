@@ -6,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { DeleteButton } from "./delete-button";
 import {
   Table,
   TableBody,
@@ -17,6 +16,8 @@ import {
 } from "@/components/ui/table";
 import { formatDateUtc } from "@/lib/datetime";
 import type { BonusExclusion, Employee, Site } from "@prisma/client";
+import { ExclusionForm } from "./exclusion-form";
+import { DeleteButton } from "./delete-button";
 
 type ExclusionRow = BonusExclusion & {
   employee: Employee | null;
@@ -34,12 +35,24 @@ function renderDate(value: Date | string | null | undefined): string {
 
 export default async function BonusExclusionsPage() {
   let exclusions: ExclusionRow[] = [];
+  let employees: { id: string; fullName: string; rut: string | null }[] = [];
+  let sites: { id: string; name: string }[] = [];
 
   try {
-    exclusions = await db.bonusExclusion.findMany({
-      include: { employee: true, site: true },
-      orderBy: { createdAt: "desc" },
-    });
+    [exclusions, employees, sites] = await Promise.all([
+      db.bonusExclusion.findMany({
+        include: { employee: true, site: true },
+        orderBy: { createdAt: "desc" },
+      }),
+      db.employee.findMany({
+        select: { id: true, fullName: true, rut: true },
+        orderBy: { fullName: "asc" },
+      }),
+      db.site.findMany({
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
+    ]);
   } catch (e: any) {
     return (
       <div className="p-4 text-red-900">
@@ -53,6 +66,13 @@ export default async function BonusExclusionsPage() {
   return (
     <div className="space-y-8 p-4">
       <h1 className="text-2xl font-bold">Bonus Exclusions</h1>
+      <p className="text-sm text-muted-foreground">
+        Employees listed here are automatically excluded from all bonus
+        calculations. Use this for employees who do not receive bonus.
+      </p>
+
+      <ExclusionForm employees={employees} sites={sites} />
+
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Exclusion list</CardTitle>
@@ -74,7 +94,7 @@ export default async function BonusExclusionsPage() {
               {exclusions.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center text-muted-foreground">
-                    No exclusions yet.
+                    No exclusions yet. Add one above.
                   </TableCell>
                 </TableRow>
               ) : (
