@@ -148,31 +148,41 @@ export async function runCalculation(
   });
 
   // --- Bonus Exclusion List: remove excluded employees before calculation ---
-  const activeExclusions = await db.bonusExclusion.findMany({
-    where: {
-      effectiveFrom: { lte: end },
-      AND: [
-        { OR: [{ effectiveTo: null }, { effectiveTo: { gte: start } }] },
-        { OR: [{ siteId: null }, { siteId }] },
-      ],
-    },
-    select: { employeeId: true },
-  });
+  let activeExclusions: { employeeId: string }[] = [];
+  try {
+    activeExclusions = await db.bonusExclusion.findMany({
+      where: {
+        effectiveFrom: { lte: end },
+        AND: [
+          { OR: [{ effectiveTo: null }, { effectiveTo: { gte: start } }] },
+          { OR: [{ siteId: null }, { siteId }] },
+        ],
+      },
+      select: { employeeId: true },
+    });
+  } catch (e) {
+    console.error("Bonus exclusion table missing (run schema push):", e);
+  }
   const excludedEmployeeIds = new Set(activeExclusions.map((e) => e.employeeId));
   const excludedEmployees = employees.filter((e) => excludedEmployeeIds.has(e.id));
   const employeesToCalc = employees.filter((e) => !excludedEmployeeIds.has(e.id));
 
   // --- Best Rig Eligibility List: employees who always get Best Rig bonus ---
-  const activeBestRig = await db.bestRigEligibleEmployee.findMany({
-    where: {
-      effectiveFrom: { lte: end },
-      AND: [
-        { OR: [{ effectiveTo: null }, { effectiveTo: { gte: start } }] },
-        { OR: [{ siteId: null }, { siteId }] },
-      ],
-    },
-    select: { employeeId: true },
-  });
+  let activeBestRig: { employeeId: string }[] = [];
+  try {
+    activeBestRig = await db.bestRigEligibleEmployee.findMany({
+      where: {
+        effectiveFrom: { lte: end },
+        AND: [
+          { OR: [{ effectiveTo: null }, { effectiveTo: { gte: start } }] },
+          { OR: [{ siteId: null }, { siteId }] },
+        ],
+      },
+      select: { employeeId: true },
+    });
+  } catch (e) {
+    console.error("Best rig eligibility table missing (run schema push):", e);
+  }
   const bestRigEligibleIds = new Set(activeBestRig.map((e) => e.employeeId));
 
   const employeeIds = new Set(employeesToCalc.map((e) => e.id));
