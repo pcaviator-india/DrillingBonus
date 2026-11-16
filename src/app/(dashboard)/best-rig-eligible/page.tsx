@@ -22,7 +22,7 @@ import { formatDateUtc } from "@/lib/datetime";
 import type { BestRigEligibleEmployee, Employee, Site } from "@prisma/client";
 
 type BestRigRow = BestRigEligibleEmployee & {
-  employee: Employee;
+  employee: Employee | null;
   site: Site | null;
 };
 
@@ -100,7 +100,9 @@ export default async function BestRigEligiblePage() {
                 list.map((ex) => (
                   <TableRow key={ex.id}>
                     <TableCell className="font-medium">
-                      {ex.employee.fullName}{ex.employee.rut ? ` (${ex.employee.rut})` : ""}
+                      {ex.employee
+                        ? `${ex.employee.fullName}${ex.employee.rut ? ` (${ex.employee.rut})` : ""}`
+                        : <em className="text-muted-foreground">Unknown employee</em>}
                     </TableCell>
                     <TableCell>
                       {ex.site?.name ?? <em className="text-muted-foreground">All sites</em>}

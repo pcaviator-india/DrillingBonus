@@ -22,7 +22,7 @@ import { formatDateUtc } from "@/lib/datetime";
 import type { BonusExclusion, Employee, Site } from "@prisma/client";
 
 type ExclusionRow = BonusExclusion & {
-  employee: Employee;
+  employee: Employee | null;
   site: Site | null;
 };
 
@@ -99,7 +99,9 @@ export default async function BonusExclusionsPage() {
                 exclusions.map((ex) => (
                   <TableRow key={ex.id}>
                     <TableCell className="font-medium">
-                      {ex.employee.fullName}{ex.employee.rut ? ` (${ex.employee.rut})` : ""}
+                      {ex.employee
+                        ? `${ex.employee.fullName}${ex.employee.rut ? ` (${ex.employee.rut})` : ""}`
+                        : <em className="text-muted-foreground">Unknown employee</em>}
                     </TableCell>
                     <TableCell>
                       {ex.site?.name ?? <em className="text-muted-foreground">All sites</em>}
