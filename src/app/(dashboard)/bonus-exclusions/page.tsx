@@ -1,8 +1,13 @@
 import { db } from "@/lib/db";
 import type { BonusExclusion } from "@prisma/client";
 
+type ExclusionWithRelations = BonusExclusion & {
+  employee: { fullName: string | null; rut: string | null } | null;
+  site: { name: string | null } | null;
+};
+
 export default async function BonusExclusionsPage() {
-  let exclusions: BonusExclusion[] = [];
+  let exclusions: ExclusionWithRelations[] = [];
   let dbError: string | null = null;
 
   try {

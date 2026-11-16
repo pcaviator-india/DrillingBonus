@@ -207,10 +207,19 @@ async function main() {
   console.log("=== Creating September 2026 Rules for Chile Chico and Dos Amigos ===\n");
 
   // 1. Chile Chico
-  const chileChico = await prisma.site.findFirst({
+  let chileChico = await prisma.site.findFirst({
     where: { name: { contains: "Chile Chico" } },
   });
-  if (!chileChico) throw new Error("Site Chile Chico not found");
+  if (!chileChico) {
+    console.log("Site Chile Chico not found, creating it...");
+    chileChico = await prisma.site.create({
+      data: {
+        name: "Proyecto Chile Chico",
+        code: "07",
+        isActive: true,
+      },
+    });
+  }
 
   // Set effectiveTo on the old July rule set so it is preserved for July/August
   const oldRuleSet = await prisma.bonusRuleSet.findFirst({
