@@ -26,6 +26,16 @@ type BestRigRow = BestRigEligibleEmployee & {
   site: Site | null;
 };
 
+/** Renders a @db.Date field safely — Prisma can return null/invalid at runtime. */
+function renderDate(value: Date | string | null | undefined): string {
+  if (!value) return "—";
+  try {
+    return formatDateUtc(value as Date);
+  } catch {
+    return String(value);
+  }
+}
+
 export default async function BestRigEligiblePage() {
   let list: BestRigRow[] = [];
   let employees: { id: string; fullName: string; rut: string | null }[] = [];
@@ -108,9 +118,9 @@ export default async function BestRigEligiblePage() {
                       {ex.site?.name ?? <em className="text-muted-foreground">All sites</em>}
                     </TableCell>
                     <TableCell className="text-sm">{ex.reason ?? "—"}</TableCell>
-                    <TableCell className="text-sm">{formatDateUtc(ex.effectiveFrom)}</TableCell>
+                    <TableCell className="text-sm">{renderDate(ex.effectiveFrom)}</TableCell>
                     <TableCell className="text-sm">
-                      {ex.effectiveTo ? formatDateUtc(ex.effectiveTo) : <em className="text-muted-foreground">Ongoing</em>}
+                      {ex.effectiveTo ? renderDate(ex.effectiveTo) : <em className="text-muted-foreground">Ongoing</em>}
                     </TableCell>
                     <TableCell>
                       <Button
