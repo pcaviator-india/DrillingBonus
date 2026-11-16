@@ -107,34 +107,46 @@ export default async function BestRigEligiblePage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                list.map((ex) => (
-                  <TableRow key={ex.id}>
-                    <TableCell className="font-medium">
-                      {ex.employee
-                        ? `${ex.employee.fullName}${ex.employee.rut ? ` (${ex.employee.rut})` : ""}`
-                        : <em className="text-muted-foreground">Unknown employee</em>}
-                    </TableCell>
-                    <TableCell>
-                      {ex.site?.name ?? <em className="text-muted-foreground">All sites</em>}
-                    </TableCell>
-                    <TableCell className="text-sm">{ex.reason ?? "—"}</TableCell>
-                    <TableCell className="text-sm">{renderDate(ex.effectiveFrom)}</TableCell>
-                    <TableCell className="text-sm">
-                      {ex.effectiveTo ? renderDate(ex.effectiveTo) : <em className="text-muted-foreground">Ongoing</em>}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => {
-                          void deleteBestRigEligibleAction(ex.id);
-                        }}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))
+                list.map((ex) => {
+                  try {
+                    return (
+                      <TableRow key={ex.id}>
+                        <TableCell className="font-medium">
+                          {ex.employee
+                            ? `${ex.employee.fullName}${ex.employee.rut ? ` (${ex.employee.rut})` : ""}`
+                            : <em className="text-muted-foreground">Unknown employee</em>}
+                        </TableCell>
+                        <TableCell>
+                          {ex.site?.name ?? <em className="text-muted-foreground">All sites</em>}
+                        </TableCell>
+                        <TableCell className="text-sm">{ex.reason ?? "—"}</TableCell>
+                        <TableCell className="text-sm">{renderDate(ex.effectiveFrom)}</TableCell>
+                        <TableCell className="text-sm">
+                          {ex.effectiveTo ? renderDate(ex.effectiveTo) : <em className="text-muted-foreground">Ongoing</em>}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => {
+                              void deleteBestRigEligibleAction(ex.id);
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  } catch {
+                    return (
+                      <TableRow key={ex.id}>
+                        <TableCell colSpan={6} className="text-muted-foreground">
+                          Error rendering best rig row.
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                })
               )}
             </TableBody>
           </Table>
