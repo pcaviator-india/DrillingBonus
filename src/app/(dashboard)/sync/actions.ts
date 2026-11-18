@@ -49,7 +49,7 @@ export async function syncEmployeesAction(): Promise<SyncState> {
     run: async () => {
       const result = await syncEmployeesFromWorkera();
       return {
-        message: `Employees synced: ${result.employeesCreated} created, ${result.employeesUpdated} updated.`,
+        message: `Employees synced: ${result.employeesUpdated} upserted${result.failed ? ` · ${result.failed} failed` : ""}.`,
         revalidatePaths: ["/employees", "/sites"],
       };
     },

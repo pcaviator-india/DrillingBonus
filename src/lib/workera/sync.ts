@@ -22,6 +22,7 @@ export type SyncResult = {
   skippedUnknown?: number;
   autoCreated?: number; // employees auto-created from Workera attendance marks
   autoApproved?: number;
+  failed?: number; // employee upsert failures
 };
 
 export type OrgUnitImportResult = {
@@ -185,54 +186,75 @@ export async function syncEmployeesFromWorkera(): Promise<SyncResult> {
   // Parallel upserts in chunks – a remote Postgres makes sequential writes
   // over hundreds of employees painfully slow.
   const CHUNK = 25;
+  let created = 0;
+  let updated = 0;
+  let failed = 0;
   for (let i = 0; i < rows.length; i += CHUNK) {
-    await Promise.all(
-      rows.slice(i, i + CHUNK).map((r) =>
+    const chunk = rows.slice(i, i + CHUNK);
+    const results = await Promise.allSettled(
+      chunk.map((r) =>
         db.employee.upsert({
-          where: { workeraId: r.workeraId },
+          where: { workeraId: r.workeraId ?? null },
           create: {
             fullName: r.fullName,
-            rut: r.rut,
-            workeraId: r.workeraId,
-            siteId: r.siteId,
+            rut: r.rut ?? undefined,
+            workeraId: r.workeraId ?? null,
+            siteId: r.siteId ?? undefined,
             isActive: r.isActive,
-            defaultRoleId: r.defaultRoleId,
-            jobPositionCode: r.jobPositionCode,
-            jobPositionName: r.jobPositionName,
-            costCenterCode: r.costCenterCode,
-            costCenterName: r.costCenterName,
-            departmentCode: r.departmentCode,
-            departmentName: r.departmentName,
-            nationality: r.nationality,
+            defaultRoleId: r.defaultRoleId ?? undefined,
+            jobPositionCode: r.jobPositionCode ?? undefined,
+            jobPositionName: r.jobPositionName ?? undefined,
+            costCenterCode: r.costCenterCode ?? undefined,
+            costCenterName: r.costCenterName ?? undefined,
+            departmentCode: r.departmentCode ?? undefined,
+            departmentName: r.departmentName ?? undefined,
+            nationality: r.nationality ?? undefined,
             rawData: r.rawData,
           },
           update: {
             fullName: r.fullName,
-            rut: r.rut,
-            siteId: r.siteId,
+            rut: r.rut ?? undefined,
+            siteId: r.siteId ?? undefined,
             isActive: r.isActive,
-            defaultRoleId: r.defaultRoleId,
-            jobPositionCode: r.jobPositionCode,
-            jobPositionName: r.jobPositionName,
-            costCenterCode: r.costCenterCode,
-            costCenterName: r.costCenterName,
-            departmentCode: r.departmentCode,
-            departmentName: r.departmentName,
-            nationality: r.nationality,
+            defaultRoleId: r.defaultRoleId ?? undefined,
+            jobPositionCode: r.jobPositionCode ?? undefined,
+            jobPositionName: r.jobPositionName ?? undefined,
+            costCenterCode: r.costCenterCode ?? undefined,
+            costCenterName: r.costCenterName ?? undefined,
+            departmentCode: r.departmentCode ?? undefined,
+            departmentName: r.departmentName ?? undefined,
+            nationality: r.nationality ?? undefined,
             rawData: r.rawData,
           },
         }),
       ),
     );
+    for (const [idx, res] of results.entries()) {
+      if (res.status === "fulfilled") {
+        // Prisma upsert returns the record; we can't easily tell create vs update,
+        // but count it as processed either way.
+        updated += 1;
+      } else {
+        failed += 1;
+        console.warn(
+          `[workera] employee upsert failed for ${chunk[idx]?.workeraId}: ${(res.reason as Error)?.message ?? res.reason}`,
+        );
+      }
+    }
   }
 
   // Keep the Positions registry in sync with Workera roles (see helper).
   await syncPositionRegistry();
 
+  console.log(
+    `[workera] employee sync done: ${updated} upserted, ${failed} failed (of ${rows.length})`,
+  );
+
   return {
-    employeesCreated: 0,
-    employeesUpdated: rows.length,
+    employeesCreated: created,
+    employeesUpdated: updated,
     attendanceUpserted: 0,
+    failed,
   };
 }
 
