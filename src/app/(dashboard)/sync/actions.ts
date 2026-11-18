@@ -47,7 +47,11 @@ export async function syncEmployeesAction(): Promise<SyncState> {
   runJobInBackground({
     jobId: job.id,
     run: async () => {
-      const result = await syncEmployeesFromWorkera();
+      const result = await syncEmployeesFromWorkera(
+        async (label, done, total) => {
+          await updateJobProgress(job.id, Math.round((done / total) * 100), label);
+        },
+      );
       return {
         message: `Employees synced: ${result.employeesUpdated} upserted${result.failed ? ` · ${result.failed} failed` : ""}.`,
         revalidatePaths: ["/employees", "/sites"],

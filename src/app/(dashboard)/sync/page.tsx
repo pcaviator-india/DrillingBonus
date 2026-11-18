@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { workeraClient } from "@/lib/workera/client";
 import { SyncForms, ScopeSelector } from "./sync-forms";
+import { JobStatus } from "./job-status";
 
 export default async function SyncPage() {
   const [branches, departments] = await Promise.all([
@@ -21,6 +22,7 @@ export default async function SyncPage() {
         departments={departments.map((d) => ({ code: d.code, name: d.name, selected: d.selected }))}
       />
       <SyncForms mockMode={workeraClient.isMock()} />
+      <JobStatus />
     </div>
   );
 }

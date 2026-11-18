@@ -100,11 +100,13 @@ async function fetchPaginated<T>(
         `[workera] ${path} page ${page} failed (attempt ${failedPages}/${MAX_FAILED_PAGES}): ${err instanceof Error ? err.message : String(err)}`,
       );
       if (failedPages >= MAX_FAILED_PAGES) {
-        console.error(`[workera] ${path}: too many consecutive page failures, stopping at page ${page}`);
-        break;
+        console.error(`[workera] ${path}: too many consecutive failures on page ${page}, skipping to next page`);
+        failedPages = 0;
+        page += 1;
+        if (page > MAX_PAGES) break;
+        continue;
       }
-      page += 1;
-      if (page > MAX_PAGES) break;
+      // Retry the SAME page (don't increment page) up to MAX_FAILED_PAGES times
       continue;
     }
     failedPages = 0; // reset on success

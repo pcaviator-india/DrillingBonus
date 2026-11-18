@@ -118,7 +118,9 @@ async function syncPositionRegistry(): Promise<void> {
  * Workera has no "drilling role" concept – default roles are assigned via the
  * crew assignment Excel / future UI, so defaultRoleId is left untouched here.
  */
-export async function syncEmployeesFromWorkera(): Promise<SyncResult> {
+export async function syncEmployeesFromWorkera(
+  onProgress?: (label: string, done: number, total: number) => Promise<void> | void,
+): Promise<SyncResult> {
   const pairs = await getSelectedScopePairs();
   if (pairs.length === 0) {
     throw new Error("No scope selected: pick at least one branch office and department first");
@@ -134,6 +136,7 @@ export async function syncEmployeesFromWorkera(): Promise<SyncResult> {
     employees = [];
   }
   console.log(`[workera] employee sync: fetched ${employees.length} employees from Workera`);
+  await onProgress?.("Fetched employees", 1, 2);
 
   const cargos = await workeraClient.fetchJobPositions();
   const cargoNameByCode = new Map(
@@ -279,6 +282,8 @@ export async function syncEmployeesFromWorkera(): Promise<SyncResult> {
   // Keep the Positions registry in sync with Workera roles (see helper).
   console.log("[workera] employee sync: syncing position registry...");
   await syncPositionRegistry();
+
+  await onProgress?.("Upserted employees", 2, 2);
 
   console.log(
     `[workera] employee sync done: ${updated} upserted, ${failed} failed (of ${rows.length})`,
