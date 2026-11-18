@@ -124,7 +124,15 @@ export async function syncEmployeesFromWorkera(): Promise<SyncResult> {
     throw new Error("No scope selected: pick at least one branch office and department first");
   }
   console.log(`[workera] employee sync: fetching employees for ${pairs.length} scope pair(s)`);
-  const employees = await workeraClient.fetchEmployees(pairs);
+  let employees: WorkeraEmployee[] = [];
+  try {
+    employees = await workeraClient.fetchEmployees(pairs);
+  } catch (err) {
+    console.error(
+      `[workera] employee sync: fetchEmployees failed entirely: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    employees = [];
+  }
   console.log(`[workera] employee sync: fetched ${employees.length} employees from Workera`);
 
   const cargos = await workeraClient.fetchJobPositions();

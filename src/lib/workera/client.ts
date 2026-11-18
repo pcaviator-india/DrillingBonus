@@ -87,9 +87,27 @@ async function fetchPaginated<T>(
 ): Promise<T[]> {
   const out: T[] = [];
   let page = 1;
+  let failedPages = 0;
+  const MAX_FAILED_PAGES = 3;
   for (;;) {
     const t0 = Date.now();
-    const json = await workeraFetch(path, { ...baseParams, page: String(page) });
+    let json: unknown;
+    try {
+      json = await workeraFetch(path, { ...baseParams, page: String(page) });
+    } catch (err) {
+      failedPages += 1;
+      console.warn(
+        `[workera] ${path} page ${page} failed (attempt ${failedPages}/${MAX_FAILED_PAGES}): ${err instanceof Error ? err.message : String(err)}`,
+      );
+      if (failedPages >= MAX_FAILED_PAGES) {
+        console.error(`[workera] ${path}: too many consecutive page failures, stopping at page ${page}`);
+        break;
+      }
+      page += 1;
+      if (page > MAX_PAGES) break;
+      continue;
+    }
+    failedPages = 0; // reset on success
     const parsed = workeraListEnvelope(dataSchema).parse(json);
     out.push(...parsed.data);
     console.log(
