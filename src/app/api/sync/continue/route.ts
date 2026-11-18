@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import {
   createJob,
@@ -17,13 +16,9 @@ import { syncAttendanceFromWorkera } from "@/lib/workera/sync";
  * timeout and needs to hand off remaining units to a new task.
  *
  * Body: { jobId: string, startUnitIndex: number }
+ * Auth: CRON_SECRET bearer token (same as /api/cron/sync)
  */
 export async function POST(req: Request): Promise<NextResponse> {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
-
   // Verify cron secret for internal calls
   const secret = process.env.CRON_SECRET;
   const authHeader = req.headers.get("authorization");
