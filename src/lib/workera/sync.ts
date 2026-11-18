@@ -123,17 +123,23 @@ export async function syncEmployeesFromWorkera(): Promise<SyncResult> {
   if (pairs.length === 0) {
     throw new Error("No scope selected: pick at least one branch office and department first");
   }
+  console.log(`[workera] employee sync: fetching employees for ${pairs.length} scope pair(s)`);
   const employees = await workeraClient.fetchEmployees(pairs);
+  console.log(`[workera] employee sync: fetched ${employees.length} employees from Workera`);
+
   const cargos = await workeraClient.fetchJobPositions();
   const cargoNameByCode = new Map(
     cargos
       .filter((c) => c.code)
       .map((c) => [String(c.code) as string, c.name as string]),
   );
+  console.log(`[workera] employee sync: fetched ${cargos.length} job positions`);
 
   // Site = branch office (sucursal) — dedupe and upsert once
   const branchCodes = [...new Set(employees.map((e) => e.branchOfficeCode).filter(Boolean))] as string[];
+  console.log(`[workera] employee sync: ${branchCodes.length} unique branch offices`);
   const siteIdByCode = new Map<string, string>();
+  let sitesCreated = 0;
   await Promise.all(
     branchCodes.map(async (code) => {
       const name = employees.find((e) => e.branchOfficeCode === code)?.branchOfficeName ?? code;
@@ -143,14 +149,19 @@ export async function syncEmployeesFromWorkera(): Promise<SyncResult> {
         update: { name: name ?? code },
       });
       siteIdByCode.set(code, site.id);
+      sitesCreated += 1;
+      console.log(`[workera] employee sync: site upserted ${code} → ${site.id}`);
     }),
   );
+  console.log(`[workera] employee sync: ${sitesCreated} sites upserted`);
 
   // Cargo → Role (name unique): resolve each distinct jobPosition to a Role row
   const cargoCodes = [
     ...new Set(employees.map((e) => e.jobPositionCode).filter((c): c is string => Boolean(c))),
   ];
+  console.log(`[workera] employee sync: ${cargoCodes.length} unique job position codes`);
   const roleIdByCode = new Map<string, string>();
+  let rolesCreated = 0;
   await Promise.all(
     cargoCodes.map(async (code) => {
       const name = cargoNameByCode.get(code) ?? `Cargo ${code}`;
@@ -160,8 +171,11 @@ export async function syncEmployeesFromWorkera(): Promise<SyncResult> {
         update: { source: "workera", sourceCode: code },
       });
       roleIdByCode.set(code, role.id);
+      rolesCreated += 1;
+      console.log(`[workera] employee sync: role upserted ${name} → ${role.id}`);
     }),
   );
+  console.log(`[workera] employee sync: ${rolesCreated} roles upserted`);
 
   const rows = employees.map((emp) => {
     const cargoCode = emp.jobPositionCode ?? null;
@@ -189,8 +203,14 @@ export async function syncEmployeesFromWorkera(): Promise<SyncResult> {
   let created = 0;
   let updated = 0;
   let failed = 0;
+  const totalChunks = Math.ceil(rows.length / CHUNK);
+  console.log(
+    `[workera] employee sync: upserting ${rows.length} employees in ${totalChunks} chunks of ${CHUNK}`,
+  );
   for (let i = 0; i < rows.length; i += CHUNK) {
     const chunk = rows.slice(i, i + CHUNK);
+    const chunkNum = Math.floor(i / CHUNK) + 1;
+    const t0 = Date.now();
     const results = await Promise.allSettled(
       chunk.map((r) =>
         db.employee.upsert({
@@ -229,21 +249,27 @@ export async function syncEmployeesFromWorkera(): Promise<SyncResult> {
         }),
       ),
     );
+    let chunkOk = 0;
+    let chunkFail = 0;
     for (const [idx, res] of results.entries()) {
       if (res.status === "fulfilled") {
-        // Prisma upsert returns the record; we can't easily tell create vs update,
-        // but count it as processed either way.
         updated += 1;
+        chunkOk += 1;
       } else {
         failed += 1;
+        chunkFail += 1;
         console.warn(
-          `[workera] employee upsert failed for ${chunk[idx]?.workeraId}: ${(res.reason as Error)?.message ?? res.reason}`,
+          `[workera] employee upsert failed (chunk ${chunkNum}/${totalChunks}) for ${chunk[idx]?.workeraId}: ${(res.reason as Error)?.message ?? res.reason}`,
         );
       }
     }
+    console.log(
+      `[workera] employee sync: chunk ${chunkNum}/${totalChunks} done (${chunkOk} ok, ${chunkFail} failed) in ${Date.now() - t0}ms`,
+    );
   }
 
   // Keep the Positions registry in sync with Workera roles (see helper).
+  console.log("[workera] employee sync: syncing position registry...");
   await syncPositionRegistry();
 
   console.log(
