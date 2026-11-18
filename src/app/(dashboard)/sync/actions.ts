@@ -144,6 +144,7 @@ export async function syncAttendanceAction(
         `${result.attendanceUpserted} day-records saved`,
         `${result.rawMarks ?? 0} raw marks fetched`,
         `${result.daysAggregated ?? 0} employee-days paired (IN→OUT)`,
+        `${result.autoCreated ?? 0} employees auto-created from Workera`,
         `${result.skippedUnknown ?? 0} skipped (unknown employee)`,
         `${result.autoApproved ?? 0} GPS auto-approved`,
       ].join(" · ");

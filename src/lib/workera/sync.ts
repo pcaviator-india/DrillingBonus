@@ -20,6 +20,7 @@ export type SyncResult = {
   rawMarks?: number;
   daysAggregated?: number;
   skippedUnknown?: number;
+  autoCreated?: number; // employees auto-created from Workera attendance marks
   autoApproved?: number;
 };
 
@@ -573,6 +574,7 @@ export async function syncAttendanceFromWorkera(
   let rawMarksTotal = 0;
   let daysAggregatedTotal = 0;
   let skippedUnknownTotal = 0;
+  let autoCreatedTotal = 0;
   // Load active devices for automatic site attribution during persist
   const devices = await db.device.findMany({
     where: { isActive: true },
@@ -625,6 +627,69 @@ export async function syncAttendanceFromWorkera(
     const daily = aggregateAttendance(marks);
     daysAggregatedTotal += daily.length;
     const inWindow = daily.filter((rec) => rec.date >= wStartStr && rec.date <= wEndStr);
+
+    // Auto-create Employee records for Workera employees that have attendance
+    // marks but don't exist locally yet (matched by workeraId or RUT). This
+    // ensures attendance is recorded even if the employee sync wasn't run first.
+    const unmatchedCodes = new Set<string>();
+    const unmatchedByCode = new Map<string, { rut: string | null; name: string | null }>();
+    for (const rec of inWindow) {
+      const existing = byWorkeraId.get(rec.employeeCode) ?? (rec.employeeRut ? byRut.get(rec.employeeRut) : undefined);
+      if (!existing && !unmatchedCodes.has(rec.employeeCode)) {
+        unmatchedCodes.add(rec.employeeCode);
+        // Find a mark for this employee to get their RUT and name
+        const mark = marks.find((m) => m.employee.code === rec.employeeCode);
+        unmatchedByCode.set(rec.employeeCode, {
+          rut: mark?.employee.identification ? normalizeRut(mark.employee.identification) : null,
+          name: mark?.employee.name ?? null,
+        });
+      }
+    }
+
+    // Create missing employees in bulk
+    if (unmatchedCodes.size > 0) {
+      // Look up site IDs by branch code (sites should already exist from employee sync)
+      const siteIdByCode = new Map<string, string>();
+      if (branchCodes.length > 0) {
+        const siteRows = await db.site.findMany({
+          where: { code: { in: branchCodes as string[] } },
+          select: { code: true, id: true },
+        });
+        for (const s of siteRows) {
+          if (s.code) siteIdByCode.set(s.code, s.id);
+        }
+      }
+      const siteCode = branchCodes.length > 0 ? branchCodes[0] : null;
+      const siteId = siteCode ? siteIdByCode.get(siteCode) ?? null : null;
+      for (const [code, info] of unmatchedByCode) {
+        try {
+          const emp = await db.employee.create({
+            data: {
+              workeraId: code,
+              fullName: info.name ?? `Empleado ${code}`,
+              rut: info.rut ?? null,
+              siteId: siteId ?? undefined,
+              isActive: true,
+              defaultRoleId: null,
+              jobPositionCode: null,
+              jobPositionName: null,
+              costCenterCode: null,
+              costCenterName: null,
+              departmentCode: null,
+              departmentName: null,
+              nationality: null,
+              rawData: { source: "workera-attendance-auto-create" },
+            },
+          });
+          byWorkeraId.set(code, emp.id);
+          if (info.rut) byRut.set(info.rut, emp.id);
+          autoCreatedTotal += 1;
+        } catch (err) {
+          console.warn(`[workera] failed to auto-create employee ${code}:`, err);
+        }
+      }
+    }
+
     const matched = inWindow.map((rec) => ({
       rec,
       employeeId:
@@ -802,6 +867,7 @@ export async function syncAttendanceFromWorkera(
     rawMarks: rawMarksTotal,
     daysAggregated: daysAggregatedTotal,
     skippedUnknown: skippedUnknownTotal,
+    autoCreated: autoCreatedTotal,
     autoApproved: approved,
   };
 }
