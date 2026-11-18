@@ -115,6 +115,35 @@ async function rebuildCrewAssignments(
 
     let created = 0;
     let skipped = 0;
+    let updated = 0;
+
+    // Batch-load existing crew assignments to avoid N+1 findFirst calls.
+    const existingAssignments = await db.crewAssignment.findMany({
+      where: {
+        employeeId: { in: [...employeeByRut.values()] },
+        rigId: {
+          in: [
+            ...new Set(
+              entries
+                .map((e) => (e.machine ? rigByMachine.get(rigKeyOf(e.machine)) : null))
+                .filter((r): r is string => Boolean(r)),
+            ),
+          ],
+        },
+        date: { gte: start, lte: end },
+      },
+      select: { id: true, employeeId: true, rigId: true, date: true, shift: true },
+    });
+    const existingKey = new Set(
+      existingAssignments.map((a) => `${a.employeeId}|${a.rigId}|${a.date.toISOString().slice(0, 10)}|${a.shift}`),
+    );
+
+    const toCreate: Array<{
+      employeeId: string; rigId: string; date: Date; shift: string; roleOnShift: string;
+      siteId: string | null; siteEvidence: string | null; rawData: object;
+    }> = [];
+    const toUpdate: Array<{ id: string; roleOnShift: string; siteId: string | null; siteEvidence: string | null }> = [];
+
     for (const entry of entries) {
       const employeeId = employeeByRut.get(entry.rutNormalized);
       const rigId = entry.machine ? rigByMachine.get(rigKeyOf(entry.machine)) : null;
@@ -129,38 +158,56 @@ async function rebuildCrewAssignments(
         (uploadSiteById.get(entry.uploadId) ?? null) ??
         (entry.projectName ? siteByProject.get(normalizeText(entry.projectName)) : undefined) ??
         null;
-      const existing = await db.crewAssignment.findFirst({
-        where: { employeeId, rigId, date: entry.date, shift },
-      });
-      if (existing) {
-        await db.crewAssignment.update({
-          where: { id: existing.id },
-          data: {
-            roleOnShift,
-            source: "excel",
-            siteId,
-            siteEvidence: siteId ? "planilla" : null,
-          },
+      const key = `${employeeId}|${rigId}|${entry.date.toISOString().slice(0, 10)}|${shift}`;
+      if (existingKey.has(key)) {
+        toUpdate.push({
+          id: existingAssignments.find((a) =>
+            a.employeeId === employeeId && a.rigId === rigId &&
+            a.date.toISOString().slice(0, 10) === entry.date.toISOString().slice(0, 10) && a.shift === shift,
+          )!.id,
+          roleOnShift,
+          siteId,
+          siteEvidence: siteId ? "planilla" : null,
         });
       } else {
-        await db.crewAssignment.create({
-          data: {
-            employeeId,
-            rigId,
-            date: entry.date,
-            shift,
-            roleOnShift,
-            siteId,
-            siteEvidence: siteId ? "planilla" : null,
-            source: "excel",
-            rawData: { dailyCrewEntryId: entry.id } as object,
-          },
+        toCreate.push({
+          employeeId,
+          rigId,
+          date: entry.date,
+          shift,
+          roleOnShift,
+          siteId,
+          siteEvidence: siteId ? "planilla" : null,
+          rawData: { dailyCrewEntryId: entry.id } as object,
         });
       }
-      created++;
     }
 
-    return `Crew assignments rebuilt: ${created} created/updated, ${skipped} skipped (unmatched employee or machine).`;
+    // Bulk create in chunks.
+    const CREATE_CHUNK = 100;
+    for (let i = 0; i < toCreate.length; i += CREATE_CHUNK) {
+      await db.crewAssignment.createMany({
+        data: toCreate.slice(i, i + CREATE_CHUNK),
+        skipDuplicates: true,
+      });
+      created += Math.min(CREATE_CHUNK, toCreate.length - i);
+    }
+
+    // Bulk update in chunks (individual updates since Prisma lacks updateMany with varying filters).
+    const UPDATE_CHUNK = 50;
+    for (let i = 0; i < toUpdate.length; i += UPDATE_CHUNK) {
+      await Promise.all(
+        toUpdate.slice(i, i + UPDATE_CHUNK).map(({ id, roleOnShift, siteId, siteEvidence }) =>
+          db.crewAssignment.update({
+            where: { id },
+            data: { roleOnShift, source: "excel", siteId, siteEvidence },
+          }),
+        ),
+      );
+      updated += Math.min(UPDATE_CHUNK, toUpdate.length - i);
+    }
+
+    return `Crew assignments rebuilt: ${created} created, ${updated} updated, ${skipped} skipped (unmatched employee or machine).`;
 }
 
 export async function runCalculationAction(

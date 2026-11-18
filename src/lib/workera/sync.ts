@@ -147,7 +147,8 @@ export async function syncEmployeesFromWorkera(
   console.log(`[workera] employee sync: fetched ${cargos.length} job positions`);
 
   // Site records from Workera branch offices are kept (needed for Device → Site mapping),
-  // but Employee.siteId is no longer synced from Workera.
+  // but Employee.siteId is intentionally NOT synced from Workera branchOfficeCode.
+  // Site is determined dynamically: clock device → project assignment → "—"
   const branchCodes = [...new Set(employees.map((e) => e.branchOfficeCode).filter(Boolean))] as string[];
   console.log(`[workera] employee sync: ${branchCodes.length} unique branch offices`);
   await Promise.all(
@@ -207,72 +208,86 @@ export async function syncEmployeesFromWorkera(
   });
 
   // Parallel upserts in chunks – a remote Postgres makes sequential writes
-  // over hundreds of employees painfully slow.
-  const CHUNK = 25;
+  // over hundreds of employees painfully slow. Chunks are processed in
+  // batches of CONCURRENT_CHUNKS to keep DB connection pressure bounded.
+  const CHUNK = 100;
+  const CONCURRENT_CHUNKS = 4;
   let created = 0;
   let updated = 0;
   let failed = 0;
   const totalChunks = Math.ceil(rows.length / CHUNK);
   console.log(
-    `[workera] employee sync: upserting ${rows.length} employees in ${totalChunks} chunks of ${CHUNK}`,
+    `[workera] employee sync: upserting ${rows.length} employees in ${totalChunks} chunk(s) of ${CHUNK} (${CONCURRENT_CHUNKS} concurrent)`,
   );
-  for (let i = 0; i < rows.length; i += CHUNK) {
-    const chunk = rows.slice(i, i + CHUNK);
-    const chunkNum = Math.floor(i / CHUNK) + 1;
-    const t0 = Date.now();
-    const results = await Promise.allSettled(
-      chunk.map((r) =>
-        db.employee.upsert({
-          where: { workeraId: r.workeraId ?? null },
-          create: {
-            fullName: r.fullName,
-            rut: r.rut ?? undefined,
-            workeraId: r.workeraId ?? null,
-            isActive: r.isActive,
-            defaultRoleId: r.defaultRoleId ?? undefined,
-            jobPositionCode: r.jobPositionCode ?? undefined,
-            jobPositionName: r.jobPositionName ?? undefined,
-            costCenterCode: r.costCenterCode ?? undefined,
-            costCenterName: r.costCenterName ?? undefined,
-            departmentCode: r.departmentCode ?? undefined,
-            departmentName: r.departmentName ?? undefined,
-            nationality: r.nationality ?? undefined,
-            rawData: r.rawData,
-          },
-          update: {
-            fullName: r.fullName,
-            rut: r.rut ?? undefined,
-            isActive: r.isActive,
-            defaultRoleId: r.defaultRoleId ?? undefined,
-            jobPositionCode: r.jobPositionCode ?? undefined,
-            jobPositionName: r.jobPositionName ?? undefined,
-            costCenterCode: r.costCenterCode ?? undefined,
-            costCenterName: r.costCenterName ?? undefined,
-            departmentCode: r.departmentCode ?? undefined,
-            departmentName: r.departmentName ?? undefined,
-            nationality: r.nationality ?? undefined,
-            rawData: r.rawData,
-          },
-        }),
-      ),
-    );
-    let chunkOk = 0;
-    let chunkFail = 0;
-    for (const [idx, res] of results.entries()) {
-      if (res.status === "fulfilled") {
-        updated += 1;
-        chunkOk += 1;
-      } else {
-        failed += 1;
-        chunkFail += 1;
-        console.warn(
-          `[workera] employee upsert failed (chunk ${chunkNum}/${totalChunks}) for ${chunk[idx]?.workeraId}: ${(res.reason as Error)?.message ?? res.reason}`,
-        );
-      }
+
+  // Process chunks in bounded concurrency batches.
+  for (let batchStart = 0; batchStart < totalChunks; batchStart += CONCURRENT_CHUNKS) {
+    const batchEnd = Math.min(batchStart + CONCURRENT_CHUNKS, totalChunks);
+    const batchPromises: Array<Promise<void>> = [];
+    for (let ci = batchStart; ci < batchEnd; ci++) {
+      const i = ci * CHUNK;
+      const chunk = rows.slice(i, i + CHUNK);
+      const chunkNum = ci + 1;
+      const t0 = Date.now();
+      batchPromises.push(
+        (async () => {
+          const results = await Promise.allSettled(
+            chunk.map((r) =>
+              db.employee.upsert({
+                where: { workeraId: r.workeraId ?? null },
+                create: {
+                  fullName: r.fullName,
+                  rut: r.rut ?? undefined,
+                  workeraId: r.workeraId ?? null,
+                  isActive: r.isActive,
+                  defaultRoleId: r.defaultRoleId ?? undefined,
+                  jobPositionCode: r.jobPositionCode ?? undefined,
+                  jobPositionName: r.jobPositionName ?? undefined,
+                  costCenterCode: r.costCenterCode ?? undefined,
+                  costCenterName: r.costCenterName ?? undefined,
+                  departmentCode: r.departmentCode ?? undefined,
+                  departmentName: r.departmentName ?? undefined,
+                  nationality: r.nationality ?? undefined,
+                  rawData: r.rawData,
+                },
+                update: {
+                  fullName: r.fullName,
+                  rut: r.rut ?? undefined,
+                  isActive: r.isActive,
+                  defaultRoleId: r.defaultRoleId ?? undefined,
+                  jobPositionCode: r.jobPositionCode ?? undefined,
+                  jobPositionName: r.jobPositionName ?? undefined,
+                  costCenterCode: r.costCenterCode ?? undefined,
+                  costCenterName: r.costCenterName ?? undefined,
+                  departmentCode: r.departmentCode ?? undefined,
+                  departmentName: r.departmentName ?? undefined,
+                  nationality: r.nationality ?? undefined,
+                  rawData: r.rawData,
+                },
+              }),
+            ),
+          );
+          let chunkOk = 0;
+          let chunkFail = 0;
+          for (const [idx, res] of results.entries()) {
+            if (res.status === "fulfilled") {
+              updated += 1;
+              chunkOk += 1;
+            } else {
+              failed += 1;
+              chunkFail += 1;
+              console.warn(
+                `[workera] employee upsert failed (chunk ${chunkNum}/${totalChunks}) for ${chunk[idx]?.workeraId}: ${(res.reason as Error)?.message ?? res.reason}`,
+              );
+            }
+          }
+          console.log(
+            `[workera] employee sync: chunk ${chunkNum}/${totalChunks} done (${chunkOk} ok, ${chunkFail} failed) in ${Date.now() - t0}ms`,
+          );
+        })(),
+      );
     }
-    console.log(
-      `[workera] employee sync: chunk ${chunkNum}/${totalChunks} done (${chunkOk} ok, ${chunkFail} failed) in ${Date.now() - t0}ms`,
-    );
+    await Promise.all(batchPromises);
   }
 
   // Keep the Positions registry in sync with Workera roles (see helper).
@@ -705,19 +720,6 @@ export async function syncAttendanceFromWorkera(
 
     // Create missing employees in bulk
     if (unmatchedCodes.size > 0) {
-      // Look up site IDs by branch code (sites should already exist from employee sync)
-      const siteIdByCode = new Map<string, string>();
-      if (branchCodes.length > 0) {
-        const siteRows = await db.site.findMany({
-          where: { code: { in: branchCodes as string[] } },
-          select: { code: true, id: true },
-        });
-        for (const s of siteRows) {
-          if (s.code) siteIdByCode.set(s.code, s.id);
-        }
-      }
-      const siteCode = branchCodes.length > 0 ? branchCodes[0] : null;
-      const siteId = siteCode ? siteIdByCode.get(siteCode) ?? null : null;
       for (const [code, info] of unmatchedByCode) {
         try {
           const emp = await db.employee.create({
@@ -725,7 +727,7 @@ export async function syncAttendanceFromWorkera(
               workeraId: code,
               fullName: info.name ?? `Empleado ${code}`,
               rut: info.rut ?? null,
-              siteId: siteId ?? undefined,
+              siteId: undefined,
               isActive: true,
               defaultRoleId: null,
               jobPositionCode: null,
@@ -886,9 +888,30 @@ export async function syncAttendanceFromWorkera(
       },
       select: { id: true, inDevice: true },
     });
-    const hits = unattributed.filter((r) => deviceByName.has(r.inDevice ?? ""));
+    // Normalize device names: Workera may send "HWM4244700712 (HWM4244700712)"
+    // while Device.name is just "HWM4244700712". Strip parenthetical suffixes
+    // and whitespace before matching.
+    const normalizeDeviceName = (name: string | null) => {
+      if (!name) return "";
+      return name.replace(/\s*\([^)]*\)\s*$/, "").trim();
+    };
+    const deviceByNormName = new Map<string, { id: string; name: string; siteId: string | null; rigId: string | null }>();
+    for (const d of devices) {
+      deviceByNormName.set(normalizeDeviceName(d.name), {
+        id: d.id,
+        name: d.name,
+        siteId: d.siteId,
+        rigId: d.rigId,
+      });
+    }
+
+    const hits = unattributed.filter((r) => {
+      const norm = normalizeDeviceName(r.inDevice);
+      return norm.length > 0 && deviceByNormName.has(norm);
+    });
     for (const r of hits) {
-      const dev = deviceByName.get(r.inDevice!)!;
+      const norm = normalizeDeviceName(r.inDevice)!;
+      const dev = deviceByNormName.get(norm)!;
       await db.attendanceRecord.update({
         where: { id: r.id },
         data: {
@@ -896,7 +919,7 @@ export async function syncAttendanceFromWorkera(
           rigId: dev.rigId ?? null,
           siteAttributionStatus: "approved",
           siteAttributionSiteId: dev.siteId,
-          siteAttributionNote: `Auto-attributed from device "${r.inDevice}"`,
+          siteAttributionNote: `Auto-attributed from device "${r.inDevice}" → "${dev.name}"`,
           siteAttributionReviewedAt: new Date(),
         },
       });
@@ -970,6 +993,19 @@ export async function retryAttendanceUnits(
     select: { id: true, name: true, siteId: true, rigId: true },
   });
   const deviceByName = new Map<string, { id: string; name: string; siteId: string | null; rigId: string | null }>(devices.map((d: { id: string; name: string; siteId: string | null; rigId: string | null }) => [d.name, { id: d.id, name: d.name, siteId: d.siteId, rigId: d.rigId }]));
+  const normalizeDeviceName = (name: string | null) => {
+    if (!name) return "";
+    return name.replace(/\s*\([^)]*\)\s*$/, "").trim();
+  };
+  const deviceByNormName = new Map<string, { id: string; name: string; siteId: string | null; rigId: string | null }>();
+  for (const d of devices) {
+    deviceByNormName.set(normalizeDeviceName(d.name), {
+      id: d.id,
+      name: d.name,
+      siteId: d.siteId,
+      rigId: d.rigId,
+    });
+  }
 
   const persistWindow = async (
     marks: WorkeraAttendance[],
@@ -1110,9 +1146,13 @@ export async function retryAttendanceUnits(
       },
       select: { id: true, inDevice: true },
     });
-    const hits = unattributed.filter((r) => deviceByName.has(r.inDevice ?? ""));
+    const hits = unattributed.filter((r) => {
+      const norm = normalizeDeviceName(r.inDevice);
+      return norm.length > 0 && deviceByNormName.has(norm);
+    });
     for (const r of hits) {
-      const dev = deviceByName.get(r.inDevice!)!;
+      const norm = normalizeDeviceName(r.inDevice)!;
+      const dev = deviceByNormName.get(norm)!;
       await db.attendanceRecord.update({
         where: { id: r.id },
         data: {
@@ -1120,7 +1160,7 @@ export async function retryAttendanceUnits(
           rigId: dev.rigId ?? null,
           siteAttributionStatus: "approved",
           siteAttributionSiteId: dev.siteId,
-          siteAttributionNote: `Auto-attributed from device "${r.inDevice}"`,
+          siteAttributionNote: `Auto-attributed from device "${r.inDevice}" → "${dev.name}"`,
           siteAttributionReviewedAt: new Date(),
         },
       });

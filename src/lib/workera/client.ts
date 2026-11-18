@@ -147,14 +147,18 @@ export const workeraClient = {
       );
     }
     const results: WorkeraEmployee[] = [];
-    for (const scope of scopes) {
-      results.push(
-        ...(await fetchPaginated(
+    // Fetch all scope pairs in parallel — each pair is an independent API call.
+    const perScope = await Promise.all(
+      scopes.map((scope) =>
+        fetchPaginated(
           "/employee",
           { branchOffice: scope.branchOffice, department: scope.department },
           workeraEmployeeSchema,
-        )),
-      );
+        ),
+      ),
+    );
+    for (const scopeResults of perScope) {
+      results.push(...scopeResults);
     }
     return results;
   },

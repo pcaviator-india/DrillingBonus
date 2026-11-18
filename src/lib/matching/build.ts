@@ -80,6 +80,18 @@ async function buildInRange(fromDate: Date, toDate: Date): Promise<BuildResult> 
   const rigByAlias = new Map(rigAliases.map((a) => [rigKeyOf(a.normalized), a.rigId]));
   const rigByName = new Map(rigs.map((r) => [rigKeyOf(r.name), r.id]));
   const siteByProyecto = new Map(siteAliases.map((a) => [a.normalized, a.siteId]));
+  // Build a normalized-RUT → siteId map from planilla entries.
+  // Planilla sheets are organized by site (PROYECTO), so an employee's RUT
+  // on a planilla row tells us which site they worked that day — even when
+  // they didn't clock on a physical device (geocode/mobile users).
+  const rutToSiteId = new Map<string, string>();
+  for (const entry of planillaEntries) {
+    const rutNorm = entry.rutNormalized ?? normalizeRut(entry.rut ?? "");
+    const siteId = entry.projectName ? siteByProyecto.get(normalizeText(entry.projectName)) ?? null : null;
+    if (rutNorm && siteId) {
+      rutToSiteId.set(rutNorm, siteId);
+    }
+  }
   // Fallback: when a planilla sheet carries no mappable "PROYECTO" text (e.g. it only
   // prints a title), use the site the admin assigned to the uploaded file on /uploads.
   const uploadsWithSite = await db.excelUpload.findMany({
@@ -182,13 +194,28 @@ async function buildInRange(fromDate: Date, toDate: Date): Promise<BuildResult> 
     const dateStr = formatDateUtc(att.date);
     if (byKey.has(`${att.employeeId}|${dateStr}`)) continue;
     bump("not-in-planilla");
+
+    // Determine site from planilla: look up the employee's RUT in the
+    // planilla site map. Planilla sheets are organized by site (PROYECTO),
+    // so an employee's RUT on a planilla row tells us which site they
+    // worked — even when they didn't clock on a physical device.
+    let planillaSiteId: string | null = null;
+    const emp = employees.find((e) => e.id === att.employeeId);
+    if (emp?.rut) {
+      const rutNorm = normalizeRut(emp.rut);
+      if (rutNorm) planillaSiteId = rutToSiteId.get(rutNorm) ?? null;
+    }
+
     put({
       employeeId: att.employeeId, date: dateStr, shiftDayNight: "unknown",
-      turnoAB: null, cargoNormalized: null, positionGroupId: null, siteId: null,
+      turnoAB: null, cargoNormalized: null, positionGroupId: null,
+      siteId: planillaSiteId,
       workeraStatus: att.status, workeraHours: att.hoursWorked,
       rigId: null, machineRaw: null, escala: null, diameter: null, hole: null,
       rigMeters: null, rigHours: null, rigDrillingHours: null, rigIntervals: null,
-      metersAttributed: null, flags: ["not-in-planilla"], sources: ["workera"],
+      metersAttributed: null,
+      flags: planillaSiteId ? ["not-in-planilla"] : ["not-in-planilla", "no-site-alias"],
+      sources: planillaSiteId ? ["workera", "planilla"] : ["workera"],
     });
   }
   await db.employeeWorkDay.deleteMany({ where: { date: { gte: fromDate, lte: toDate } } });
