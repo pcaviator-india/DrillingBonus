@@ -109,3 +109,38 @@ export async function createRuleSetAction(
   revalidatePath("/rules");
   return { success: `Rule set "${parsed.data.name}" created` };
 }
+
+export async function exportRulesAction(): Promise<{ data?: string; error?: string }> {
+  const session = await auth();
+  if (!session?.user || session.user.role !== "admin") {
+    return { error: "Admin access required" };
+  }
+
+  try {
+    const [bonusRuleSets, bonusTypes, positionGroups, mainPositions] = await Promise.all([
+      db.bonusRuleSet.findMany({
+        orderBy: { createdAt: "desc" },
+        include: { site: true, rules: { include: { bonusType: true } } },
+      }),
+      db.bonusType.findMany({ orderBy: { displayOrder: "asc" } }),
+      db.positionGroup.findMany({ orderBy: { order: "asc" } }),
+      db.mainPosition.findMany({ orderBy: { order: "asc" } }),
+    ]);
+
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      exportedBy: session.user.email,
+      data: {
+        bonusRuleSets,
+        bonusTypes,
+        positionGroups,
+        mainPositions,
+      },
+    };
+
+    return { data: JSON.stringify(exportData, null, 2) };
+  } catch (error) {
+    console.error("Rules export failed:", error);
+    return { error: "Export failed: " + (error instanceof Error ? error.message : "Unknown error") };
+  }
+}

@@ -13,6 +13,7 @@ import { formatDateUtc } from "@/lib/datetime";
 import { CreateRuleSetForm } from "./create-rule-set-form";
 import type { GroupOption, PositionOption } from "./components/rule-form-shared";
 import Link from "next/link";
+import { RulesExportButton } from "./rules-client";
 
 export default async function RulesPage() {
   const [sites, bonusTypes, ruleSets, mainPositions, positionGroups] = await Promise.all([
@@ -36,11 +37,14 @@ export default async function RulesPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold">Bonus Rules</h1>
-        <p className="text-sm text-muted-foreground">
-          Versioned, site-specific rule sets with configurable bonus types.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Bonus Rules</h1>
+          <p className="text-sm text-muted-foreground">
+            Versioned, site-specific rule sets with configurable bonus types.
+          </p>
+        </div>
+        <RulesExportButton />
       </div>
 
       <Card>

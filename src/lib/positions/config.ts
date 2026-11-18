@@ -54,6 +54,13 @@ export const POSITION_GROUPS: PositionGroupConfig[] = [
       "ELECTROMECANICO",
     ],
   },
+  {
+    key: "nobonus",
+    name: "No Bonus",
+    description: "Positions that do not receive any bonus (e.g. admin, support staff)",
+    order: 99,
+    aliasNames: [],
+  },
 ];
 
 /**

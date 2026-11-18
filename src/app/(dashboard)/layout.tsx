@@ -37,10 +37,10 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen">
       <header className="border-b">
-        <div className="container flex h-14 items-center justify-between">
-          <div className="flex items-center gap-6">
+        <div className="container flex h-14 items-center justify-between flex-wrap gap-2">
+          <div className="flex items-center gap-6 flex-wrap">
             <span className="whitespace-nowrap font-semibold">Recon Drilling Bonus</span>
-            <nav className="flex items-center gap-3 text-sm">
+            <nav className="flex items-center gap-2 text-sm flex-wrap">
               {navItems.map((item) => (
                 <NavLink key={item.href} href={item.href} label={item.label} />
               ))}

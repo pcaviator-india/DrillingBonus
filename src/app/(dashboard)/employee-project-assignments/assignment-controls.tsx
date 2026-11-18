@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useRef, useState, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AssignmentActionState, createProjectAssignmentAction, generateProjectSuggestionsAction, reviewProjectSuggestionAction, updateProjectAssignmentStatusAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -45,4 +45,45 @@ export function AssignmentStatusButton({ id, status }: { id: string; status: str
     <Button type="submit" size="sm" variant={next === "rejected" ? "destructive" : "default"} disabled={pending}>{pending ? "…" : next === "rejected" ? "Reject" : "Approve"}</Button>
     {state.error ? <span className="text-xs text-destructive">{state.error}</span> : null}
   </form>;
+}
+
+/** Live search component with debounced URL update */
+export function ProjectAssignmentSearch({ initialQuery = "" }: { initialQuery?: string }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [query, setQuery] = useState(initialQuery);
+  const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const updateUrl = useCallback((q: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (q.trim()) {
+      params.set("q", q.trim());
+    } else {
+      params.delete("q");
+    }
+    router.replace(`/employee-project-assignments?${params.toString()}`, { scroll: false });
+  }, [router, searchParams]);
+
+  const handleChange = (value: string) => {
+    setQuery(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setDebouncedQuery(value);
+      updateUrl(value);
+    }, 300);
+  };
+
+  useEffect(() => {
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, []);
+
+  return (
+    <Input
+      value={query}
+      onChange={(e) => handleChange(e.target.value)}
+      placeholder="Search employee, RUT, project, source, confidence, or status…"
+      className="max-w-xl"
+    />
+  );
 }
