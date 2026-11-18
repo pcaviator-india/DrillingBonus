@@ -194,7 +194,7 @@ export const workeraClient = {
   async fetchAttendance(from: string, to: string, pairs?: { branchOffice: string; department: string }[]): Promise<WorkeraAttendance[]> {
     if (MOCK) return getMockAttendance(from, to);
     const results: WorkeraAttendance[] = [];
-    const scopes = pairs && pairs.length > 0 ? pairs : SCOPE_PAIRS.length > 0 ? SCOPE_PAIRS : [undefined];
+    const scopes = pairs && pairs.length > 0 ? pairs : [undefined];
     const branchCodes = [
       ...new Set(scopes.map((s) => s?.branchOffice).filter((b): b is string => Boolean(b))),
     ];
