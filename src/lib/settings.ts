@@ -17,23 +17,33 @@ const DEFAULTS: AppSettings = {
 };
 
 export async function getSettings(): Promise<AppSettings> {
-  const row = await db.appSettings.findUnique({ where: { id: "singleton" } });
-  if (!row) return DEFAULTS;
-  return {
-    autoUploadClocksToWorkera: row.autoUploadClocksToWorkera,
-    autoSyncWorkeraToDb: row.autoSyncWorkeraToDb,
-    autoSyncWorkeraFrequency: row.autoSyncWorkeraFrequency as AppSettings["autoSyncWorkeraFrequency"],
-    lastWorkeraSyncAt: row.lastWorkeraSyncAt,
-    lastClockUploadAt: row.lastClockUploadAt,
-  };
+  try {
+    const row = await db.appSettings.findUnique({ where: { id: "singleton" } });
+    if (!row) return DEFAULTS;
+    return {
+      autoUploadClocksToWorkera: row.autoUploadClocksToWorkera,
+      autoSyncWorkeraToDb: row.autoSyncWorkeraToDb,
+      autoSyncWorkeraFrequency: row.autoSyncWorkeraFrequency as AppSettings["autoSyncWorkeraFrequency"],
+      lastWorkeraSyncAt: row.lastWorkeraSyncAt,
+      lastClockUploadAt: row.lastClockUploadAt,
+    };
+  } catch (error) {
+    console.error("Failed to load settings, using defaults:", error);
+    return DEFAULTS;
+  }
 }
 
 export async function updateSettings(patch: Partial<AppSettings>) {
-  await db.appSettings.upsert({
-    where: { id: "singleton" },
-    create: { id: "singleton", ...DEFAULTS, ...patch },
-    update: patch,
-  });
+  try {
+    await db.appSettings.upsert({
+      where: { id: "singleton" },
+      create: { id: "singleton", ...DEFAULTS, ...patch },
+      update: patch,
+    });
+  } catch (error) {
+    console.error("Failed to update settings:", error);
+    throw error;
+  }
 }
 
 export async function touchLastWorkeraSync() {
