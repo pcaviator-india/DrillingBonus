@@ -38,16 +38,34 @@ export default async function EmployeesPage({
     ...(params.status === "inactive" ? { isActive: false } : {}),
   };
 
-  const [employees, roles, sites, planillaRows, siteAliases] = await Promise.all([
-    db.employee.findMany({ where, orderBy: { fullName: "asc" }, include: { defaultRole: true, site: true } }),
-    db.role.findMany({ orderBy: { name: "asc" }, select: { name: true } }),
-    db.site.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
-    db.dailyCrewEntry.findMany({
-      where: { date: { gte: new Date(Date.UTC(2026, 0, 1)) } },
-      select: { rutNormalized: true, projectName: true, upload: { select: { siteId: true } } },
-    }),
-    db.siteAlias.findMany({ select: { normalized: true, siteId: true } }),
-  ]);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const [employees, roles, sites, planillaRows, siteAliases, projectAssignments, recentAttendances] =
+    await Promise.all([
+      db.employee.findMany({ where, orderBy: { fullName: "asc" }, include: { defaultRole: true } }),
+      db.role.findMany({ orderBy: { name: "asc" }, select: { name: true } }),
+      db.site.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
+      db.dailyCrewEntry.findMany({
+        where: { date: { gte: new Date(Date.UTC(2026, 0, 1)) } },
+        select: { rutNormalized: true, projectName: true, upload: { select: { siteId: true } } },
+      }),
+      db.siteAlias.findMany({ select: { normalized: true, siteId: true } }),
+      db.employeeProjectAssignment.findMany({
+        where: {
+          status: "approved",
+          startDate: { lte: today },
+          OR: [{ endDate: null }, { endDate: { gte: today } }],
+        },
+        select: { employeeId: true, siteId: true },
+      }),
+      db.attendanceRecord.findMany({
+        where: { deviceId: { not: null } },
+        select: { employeeId: true, siteAttributionSiteId: true, date: true },
+        orderBy: { date: "desc" },
+        take: 5000,
+      }),
+    ]);
   const siteNameById = new Map(sites.map((site) => [site.id, site.name]));
   const siteNameByProject = new Map<string, string>(sites.map((site) => [site.name, site.name]));
   const planillaSiteNames = new Map<string, Set<string>>();
@@ -64,12 +82,33 @@ export default async function EmployeesPage({
   const planillaSitesByEmployee = new Map(employees.map((employee) => [employee.id, employee.rut ? planillaSiteNames.get(normalizeRut(employee.rut)) : undefined]));
   const normalizedPlanillaSiteName = (value: string) => value;
 
+  // Build active project assignment site per employee
+  const assignmentSiteByEmployee = new Map<string, string>();
+  for (const a of projectAssignments) {
+    const siteName = siteNameById.get(a.siteId);
+    if (siteName) assignmentSiteByEmployee.set(a.employeeId, siteName);
+  }
+
+  // Build most recent clock-device site per employee (from attendance records)
+  const deviceSiteByEmployee = new Map<string, string>();
+  for (const a of recentAttendances) {
+    if (a.siteAttributionSiteId && !deviceSiteByEmployee.has(a.employeeId)) {
+      const siteName = siteNameById.get(a.siteAttributionSiteId);
+      if (siteName) deviceSiteByEmployee.set(a.employeeId, siteName);
+    }
+  }
+
+  // Compute display site: clock device → project assignment → "—" (never Workera)
+  function getEmployeeSite(emp: { id: string }): string {
+    return deviceSiteByEmployee.get(emp.id) ?? assignmentSiteByEmployee.get(emp.id) ?? "—";
+  }
+
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold">Employees</h1>
         <p className="text-sm text-muted-foreground">
-          Synced from Workera. {employees.length} employee(s) match the current filters.
+          Synced from Workera. Site shown from clock device → project assignment. {employees.length} employee(s) match the current filters.
         </p>
       </div>
 
@@ -87,7 +126,7 @@ export default async function EmployeesPage({
                 <TableHead>Name</TableHead>
                 <TableHead>RUT</TableHead>
                 <TableHead>Role</TableHead>
-                <TableHead>Workera site</TableHead>
+                <TableHead>Site (clock → assignment)</TableHead>
                 <TableHead>Planilla site(s)</TableHead>
                 <TableHead>Workera ID</TableHead>
                 <TableHead>Status</TableHead>
@@ -106,7 +145,7 @@ export default async function EmployeesPage({
                     <TableCell className="font-medium">{emp.fullName}</TableCell>
                     <TableCell>{emp.rut ?? "—"}</TableCell>
                     <TableCell>{emp.defaultRole?.name ?? "—"}</TableCell>
-                    <TableCell>{emp.site?.name ?? "—"}</TableCell>
+                    <TableCell>{getEmployeeSite(emp)}</TableCell>
                     <TableCell>
                       {planillaSitesByEmployee.get(emp.id)?.size
                         ? [...planillaSitesByEmployee.get(emp.id)!].map(normalizedPlanillaSiteName).join(", ")

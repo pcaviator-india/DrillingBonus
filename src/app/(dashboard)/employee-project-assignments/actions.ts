@@ -60,13 +60,9 @@ export async function reviewProjectSuggestionAction(
   if (!suggestion) return { error: "Suggestion not found" };
   await db.employeeProjectSuggestion.update({ where: { id }, data: { status, reviewedById: session.user.id, reviewedAt: new Date() } });
   if (status === "approved") {
-    const assignment = await db.employeeProjectAssignment.upsert({ where: { id: `suggestion-${id}` }, create: { id: `suggestion-${id}`, employeeId: suggestion.employeeId, siteId: suggestion.siteId, startDate: suggestion.startDate, endDate: suggestion.endDate, source: suggestion.source, status: "approved", assignedById: session.user.id, reviewedAt: new Date(), note: "Approved from automatic project suggestion" }, update: { status: "approved", endDate: suggestion.endDate, assignedById: session.user.id, reviewedAt: new Date() } });
-    // Update employee's home site to match the approved assignment
-    await db.employee.update({ where: { id: suggestion.employeeId }, data: { siteId: suggestion.siteId } });
+    await db.employeeProjectAssignment.upsert({ where: { id: `suggestion-${id}` }, create: { id: `suggestion-${id}`, employeeId: suggestion.employeeId, siteId: suggestion.siteId, startDate: suggestion.startDate, endDate: suggestion.endDate, source: suggestion.source, status: "approved", assignedById: session.user.id, reviewedAt: new Date(), note: "Approved from automatic project suggestion" }, update: { status: "approved", endDate: suggestion.endDate, assignedById: session.user.id, reviewedAt: new Date() } });
   }
   revalidatePath("/employee-project-assignments");
-  revalidatePath("/employees");
-  revalidatePath("/attendance");
   return { success: `Suggestion marked ${status}` };
 }
 const createSchema = z.object({
@@ -88,18 +84,14 @@ export async function createProjectAssignmentAction(
   if (!parsed.success) return { error: "Invalid assignment data" };
   if (parsed.data.endDate && parsed.data.endDate < parsed.data.startDate) return { error: "End date must be after start date" };
   try {
-    const assignment = await db.employeeProjectAssignment.create({ data: {
+    await db.employeeProjectAssignment.create({ data: {
       employeeId: parsed.data.employeeId, siteId: parsed.data.siteId,
       startDate: new Date(`${parsed.data.startDate}T00:00:00Z`),
       endDate: parsed.data.endDate ? new Date(`${parsed.data.endDate}T00:00:00Z`) : null,
       source: "manual", status: "approved", note: parsed.data.note || null,
       assignedById: session.user.id, reviewedAt: new Date(),
     }});
-    // Update employee's home site to match the approved assignment
-    await db.employee.update({ where: { id: parsed.data.employeeId }, data: { siteId: parsed.data.siteId } });
     revalidatePath("/employee-project-assignments");
-    revalidatePath("/employees");
-    revalidatePath("/attendance");
     return { success: "Project assignment approved" };
   } catch (e) { return { error: e instanceof Error ? e.message : "Could not save assignment" }; }
 }
@@ -114,15 +106,9 @@ export async function updateProjectAssignmentStatusAction(
   if (session?.user.role !== "admin") return { error: "Only admins can manage project assignments" };
   const parsed = statusSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "Invalid assignment" };
-  const assignment = await db.employeeProjectAssignment.update({ where: { id: parsed.data.id }, data: {
+  await db.employeeProjectAssignment.update({ where: { id: parsed.data.id }, data: {
     status: parsed.data.status, assignedById: session.user.id, reviewedAt: new Date(),
   }});
-  // When approving, update employee's home site to match the assignment
-  if (parsed.data.status === "approved") {
-    await db.employee.update({ where: { id: assignment.employeeId }, data: { siteId: assignment.siteId } });
-  }
   revalidatePath("/employee-project-assignments");
-  revalidatePath("/employees");
-  revalidatePath("/attendance");
   return { success: `Assignment marked ${parsed.data.status}` };
 }

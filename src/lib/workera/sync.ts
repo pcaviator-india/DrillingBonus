@@ -146,25 +146,21 @@ export async function syncEmployeesFromWorkera(
   );
   console.log(`[workera] employee sync: fetched ${cargos.length} job positions`);
 
-  // Site = branch office (sucursal) — dedupe and upsert once
+  // Site records from Workera branch offices are kept (needed for Device → Site mapping),
+  // but Employee.siteId is no longer synced from Workera.
   const branchCodes = [...new Set(employees.map((e) => e.branchOfficeCode).filter(Boolean))] as string[];
   console.log(`[workera] employee sync: ${branchCodes.length} unique branch offices`);
-  const siteIdByCode = new Map<string, string>();
-  let sitesCreated = 0;
   await Promise.all(
     branchCodes.map(async (code) => {
       const name = employees.find((e) => e.branchOfficeCode === code)?.branchOfficeName ?? code;
-      const site = await db.site.upsert({
+      await db.site.upsert({
         where: { code },
         create: { name: name ?? code, code },
         update: { name: name ?? code },
       });
-      siteIdByCode.set(code, site.id);
-      sitesCreated += 1;
-      console.log(`[workera] employee sync: site upserted ${code} → ${site.id}`);
+      console.log(`[workera] employee sync: site ensured ${code}`);
     }),
   );
-  console.log(`[workera] employee sync: ${sitesCreated} sites upserted`);
 
   // Cargo → Role (name unique): resolve each distinct jobPosition to a Role row
   const cargoCodes = [
@@ -194,7 +190,9 @@ export async function syncEmployeesFromWorkera(
       workeraId: emp.code,
       fullName: fullNameOf(emp),
       rut: emp.identification ?? null,
-      siteId: emp.branchOfficeCode ? (siteIdByCode.get(emp.branchOfficeCode) ?? null) : null,
+      // NOTE: siteId is NOT synced from Workera branchOfficeCode anymore.
+      // Employee site is determined dynamically: clock device → project assignment → "—"
+      siteId: null,
       isActive: emp.employeeStatus === "ACTIVO",
       defaultRoleId: cargoCode ? (roleIdByCode.get(cargoCode) ?? null) : null,
       jobPositionCode: cargoCode,
@@ -230,7 +228,6 @@ export async function syncEmployeesFromWorkera(
             fullName: r.fullName,
             rut: r.rut ?? undefined,
             workeraId: r.workeraId ?? null,
-            siteId: r.siteId ?? undefined,
             isActive: r.isActive,
             defaultRoleId: r.defaultRoleId ?? undefined,
             jobPositionCode: r.jobPositionCode ?? undefined,
@@ -245,7 +242,6 @@ export async function syncEmployeesFromWorkera(
           update: {
             fullName: r.fullName,
             rut: r.rut ?? undefined,
-            siteId: r.siteId ?? undefined,
             isActive: r.isActive,
             defaultRoleId: r.defaultRoleId ?? undefined,
             jobPositionCode: r.jobPositionCode ?? undefined,

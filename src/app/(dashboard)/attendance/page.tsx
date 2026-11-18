@@ -129,20 +129,63 @@ export default async function AttendancePage({
     return mainPosByRole.get(normalizeText(roleName)) ?? roleName;
   };
 
+  // Build site lookup: siteAttributionSiteId → site name, device → site name
   const records = await db.attendanceRecord.findMany({
     where: recordWhere,
     orderBy: [{ date: "asc" }, { employeeId: "asc" }],
-    include: { employee: { include: { defaultRole: true, site: true } } },
+    include: {
+      employee: { include: { defaultRole: true } },
+      device: { select: { siteId: true } },
+    },
     skip: (page - 1) * perPage,
     take: perPage,
   });
+
+  const siteNameById = new Map(sites.map((s) => [s.id, s.name]));
+
+  // Build active project assignment site per employee for the date range
+  // (simple approach: any active assignment covering the record date)
+  const assignmentSiteByEmployee = new Map<string, string>();
+  const allAssignments = await db.employeeProjectAssignment.findMany({
+    where: {
+      status: "approved",
+      startDate: { lte: isoTo },
+      OR: [{ endDate: null }, { endDate: { gte: isoFrom } }],
+    },
+    select: { employeeId: true, siteId: true },
+  });
+  for (const a of allAssignments) {
+    const siteName = siteNameById.get(a.siteId);
+    if (siteName) assignmentSiteByEmployee.set(a.employeeId, siteName);
+  }
+
+  function getRecordSite(rec: {
+    siteAttributionSiteId: string | null;
+    device: { siteId: string | null } | null;
+    employeeId: string;
+  }): string | null {
+    // 1. Clock device site (from auto-approve during sync)
+    if (rec.siteAttributionSiteId) {
+      const name = siteNameById.get(rec.siteAttributionSiteId);
+      if (name) return name;
+    }
+    // 2. Device → site
+    if (rec.device?.siteId) {
+      const name = siteNameById.get(rec.device.siteId);
+      if (name) return name;
+    }
+    // 3. Active project assignment for that employee
+    const name = assignmentSiteByEmployee.get(rec.employeeId);
+    if (name) return name;
+    return null;
+  }
 
   const rows: AttendanceRow[] = records.map((rec) => ({
     id: rec.id,
     date: formatDateUtc(rec.date),
     employeeName: rec.employee.fullName,
     role: resolveRole(rec.employee.defaultRole?.name ?? null),
-    site: rec.employee.site?.name ?? null,
+    site: getRecordSite(rec),
     department: rec.employee.departmentName ?? null,
     shift: rec.shift ?? null,
     timeIn: rec.timeIn ? formatTimeChile(rec.timeIn) : null,
