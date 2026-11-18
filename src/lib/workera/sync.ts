@@ -625,11 +625,9 @@ export async function syncAttendanceFromWorkera(
 ): Promise<SyncResult & { remainingUnits: number }> {
   const { startUnitIndex = 0, maxUnits } = options;
 
-  // Attendance sync no longer requires branch/department scope selection.
+  // Attendance sync does NOT use branch/department scope selection.
   // Site is determined dynamically post-sync: clock device → planilla → GPS → manual review.
-  // We fetch ALL branches from Workera (no department filter — /attendanceData works per-branch).
-  const pairs = await getSelectedScopePairs();
-
+  // We fetch ALL branches from Workera regardless of what's selected on the sync page.
   const employees = await db.employee.findMany({
     select: { id: true, workeraId: true, rut: true },
   });
@@ -642,15 +640,9 @@ export async function syncAttendanceFromWorkera(
     if (r) byRut.set(r, e.id);
   }
 
-  // Sites = unique branch offices from the selected scope pairs, or ALL branches if none selected.
-  let branchCodes: string[];
-  if (pairs.length > 0) {
-    branchCodes = [...new Set(pairs.map((p) => p.branchOffice).filter(Boolean))] as string[];
-  } else {
-    // No scope selected → fetch all branches from Workera directly.
-    const allBranches = await workeraClient.fetchBranchOffices();
-    branchCodes = allBranches.map((b) => b.code).filter(Boolean);
-  }
+  // Always fetch ALL branches from Workera — attendance sync ignores site/branch selection.
+  const allBranches = await workeraClient.fetchBranchOffices();
+  const branchCodes = allBranches.map((b) => b.code).filter(Boolean);
   const branchRows = await db.branchOffice.findMany({
     where: { code: { in: branchCodes } },
     select: { code: true, name: true },
@@ -879,7 +871,7 @@ export async function syncAttendanceFromWorkera(
     try {
       const marks = site.code
         ? await workeraClient.fetchAttendanceForBranch(fetchFrom, fetchTo, site.code)
-        : await workeraClient.fetchAttendance(fetchFrom, fetchTo, pairs);
+        : await workeraClient.fetchAttendance(fetchFrom, fetchTo);
       rawMarksTotal += marks.length;
       const { rows, days } = await persistWindow(marks, wStartStr, wEndStr);
       upserted += rows;
