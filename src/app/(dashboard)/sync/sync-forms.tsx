@@ -43,7 +43,11 @@ function BranchDepartmentSelector({
         <CardDescription>
           Workera&apos;s /employee endpoint requires a branchOffice + department pair.
           Import the lists, then select which to sync (selection = selected rows
-          combined). Selected pairs are used by employee and attendance sync.
+          combined). Selected pairs are used by <strong>employee sync only</strong>.
+          <br />
+          <strong>Attendance sync ignores scope</strong> — it fetches all branches
+          from Workera and determines site dynamically (clock device → planilla →
+          GPS → manual review) after sync.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -150,6 +154,10 @@ function AttendanceSyncForm() {
         <CardTitle className="text-lg">Sync Attendance</CardTitle>
         <CardDescription>
           Pulls daily attendance for a period. Run employee sync first.
+          <br />
+          <strong>No site selection needed</strong> — attendance is fetched for all
+          branches and site is determined dynamically after sync (clock device →
+          planilla → GPS → manual review).
         </CardDescription>
       </CardHeader>
       <CardContent>

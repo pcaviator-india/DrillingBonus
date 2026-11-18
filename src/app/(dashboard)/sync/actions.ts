@@ -38,6 +38,10 @@ const periodSchema = z
     path: ["from"],
   });
 
+// Max units per background task to stay under Vercel's 300s serverless timeout.
+// Each unit fetches Workera + upserts DB rows; ~5 units keeps us well under the limit.
+const UNITS_PER_TASK = 5;
+
 export async function syncEmployeesAction(): Promise<SyncState> {
   const session = await auth();
   if (!session?.user) return { error: "Not authenticated" };
@@ -125,25 +129,64 @@ export async function syncAttendanceAction(
   runJobInBackground({
     jobId: job.id,
     run: async () => {
+      // Process units in chunks to stay under the 300s serverless timeout.
+      // Each chunk runs as a separate background task; when one finishes,
+      // it triggers the next via the internal /api/sync/continue endpoint.
       let unitsDone = 0;
       let unitsFailed = 0;
-      const result = await syncAttendanceFromWorkera(
-        parsed.data.from,
-        parsed.data.to,
-        async (windowLabel, done, total) => {
-          await updateJobProgress(
-            job.id,
-            Math.round((done / total) * 100),
-            `Syncing ${windowLabel}…`,
-          );
-        },
-        job.id,
-        async (report: SyncUnitReport) => {
-          await recordSyncUnit(job.id, report);
-          if (report.status === "DONE") unitsDone += 1;
-          if (report.status === "ERROR") unitsFailed += 1;
-        },
-      );
+      let startUnitIndex = 0;
+      let lastResult: Awaited<ReturnType<typeof syncAttendanceFromWorkera>> | null = null;
+
+      for (;;) {
+        const result = await syncAttendanceFromWorkera(
+          parsed.data.from,
+          parsed.data.to,
+          async (windowLabel, done, total) => {
+            await updateJobProgress(
+              job.id,
+              Math.round((done / total) * 100),
+              `Syncing ${windowLabel}…`,
+            );
+          },
+          job.id,
+          async (report: SyncUnitReport) => {
+            await recordSyncUnit(job.id, report);
+            if (report.status === "DONE") unitsDone += 1;
+            if (report.status === "ERROR") unitsFailed += 1;
+          },
+          { startUnitIndex, maxUnits: UNITS_PER_TASK },
+        );
+        lastResult = result;
+
+        // If there are remaining units, chain the next task via internal fetch.
+        if (result.remainingUnits && result.remainingUnits > 0) {
+          startUnitIndex += UNITS_PER_TASK;
+          try {
+            const baseUrl =
+              process.env.NEXTAUTH_URL ??
+              (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
+            const continueUrl = `${baseUrl}/api/sync/continue`;
+            if (continueUrl) {
+              await fetch(continueUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${process.env.CRON_SECRET ?? ""}`,
+                },
+                body: JSON.stringify({ jobId: job.id, startUnitIndex }),
+              });
+            }
+          } catch {
+            // If chaining fails, the remaining units can be retried via the
+            // "Retry failed sites" action on the sync page.
+          }
+          break;
+        }
+
+        break;
+      }
+
+      const result = lastResult!;
       const details = [
         `${result.attendanceUpserted} day-records saved`,
         `${result.rawMarks ?? 0} raw marks fetched`,

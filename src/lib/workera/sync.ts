@@ -23,6 +23,8 @@ export type SyncResult = {
   autoCreated?: number; // employees auto-created from Workera attendance marks
   autoApproved?: number;
   failed?: number; // employee upsert failures
+  /** Remaining units not yet processed (for chunked/continued syncs). */
+  remainingUnits?: number;
 };
 
 export type OrgUnitImportResult = {
@@ -606,17 +608,27 @@ export const aggregateAttendanceForTest = aggregateAttendance;
  *                   can render the whole grid and support retry-only-failures.
  * @param onUnit     per-unit report callback (mirrors what's stored when jobId set)
  */
+export type SyncAttendanceOptions = {
+  /** Start processing at this unit index (for chunked/continued syncs). Default 0. */
+  startUnitIndex?: number;
+  /** Max number of units to process in this call (for chunking under timeout). Default: all. */
+  maxUnits?: number;
+};
+
 export async function syncAttendanceFromWorkera(
   from: string,
   to: string,
   onProgress?: (windowLabel: string, done: number, total: number) => Promise<void> | void,
   jobId?: string,
   onUnit?: (report: SyncUnitReport) => Promise<void> | void,
-): Promise<SyncResult> {
+  options: SyncAttendanceOptions = {},
+): Promise<SyncResult & { remainingUnits: number }> {
+  const { startUnitIndex = 0, maxUnits } = options;
+
+  // Attendance sync no longer requires branch/department scope selection.
+  // Site is determined dynamically post-sync: clock device → planilla → GPS → manual review.
+  // We fetch ALL branches from Workera (no department filter — /attendanceData works per-branch).
   const pairs = await getSelectedScopePairs();
-  if (pairs.length === 0) {
-    throw new Error("No scope selected: pick at least one branch office and department first");
-  }
 
   const employees = await db.employee.findMany({
     select: { id: true, workeraId: true, rut: true },
@@ -630,8 +642,15 @@ export async function syncAttendanceFromWorkera(
     if (r) byRut.set(r, e.id);
   }
 
-  // Sites = unique branch offices from the selected scope pairs, with names.
-  const branchCodes = [...new Set(pairs.map((p) => p.branchOffice).filter(Boolean))] as string[];
+  // Sites = unique branch offices from the selected scope pairs, or ALL branches if none selected.
+  let branchCodes: string[];
+  if (pairs.length > 0) {
+    branchCodes = [...new Set(pairs.map((p) => p.branchOffice).filter(Boolean))] as string[];
+  } else {
+    // No scope selected → fetch all branches from Workera directly.
+    const allBranches = await workeraClient.fetchBranchOffices();
+    branchCodes = allBranches.map((b) => b.code).filter(Boolean);
+  }
   const branchRows = await db.branchOffice.findMany({
     where: { code: { in: branchCodes } },
     select: { code: true, name: true },
@@ -671,12 +690,19 @@ export async function syncAttendanceFromWorkera(
   // Build the full work plan (site × window) and persist it up front when a job
   // is tracking this sync, so the modal can render every row immediately.
   const siteList = sites.length > 0 ? sites : [{ code: "", name: null }];
-  const units: { site: { code: string; name: string | null }; wStart: Date; wEnd: Date }[] = [];
+  const allUnits: { site: { code: string; name: string | null }; wStart: Date; wEnd: Date }[] = [];
   for (const site of siteList) {
     for (const { wStart, wEnd } of windows) {
-      units.push({ site, wStart, wEnd });
+      allUnits.push({ site, wStart, wEnd });
     }
   }
+
+  // Apply chunking: skip units before startUnitIndex, limit to maxUnits.
+  const units = maxUnits !== undefined
+    ? allUnits.slice(startUnitIndex, startUnitIndex + maxUnits)
+    : allUnits.slice(startUnitIndex);
+  const remainingUnits = Math.max(0, allUnits.length - startUnitIndex - units.length);
+
   if (jobId) {
     await createSyncUnits(
       jobId,
@@ -949,6 +975,7 @@ export async function syncAttendanceFromWorkera(
     skippedUnknown: skippedUnknownTotal,
     autoCreated: autoCreatedTotal,
     autoApproved: approved,
+    remainingUnits,
   };
 }
 
