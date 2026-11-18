@@ -5,17 +5,28 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { CreateAssignmentForm, AssignmentStatusButton, GenerateSuggestionsForm, SuggestionReviewButtons, ProjectAssignmentSearch } from "./assignment-controls";
 
+function buildSuggestionWhere(query: string) {
+  const words = query.split(/\s+/).filter(Boolean);
+  if (words.length === 0) return undefined;
+
+  const fieldOr = (word: string) => ({
+    OR: [
+      { employee: { fullName: { contains: word, mode: "insensitive" as const } } },
+      { employee: { rut: { contains: word, mode: "insensitive" as const } } },
+      { site: { name: { contains: word, mode: "insensitive" as const } } },
+      { source: { contains: word, mode: "insensitive" as const } },
+      { confidence: { contains: word, mode: "insensitive" as const } },
+      { status: { contains: word, mode: "insensitive" as const } },
+    ],
+  });
+
+  return { AND: words.map((w) => fieldOr(w)) };
+}
+
 export default async function EmployeeProjectAssignmentsPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const sp = await searchParams;
   const query = (sp.q ?? "").trim();
-  const suggestionWhere = query ? { OR: [
-    { employee: { fullName: { contains: query, mode: "insensitive" as const } } },
-    { employee: { rut: { contains: query, mode: "insensitive" as const } } },
-    { site: { name: { contains: query, mode: "insensitive" as const } } },
-    { source: { contains: query, mode: "insensitive" as const } },
-    { confidence: { contains: query, mode: "insensitive" as const } },
-    { status: { contains: query, mode: "insensitive" as const } },
-  ] } : undefined;
+  const suggestionWhere = buildSuggestionWhere(query);
   const [employees, sites, assignments, suggestions] = await Promise.all([
     db.employee.findMany({ where: { isActive: true }, select: { id: true, fullName: true }, orderBy: { fullName: "asc" } }),
     db.site.findMany({ where: { isActive: true }, select: { id: true, name: true }, orderBy: { name: "asc" } }),
