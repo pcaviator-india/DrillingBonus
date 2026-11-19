@@ -125,19 +125,14 @@ export async function runCalculation(
   // site employees (previous behaviour).
   const attendingEmployeeIds = new Set<string>();
   if (source === "workera") {
-    // Include employees whose workera attendance can be attributed to this
-    // site: manual site attribution, or device/rig whose site matches.
-    // Prevents employees who worked at other sites from appearing in this
-    // site's calculation with 0 days/bonus.
+    // Include ALL employees with workera attendance in the period so they
+    // appear in this site's calculation. Days are later filtered to this site
+    // only (see daysWorkedMap below) so bonuses aren't inflated by days worked
+    // at other sites. Employees with no shifts at this site show 0 meters/bonus.
     const attEmployees = await db.attendanceRecord.findMany({
       where: {
         date: { gte: start, lte: end },
         source: "workera",
-        OR: [
-          { siteAttributionSiteId: siteId },
-          { device: { siteId } },
-          { rig: { siteId } },
-        ],
       },
       select: { employeeId: true },
       distinct: ["employeeId"],
