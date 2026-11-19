@@ -24,11 +24,24 @@ export default async function ComparisonsPage({ searchParams }: { searchParams: 
     db.site.findMany({ where: { calculations: { some: {} } }, orderBy: { name: "asc" }, select: { id: true, name: true } }),
     db.calculationComparison.findMany({
       orderBy: { createdAt: "desc" },
-      include: {
-        calculation: { include: { site: true } },
-        employee: true,
+      select: {
+        id: true,
+        createdAt: true,
+        workeraDays: true,
+        planillaDays: true,
+        workeraBonus: true,
+        planillaBonus: true,
+        difference: true,
+        reviewStatus: true,
+        reviewNote: true,
+        calculationId: true,
+        planillaCalculationId: true,
+        periodStart: true,
+        periodEnd: true,
+        calculation: { select: { site: { select: { name: true, id: true } } } },
+        employee: { select: { fullName: true, rut: true } },
       },
-      take: 1000,
+      take: 200,
     }),
   ]);
   
