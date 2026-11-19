@@ -66,7 +66,8 @@ export async function GET(
 
   const siteSlug = calc.site.name.replace(/[^a-zA-Z0-9]+/g, "_");
   const period = `${formatDateUtc(calc.periodStart)}_to_${formatDateUtc(calc.periodEnd)}`;
-  const base = `calculation_super_detail_${siteSlug}_${period}`.replace(/[^a-zA-Z0-9_-]+/g, "_");
+  const sourceSlug = calc.source === "workera" ? "workera" : "planilla";
+  const base = `calculation_super_detail_${sourceSlug}_${siteSlug}_${period}`.replace(/[^a-zA-Z0-9_-]+/g, "_");
 
   return new Response(new Uint8Array(buffer as ArrayBuffer), {
     status: 200,

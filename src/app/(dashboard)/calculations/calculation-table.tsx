@@ -121,6 +121,39 @@ export function CalculationTable({
               >
                 {bulkPending ? "Recalculating…" : "Calculate selected"}
               </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={bulkPending}
+                onClick={() => {
+                  fetch("/api/calculations/bulk-export-super", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ calculationIds: Array.from(selectedIds) }),
+                  })
+                    .then((res) => {
+                      if (!res.ok) throw new Error(`Export failed: ${res.status}`);
+                      return res.blob();
+                    })
+                    .then((blob) => {
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `calculations_super_detail_${selectedIds.size}.zip`;
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                      URL.revokeObjectURL(url);
+                    })
+                    .catch((err) => {
+                      console.error(err);
+                      alert(err.message);
+                    });
+                }}
+              >
+                Export selected as super detailed (Excel)
+              </Button>
               {bulkState.error ? (
                 <span className="ml-2 text-xs text-destructive">
                   {bulkState.error}
