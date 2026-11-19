@@ -18,12 +18,33 @@ export default async function ComparisonsPage({ searchParams }: { searchParams: 
   const project = params.project?.trim() ?? "";
   const reviewStatus = params.reviewStatus?.trim() ?? "";
   const month = params.month?.trim() ?? "";
-  
+
+  // Build month date range for database-level filtering
+  let monthStart: Date | undefined;
+  let monthEnd: Date | undefined;
+  if (month) {
+    const [y, m] = month.split("-").map(Number);
+    monthStart = new Date(Date.UTC(y, m - 1, 1));
+    monthEnd = new Date(Date.UTC(y, m, 0, 23, 59, 59, 999));
+  }
+
   const [calculations, projects, allBatches] = await Promise.all([
     db.bonusCalculation.findMany({ orderBy: { createdAt: "desc" }, include: { site: true, ruleSet: true }, take: 100 }),
     db.site.findMany({ where: { calculations: { some: {} } }, orderBy: { name: "asc" }, select: { id: true, name: true } }),
     db.calculationComparison.findMany({
       orderBy: { createdAt: "desc" },
+      where: {
+        ...(reviewStatus ? { reviewStatus } : {}),
+        ...(project ? { calculation: { siteId: project } } : {}),
+        ...(month ? { periodStart: { gte: monthStart }, periodEnd: { lte: monthEnd } } : {}),
+        ...(q ? {
+          OR: [
+            { employee: { fullName: { contains: q, mode: "insensitive" } } },
+            { employee: { rut: { contains: q, mode: "insensitive" } } },
+            { calculation: { site: { name: { contains: q, mode: "insensitive" } } } },
+          ],
+        } : {}),
+      },
       select: {
         id: true,
         createdAt: true,
@@ -54,21 +75,7 @@ export default async function ComparisonsPage({ searchParams }: { searchParams: 
     batchesMap.set(key, batch);
   }
   
-  // Filter batches by query, project, status, and month
-  const filteredBatches = [...batchesMap.entries()].filter(([_, rows]) => {
-    const matchesProject = !project || rows.some((row) => row.calculation.site.id === project);
-    const matchesStatus = !reviewStatus || rows.some((row) => row.reviewStatus === reviewStatus);
-    const matchesQuery = !q || rows.some((row) => {
-      const haystack = `${row.employee.fullName} ${row.employee.rut ?? ""} ${row.calculation.site.name}`.toLowerCase();
-      return haystack.includes(q.toLowerCase());
-    });
-    const matchesMonth = !month || rows.some((row) => {
-      // Filter by calculation period (periodStart), not row creation date
-      const rowMonth = `${row.periodStart.getFullYear()}-${String(row.periodStart.getMonth() + 1).padStart(2, "0")}`;
-      return rowMonth === month;
-    });
-    return matchesProject && matchesStatus && matchesQuery && matchesMonth;
-  }).map(([key, rows]) => ({ key, rows }));
+  const filteredBatches = [...batchesMap.entries()].map(([key, rows]) => ({ key, rows }));
   
   // Prepare options for comparison forms
   const options = calculations.map(c => ({ 

@@ -125,15 +125,19 @@ export async function runCalculation(
   // site employees (previous behaviour).
   const attendingEmployeeIds = new Set<string>();
   if (source === "workera") {
-    // Include ALL employees with workera attendance in the period, regardless
-    // of site attribution. Site attribution (device → planilla → GPS → manual
-    // review) happens post-sync and may not be complete yet. Shift-level
-    // filtering below ensures only shifts actually worked at this site count;
-    // employees with no shifts at this site simply show 0 meters/bonus.
+    // Include employees whose workera attendance can be attributed to this
+    // site: manual site attribution, or device/rig whose site matches.
+    // Prevents employees who worked at other sites from appearing in this
+    // site's calculation with 0 days/bonus.
     const attEmployees = await db.attendanceRecord.findMany({
       where: {
         date: { gte: start, lte: end },
         source: "workera",
+        OR: [
+          { siteAttributionSiteId: siteId },
+          { device: { siteId } },
+          { rig: { siteId } },
+        ],
       },
       select: { employeeId: true },
       distinct: ["employeeId"],
@@ -254,7 +258,20 @@ export async function runCalculation(
 
   const [empAttendance, planillaAttendance, assignments, turnSchedules, planillaTurns] = await Promise.all([
     db.attendanceRecord.findMany({
-      where: { employeeId: { in: [...employeeIds] }, date: { gte: start, lte: end }, source: "workera" },
+      where: {
+        employeeId: { in: [...employeeIds] },
+        date: { gte: start, lte: end },
+        source: "workera",
+        // Only count attendance attributable to this site: manual site
+        // attribution, or device/rig whose site matches. Prevents an employee
+        // who worked at multiple sites during the period from having all their
+        // days counted in every site's calculation.
+        OR: [
+          { siteAttributionSiteId: siteId },
+          { device: { siteId } },
+          { rig: { siteId } },
+        ],
+      },
     }),
     db.dailyCrewEntry.findMany({
       where: { date: { gte: start, lte: end } },
