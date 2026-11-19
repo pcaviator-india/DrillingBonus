@@ -124,18 +124,16 @@ export async function runCalculation(
   // Workera with no workeraId. When no assignments exist yet, fall back to all
   // site employees (previous behaviour).
   const attendingEmployeeIds = new Set<string>();
-  if (source === "workera" && assignedEmployeeIds.size > 0) {
-    // Only include employees whose attendance can be attributed to this site:
-    // manual site attribution, or device/rig whose site matches this site.
-    // Prevents pulling in employees who worked at other sites during the period.
+  if (source === "workera") {
+    // Include ALL employees with workera attendance in the period, regardless
+    // of site attribution. Site attribution (device → planilla → GPS → manual
+    // review) happens post-sync and may not be complete yet. Shift-level
+    // filtering below ensures only shifts actually worked at this site count;
+    // employees with no shifts at this site simply show 0 meters/bonus.
     const attEmployees = await db.attendanceRecord.findMany({
       where: {
         date: { gte: start, lte: end },
-        OR: [
-          { siteAttributionSiteId: siteId },
-          { device: { siteId } },
-          { rig: { siteId } },
-        ],
+        source: "workera",
       },
       select: { employeeId: true },
       distinct: ["employeeId"],
