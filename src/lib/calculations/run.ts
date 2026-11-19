@@ -142,6 +142,12 @@ export async function runCalculation(
             OR: [
               { id: { in: [...assignedEmployeeIds] } },
               { AND: [{ siteId }, { id: { in: [...attendingEmployeeIds] } }] },
+              // Employees with workera attendance in the period but no matching
+              // siteId (siteId is not synced from Workera — site is determined
+              // dynamically from clock device → planilla → GPS → manual review).
+              // Shifts are later filtered to this site via resolved assignments,
+              // so employees with no shifts at this site simply show 0 meters.
+              { id: { in: [...attendingEmployeeIds] } },
             ],
           },
     include: { defaultRole: true },
