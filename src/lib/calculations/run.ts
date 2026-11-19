@@ -146,33 +146,26 @@ export async function runCalculation(
       distinct: ["employeeId"],
     });
     for (const r of attEmployees) attendingEmployeeIds.add(r.employeeId);
-    for (const aid of assignedEmployeeIds) attendingEmployeeIds.add(aid);
   }
 
   const employees = await db.employee.findMany({
     where: source === "planilla"
       ? { id: { in: planillaEmployeeIds } }
       : assignedEmployeeIds.size === 0
-        ? {
-            // No approved assignments for this site — fall back to all
-            // employees with workera attendance in the period (siteId is not
-            // synced from Workera, so Employee.siteId is unreliable).
-            OR: [
-              { id: { in: [...attendingEmployeeIds] } },
-              // Also include employees whose home site is this site even if
-              // they have no attendance yet (support staff, etc.)
-              { siteId },
-            ],
-          }
+        ? ({ id: { in: [...attendingEmployeeIds] } })
         : {
             OR: [
-              { id: { in: [...assignedEmployeeIds] } },
-              { AND: [{ siteId }, { id: { in: [...attendingEmployeeIds] } }] },
-              // Employees with workera attendance in the period but no matching
+              // Assigned employees who also have workera attendance at this site
+              {
+                id: {
+                  in: [...assignedEmployeeIds].filter((id) =>
+                    attendingEmployeeIds.has(id),
+                  ),
+                },
+              },
+              // Employees with workera attendance at this site but no matching
               // siteId (siteId is not synced from Workera — site is determined
               // dynamically from clock device → planilla → GPS → manual review).
-              // Shifts are later filtered to this site via resolved assignments,
-              // so employees with no shifts at this site simply show 0 meters.
               { id: { in: [...attendingEmployeeIds] } },
             ],
           },
