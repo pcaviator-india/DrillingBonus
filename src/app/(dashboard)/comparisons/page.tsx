@@ -62,7 +62,7 @@ export default async function ComparisonsPage({ searchParams }: { searchParams: 
         calculation: { select: { site: { select: { name: true, id: true } } } },
         employee: { select: { fullName: true, rut: true } },
       },
-      take: 200,
+      take: 1000,
     }),
   ]);
   
