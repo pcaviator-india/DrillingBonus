@@ -125,8 +125,18 @@ export async function runCalculation(
   // site employees (previous behaviour).
   const attendingEmployeeIds = new Set<string>();
   if (source === "workera" && assignedEmployeeIds.size > 0) {
+    // Only include employees whose attendance can be attributed to this site:
+    // manual site attribution, or device/rig whose site matches this site.
+    // Prevents pulling in employees who worked at other sites during the period.
     const attEmployees = await db.attendanceRecord.findMany({
-      where: { date: { gte: start, lte: end } },
+      where: {
+        date: { gte: start, lte: end },
+        OR: [
+          { siteAttributionSiteId: siteId },
+          { device: { siteId } },
+          { rig: { siteId } },
+        ],
+      },
       select: { employeeId: true },
       distinct: ["employeeId"],
     });
