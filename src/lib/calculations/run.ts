@@ -145,7 +145,17 @@ export async function runCalculation(
     where: source === "planilla"
       ? { id: { in: planillaEmployeeIds } }
       : assignedEmployeeIds.size === 0
-        ? { siteId }
+        ? {
+            // No approved assignments for this site — fall back to all
+            // employees with workera attendance in the period (siteId is not
+            // synced from Workera, so Employee.siteId is unreliable).
+            OR: [
+              { id: { in: [...attendingEmployeeIds] } },
+              // Also include employees whose home site is this site even if
+              // they have no attendance yet (support staff, etc.)
+              { siteId },
+            ],
+          }
         : {
             OR: [
               { id: { in: [...assignedEmployeeIds] } },
