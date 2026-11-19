@@ -640,19 +640,9 @@ export async function syncAttendanceFromWorkera(
     if (r) byRut.set(r, e.id);
   }
 
-  // Always fetch ALL branches from Workera — attendance sync ignores site/branch selection.
-  const allBranches = await workeraClient.fetchBranchOffices();
-  const branchCodes = allBranches.map((b) => b.code).filter(Boolean);
-  const branchRows = await db.branchOffice.findMany({
-    where: { code: { in: branchCodes } },
-    select: { code: true, name: true },
-  });
-  const nameByCode = new Map(branchRows.map((b) => [b.code, b.name]));
-  const sites: { code: string; name: string | null }[] = branchCodes.map((code) => ({
-    code,
-    name: nameByCode.get(code) ?? null,
-  }));
-
+  // Attendance sync does NOT use branch/department scope selection.
+  // We call /attendanceData WITHOUT branchOffice to get ALL branches' data at once.
+  // Site is determined dynamically post-sync: clock device → planilla → GPS → manual review.
   let upserted = 0;
   let rawMarksTotal = 0;
   let daysAggregatedTotal = 0;
@@ -679,14 +669,10 @@ export async function syncAttendanceFromWorkera(
     const wEnd = addDays(wStart, 6) > endDay ? new Date(endDay) : addDays(wStart, 6);
     windows.push({ wStart, wEnd });
   }
-  // Build the full work plan (site × window) and persist it up front when a job
-  // is tracking this sync, so the modal can render every row immediately.
-  const siteList = sites.length > 0 ? sites : [{ code: "", name: null }];
-  const allUnits: { site: { code: string; name: string | null }; wStart: Date; wEnd: Date }[] = [];
-  for (const site of siteList) {
-    for (const { wStart, wEnd } of windows) {
-      allUnits.push({ site, wStart, wEnd });
-    }
+  // Build the full work plan (window only — no site dimension since we fetch all branches at once).
+  const allUnits: { wStart: Date; wEnd: Date }[] = [];
+  for (const { wStart, wEnd } of windows) {
+    allUnits.push({ wStart, wEnd });
   }
 
   // Apply chunking: skip units before startUnitIndex, limit to maxUnits.
@@ -699,16 +685,16 @@ export async function syncAttendanceFromWorkera(
     await createSyncUnits(
       jobId,
       units.map((u) => ({
-        siteCode: u.site.code || null,
-        siteName: u.site.name,
+        siteCode: null,
+        siteName: null,
         windowFrom: fmt(u.wStart),
         windowTo: fmt(u.wEnd),
       })),
     );
   }
 
-  // Persist one (site × window) unit's aggregated days. Only days inside the
-  // real window are saved (the 1-day overlap is pairing context only).
+  // Persist one window's aggregated days. Only days inside the real window are saved
+  // (the 1-day overlap is pairing context only).
   const persistWindow = async (
     marks: WorkeraAttendance[],
     wStartStr: string,
@@ -843,7 +829,7 @@ export async function syncAttendanceFromWorkera(
   };
 
   for (let ui = 0; ui < units.length; ui++) {
-    const { site, wStart, wEnd } = units[ui];
+    const { wStart, wEnd } = units[ui];
     const wStartStr = fmt(wStart);
     const wEndStr = fmt(wEnd);
     // Overlap: include the day before the window so an IN just outside the
@@ -852,13 +838,13 @@ export async function syncAttendanceFromWorkera(
     // its IN inside. persistWindow filters saved records to the real window.
     const fetchFrom = wStart > startDay ? fmt(addDays(wStart, -1)) : fmt(wStart);
     const fetchTo = fmt(addDays(wEnd, 1));
-    const siteLabel = site.name ? `${site.name} (${site.code})` : site.code || "(all)";
+    const siteLabel = `(all branches) ${wStartStr}..${wEndStr}`;
     const report = async (
       rep: Omit<SyncUnitReport, "siteCode" | "siteName" | "windowFrom" | "windowTo">,
     ) => {
       const full: SyncUnitReport = {
-        siteCode: site.code || null,
-        siteName: site.name,
+        siteCode: null,
+        siteName: null,
         windowFrom: wStartStr,
         windowTo: wEndStr,
         ...rep,
@@ -869,28 +855,28 @@ export async function syncAttendanceFromWorkera(
 
     await report({ status: "RUNNING" });
     try {
-      const marks = site.code
-        ? await workeraClient.fetchAttendanceForBranch(fetchFrom, fetchTo, site.code)
-        : await workeraClient.fetchAttendance(fetchFrom, fetchTo);
+      // Call /attendanceData WITHOUT branchOffice to get ALL branches' data at once.
+      // Site is determined dynamically post-sync (device → planilla → GPS → manual review).
+      const marks = await workeraClient.fetchAttendance(fetchFrom, fetchTo);
       rawMarksTotal += marks.length;
       const { rows, days } = await persistWindow(marks, wStartStr, wEndStr);
       upserted += rows;
       console.log(
-        `[workera] attendance ${siteLabel} ${wStartStr}..${wEndStr}: ${marks.length} marks → ${rows} records persisted`,
+        `[workera] attendance ${siteLabel}: ${marks.length} marks → ${rows} records persisted`,
       );
       await report({ status: "DONE", marks: marks.length, days, upserted: rows });
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.warn(
-        `[workera] attendance unit ${siteLabel} ${wStartStr}..${wEndStr} FAILED: ${message}`,
+        `[workera] attendance unit ${siteLabel} FAILED: ${message}`,
       );
       await report({ status: "ERROR", error: message });
-      // Continue with the next unit — one failing site/window must not abort
+      // Continue with the next unit — one failing window must not abort
       // the whole sync; the modal surfaces it and offers retry.
     }
 
     if (onProgress) {
-      await onProgress(`${siteLabel} ${wStartStr}..${wEndStr}`, ui + 1, units.length);
+      await onProgress(`${siteLabel}`, ui + 1, units.length);
     }
   }
 
